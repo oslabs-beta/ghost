@@ -1,8 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-const Index = () => {
-  return <div>this is react</div>;
+import MainContainer from './container/mainContainer';
+
+const App = () => {
+  return (
+    <div>
+      <MainContainer />
+    </div>
+  )
 };
 
-ReactDOM.render(<Index />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));
