@@ -14,6 +14,9 @@ module.exports = [
         use: [{ loader: 'ts-loader' }]
       }]
     },
+    resolve: {
+      extensions: ['.ts', '.js', '.tsx',],
+    },
     output: {
       path: __dirname + '/dist',
       filename: 'electron.js'
@@ -31,6 +34,9 @@ module.exports = [
         exclude: /node_modules/,
         use: [{ loader: 'ts-loader' }]
       }]
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js',],
     },
     output: {
       path: __dirname + '/dist',
