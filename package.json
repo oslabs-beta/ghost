@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config ./webpack.config.js",
+    "electron": "electron ./dist/electron.js",
     "start": "npm run build && electron ./dist/electron.js"
   },
   "repository": {
