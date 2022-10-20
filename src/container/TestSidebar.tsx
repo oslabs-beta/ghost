@@ -37,7 +37,7 @@ const theme = createTheme({
 interface TestSideBar {
 }
 
-export default function PermanentDrawerLeft() {
+export default function SidebarContainer() {
   // opens the 'your lambda functions' drawer
   const [openFunctionsMenu, setOpenFunctionsMenu] = React.useState(false);
   const handleOpenFunctions = () => {
@@ -45,6 +45,8 @@ export default function PermanentDrawerLeft() {
   };
 
   // fetch list of lambda functions
+  // TODO: what happens when clicking on a specific function? => show graphs in main component?
+  // if so, consider storing list globally?
   const [lambdaFuncList, setLambdaFuncList] = React.useState([]);
   React.useEffect(() => {
     fetch('http://localhost:3000/functions')
