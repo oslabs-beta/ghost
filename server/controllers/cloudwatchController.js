@@ -1,40 +1,54 @@
-const { CloudWatchLogsClient, DescribeLogStreamsCommand  } = require("@aws-sdk/client-cloudwatch-logs");
-// const { CloudWatchClient } = require("@aws-sdk/client-cloudwatch");
+const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } = require("@aws-sdk/client-cloudwatch-logs");
 
 const cloudwatchController = {};
 
-
-
-cloudwatchController.getLogs = (req, res, next) => {
+cloudwatchController.getLogStreams = (req, res, next) => {
   const client = new CloudWatchLogsClient({ region: "us-west-1" });
 
   const input = {
-    logGroupName: "/aws/lambda/HelloMysteryGang"
+    logGroupName: "/aws/lambda/" + req.body.functionName
   };
 
   const command = new DescribeLogStreamsCommand(input)
 
-  //now we can use the api with the syntax client.send(command)
   client.send(command)
     .then(data => {
-      res.locals.logs = data;
+      const logStreams = data.logStreams.map(streamObj => {
+        const streamData = {};
+        streamData.arn = streamObj.arn;
+        streamData.streamName = streamObj.logStreamName;
+        return streamData;
+      })
+      res.locals.logStreams = logStreams;
       return next();
     })
     .catch(err => {
-      console.log('the err is ', err)
-      return next({
-        status: 500,
-        log: 'Express error handler caught middleware error in getLogs',
-        message: {err: 'An error occurred'}
-      })
+      console.log('error in getLogStreams: ', err)
+      return next('error in cw.getLogStreams')
     })
-
 }
 
-cloudwatchController.dummy = (req, res, next) => {
-  res.locals.dummy = 'the req went through dummy'
-  return next();
+cloudwatchController.getRawLogs = (req, res, next) => {
+  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+
+  const input = {
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    logStreamName: req.body.streamName,
+  };
+
+  const command = new GetLogEventsCommand(input);
+
+  client.send(command)
+    .then(data => {
+      res.locals.rawLogs = data.events;
+      next();
+    })
+    .catch(err => {
+      console.log('error in getRawLogs: ', err)
+      return next('error in cw.getRawLogs')
+    })
 }
+
 
 
 module.exports = cloudwatchController;
