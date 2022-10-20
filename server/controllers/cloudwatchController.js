@@ -1,37 +1,33 @@
-const { CloudWatchLogsClient, AssociateKmsKeyCommand } = require("@aws-sdk/client-cloudwatch-logs");
-const { CloudWatchClient } = require("@aws-sdk/client-cloudwatch");
+const { CloudWatchLogsClient, DescribeLogStreamsCommand  } = require("@aws-sdk/client-cloudwatch-logs");
+// const { CloudWatchClient } = require("@aws-sdk/client-cloudwatch");
 
-const run = async () => {
-  try {
-    const data = await CloudWatchClient.send(new ListMetricsCommand(params));
-    console.log("Success. Metrics:", JSON.stringify(data.Metrics));
-    return data;
-  } catch (err) {
-    console.log("Error", err);
-  }
-};
 const cloudwatchController = {};
 
+
+
 cloudwatchController.getLogs = (req, res, next) => {
-  //might need to get some data from req.body to use in params
-  //for now we can hard code the data expected (like the LogGroupName);
-  const params = {
-    Dimensions: [
-      {
-        Name: "LogGroupName" /* required */,
-      },
-    ],
-    MetricName: "IncomingLogEvents",
-    Namespace: "AWS/Logs",
+  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+
+  const input = {
+    logGroupName: "/aws/lambda/HelloMysteryGang"
   };
 
-  //figure which import client to create a new Instance of
-  const client = new CloudWatchLogsClient({region: 'REGION IN ALL CAPS GOES HERE'})
+  const command = new DescribeLogStreamsCommand(input)
 
-  //use promise based or async function to call a method on client instance to get logs
-
-  //example call the run function here(NOTE: run fn def needs to be modified to match syntax)
-  run()
+  //now we can use the api with the syntax client.send(command)
+  client.send(command)
+    .then(data => {
+      res.locals.logs = data;
+      return next();
+    })
+    .catch(err => {
+      console.log('the err is ', err)
+      return next({
+        status: 500,
+        log: 'Express error handler caught middleware error in getLogs',
+        message: {err: 'An error occurred'}
+      })
+    })
 
 }
 
