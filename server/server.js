@@ -7,38 +7,45 @@ const cloudwatchController = require('./controllers/cloudwatchController');
 
 app.use(express.json());
 
-//logs what path and fetch method is used when run
-// app.use((req, res, next) => {
-//   console.log(req.path, req.method)
-//   return next();
+// app.get('/metrics/get', 
+//   cloudwatchController.dummy, 
+//   (req, res) => {
+//     res.status(200).json(res.locals.dummy)
 // })
 
-app.get('/metrics/get', 
-  cloudwatchController.dummy, 
-  (req, res) => {
-    res.status(200).json(res.locals.dummy)
-})
-
-app.post('/metrics/post', 
-  cloudwatchController.dummy, 
-  (req, res, next) => {
-    res.locals.body = { ...req.body }
-    next();
-  },
-  (req, res) => {
-    const returnObj = {
-      dummy: res.locals.dummy,
-      body: res.locals.body
-    }
-  res.status(200).json(returnObj)
-})
-
-// app.post('/metrics', 
-//   cloudwatchController.getLogs,
+// app.post('/metrics/post', 
+//   cloudwatchController.dummy, 
+//   (req, res, next) => {
+//     res.locals.body = { ...req.body }
+//     next();
+//   },
 //   (req, res) => {
-//     res.status(200).json('whatvr res.locals we save data in')
-//   }
-// )
+//     const returnObj = {
+//       dummy: res.locals.dummy,
+//       body: res.locals.body
+//     }
+//   res.status(200).json(returnObj)
+// })
+
+app.get('/test', 
+  (req, res) => {
+    res.status(200).send('test works')
+  }
+)
+
+app.get('/metrics', 
+  cloudwatchController.getLogs,
+  (req, res) => {
+    res.status(200).json(res.locals.logs)
+  }
+)
+
+app.post('/metrics', 
+  cloudwatchController.getLogs,
+  (req, res) => {
+    res.status(200).json('whatvr res.locals we save data in')
+  }
+)
 
 //undefined route handler
 app.use('/', (req, res) => {
