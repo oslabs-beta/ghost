@@ -6,6 +6,9 @@
     "module": "es6",
     "target": "es5",
     "allowJs": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "lib": ["es6", "dom"],
+    "noImplicitThis": true,
+    "strictNullChecks": true
   }
 }
