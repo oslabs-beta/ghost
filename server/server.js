@@ -1,31 +1,10 @@
 const express = require('express')
 const app = express();
-// const path = require('path');
 
-//import routers here if we have them
 const cloudwatchController = require('./controllers/cloudwatchController');
+const lambdaController = require('./controllers/lambdaController')
 
 app.use(express.json());
-
-// app.get('/metrics/get', 
-//   cloudwatchController.dummy, 
-//   (req, res) => {
-//     res.status(200).json(res.locals.dummy)
-// })
-
-// app.post('/metrics/post', 
-//   cloudwatchController.dummy, 
-//   (req, res, next) => {
-//     res.locals.body = { ...req.body }
-//     next();
-//   },
-//   (req, res) => {
-//     const returnObj = {
-//       dummy: res.locals.dummy,
-//       body: res.locals.body
-//     }
-//   res.status(200).json(returnObj)
-// })
 
 app.get('/test', 
   (req, res) => {
@@ -33,17 +12,24 @@ app.get('/test',
   }
 )
 
-app.get('/metrics', 
-  cloudwatchController.getLogs,
+app.get('/functions', 
+  lambdaController.getFunctions,
   (req, res) => {
-    res.status(200).json(res.locals.logs)
+    res.status(200).json(res.locals.functions)
   }
 )
 
-app.post('/metrics', 
-  cloudwatchController.getLogs,
+app.post('/logStreams', 
+  cloudwatchController.getLogStreams,
   (req, res) => {
-    res.status(200).json('whatvr res.locals we save data in')
+    res.status(200).json(res.locals.logStreams)
+  }
+)
+
+app.post('/rawLogs', 
+  cloudwatchController.getRawLogs,
+  (req, res) => {
+    res.status(200).json(res.locals.rawLogs)
   }
 )
 
@@ -54,14 +40,7 @@ app.use('/', (req, res) => {
 
 //global error handler
 app.use((err, req, res, next) => {
-  let defaultErr = {
-    status: 500,
-    log: 'Express error handler caught unknown middleware error',
-    message: {err: 'An error occurred'}
-  }
-  const errObj = Object.assign({}, defaultErr, err);
-  console.log(errObj);
-  return res.status(errObj.status).json(errObj.message);
+  return res.status(500).send(err);
 })
 
 //listen on port
