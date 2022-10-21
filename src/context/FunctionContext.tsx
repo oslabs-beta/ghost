@@ -39,4 +39,6 @@ const FunctionContextProvider = ({ children }: { children: React.ReactNode }) =>
   )
 }
 
+export const useFunctionContext = () =>  React.useContext(FunctionContext);
+
 export default FunctionContextProvider

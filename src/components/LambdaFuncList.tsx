@@ -1,16 +1,16 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import FunctionContext from '../context/FunctionContext';
+import { useFunctionContext } from '../context/FunctionContext';
 
 // pass down lambdaFuncList by declaring it as interface first
 interface Props {
   list: any; // TODO: refactor to correct type, 'any' works for now but probably not best practice
 }
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
-    // when a lambda function is clicked, set the function name in global context
-  // const { functionName, setFunctionName } = React.useContext(FunctionContext);
+  // when a function is clicked, set the function in context
+  const { setFunctionName } = useFunctionContext();
   const handleLambdaFuncClick = (funcName: string) => {
-    console.log('clicked lambda function:', funcName);
+    setFunctionName?.(funcName);
   }
   return (
     <div className='bg-[#ebebeb]'>
