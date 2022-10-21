@@ -4,8 +4,9 @@ import { useFunctionContext } from '../context/FunctionContext';
 
 // pass down lambdaFuncList by declaring it as interface first
 interface Props {
-  list: any; // TODO: refactor to correct type, 'any' works for now but probably not best practice
+  list: Array<object>;
 }
+
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
   // when a function is clicked, set the function in context
   const { setFunctionName } = useFunctionContext();
@@ -14,7 +15,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
   }
   return (
     <div className='bg-[#ebebeb]'>
-      {list.map(function(item: any) {
+      {list.map(function(item: any) { // when i change this to object, it breaks
         return (
           <div className="px-5 py-3 hover:shadow-inner">
             <p className="text-bold">{item.functionName}</p>
