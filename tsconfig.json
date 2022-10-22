@@ -10,5 +10,8 @@
     "lib": ["es6", "dom"],
     "noImplicitThis": true,
     "strictNullChecks": true
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }
