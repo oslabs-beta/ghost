@@ -3,7 +3,7 @@ const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } =
 const cloudwatchController = {};
 
 cloudwatchController.getLogStreams = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient({ region: "us-west-2" });
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName
@@ -29,7 +29,7 @@ cloudwatchController.getLogStreams = (req, res, next) => {
 }
 
 cloudwatchController.getRawLogs = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient({ region: "us-west-2" });
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
