@@ -13,7 +13,7 @@ const FunctionDetails = () => {
         body: JSON.stringify({ functionName: functionName })
       })
       .then((res) => res.json())
-      .then((data) => {
+      .then((data) => { 
         const streamName = (data[0].streamName);
         console.log('streamName:', streamName);
         fetch('http://localhost:3000/rawLogs', {
@@ -34,20 +34,21 @@ const FunctionDetails = () => {
       );
   }, [functionName]);
   
-
   return (
     <div className='p-5'>
       <p className='text-gray-700 text-lg'>Viewing metrics for:</p>
       <p className='text-gray-900 text-4xl'>{functionName}</p>
+      <div className= 'overflow-y-auto h-20'>
       {metrics.map(function(metric: any) {
         return (
-          <div className='text-gray-700'>
+          <div className='text-gray-700 text-xs'>
             <p>{metric.ingestionTime}</p>
             <p>{metric.message}</p>
             <p>{metric.timestamp}</p>
           </div>
         )
       })}
+    </div>
     </div>
   )
 }

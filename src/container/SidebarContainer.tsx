@@ -13,7 +13,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LambdaFuncList from '../components/LambdaFuncList';
 
-const drawerWidth = 250;
+const drawerWidth = 255;
 
 export default function SidebarContainer() {
   // opens the menu drawers on click & changes the color
@@ -55,7 +55,7 @@ export default function SidebarContainer() {
         anchor="left"
       >
         
-        <div className=''>
+        <div className='pt-5 flex justify-around content-center'>
           <UserComponent />
           <RegionComponent />
         </div>
@@ -69,8 +69,9 @@ export default function SidebarContainer() {
             </ListItem>
           ))}
         </List>
+
         <List id='list-select'>
-          {['Your Lambda Functions:'].map((text, index) => (
+          {['Your Lambda Functions'].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton onClick={handleOpenMenu}>
                 <ListItemText
@@ -84,8 +85,24 @@ export default function SidebarContainer() {
             </ListItem>
           ))}
         </List>
-        {/* TODO: fetch array of lambda functions, call map method, and display the stuff */}
+
         {openMenu && <LambdaFuncList list={lambdaFuncList} />}
+
+        <List 
+        sx={{ 
+          fontSize: 34, 
+          fontWeight: 'bold'
+          }}
+        >
+          {['Metrics'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
         <List 
         sx={{ 
           // color: 'text.primary', 
@@ -101,21 +118,7 @@ export default function SidebarContainer() {
             </ListItem>
           ))}
         </List>
-        <List 
-        sx={{ 
-          // color: 'text.primary', 
-          fontSize: 34, 
-          fontWeight: 'bold'
-          }}
-        >
-          {['Metrics'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+
         <Divider />
 
       </Drawer>

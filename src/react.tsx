@@ -4,11 +4,13 @@ import './index.css';
 import MainContainer from './container/mainContainer';
 import SidebarContainer from './container/SidebarContainer';
 import FunctionContextProvider from './context/FunctionContext';
+import TopBarContainer from './container/TopBarContainer';
 
 const App = () => {
   return (
     <div className="flex flex-row">
       <FunctionContextProvider>
+        <TopBarContainer />
         <SidebarContainer />
         <MainContainer />
       </FunctionContextProvider>
