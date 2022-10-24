@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 
 const cloudwatchController = require('./controllers/cloudwatchController');
+const dataController = require('./controllers/dataController');
 const lambdaController = require('./controllers/lambdaController')
 
 app.use(express.json());
@@ -30,6 +31,14 @@ app.post('/rawLogs',
   cloudwatchController.getRawLogs,
   (req, res) => {
     res.status(200).json(res.locals.rawLogs)
+  }
+)
+
+app.post('/basicMetrics',
+  cloudwatchController.getRawLogs,
+  dataController.parseBasic,
+  (req, res) => {
+    res.status(200).json(res.locals.basicData)
   }
 )
 
