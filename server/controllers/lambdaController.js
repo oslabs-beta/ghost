@@ -3,7 +3,7 @@ const { LambdaClient, ListFunctionsCommand } = require("@aws-sdk/client-lambda")
 const lambdaController = {};
 
 lambdaController.getFunctions = (req, res, next) => {
-  const client = new LambdaClient({ region: "us-west-2" });
+  const client = new LambdaClient({ region: "us-west-1" });
 
   const input = {};
 
