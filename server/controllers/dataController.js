@@ -1,9 +1,9 @@
 const dataController = {}
 
 function convertTime(timestamp) {
-  const milliseconds = timestamp * 1000; //convert to milliseconds from unixTimestamp
+  const milliseconds = timestamp //* 1000; //convert to milliseconds from unixTimestamp
   const dateObject = new Date(milliseconds); //declare new data object
-  const humanDataFormat = dateObject.toLocaleString(); //convert to human-readable string
+  const humanDataFormat = dateObject.toLocaleString("en-US"); //convert to human-readable string
   return humanDataFormat
 }
 
@@ -16,10 +16,10 @@ dataController.parseBasic = (req, res, next) => {
   try {
     //res.locals.rawLogs is an array of objects
     let basicData = res.locals.rawLogs.map(logObj => {
+      const basicObj = {};
       if (!logObj.message.startsWith('REPORT')) return undefined;
       const messageStringArr = logObj.message.trim().split('\t');
       messageStringArr[0] = messageStringArr[0].slice(7);
-      const basicObj = {};
       for (let message of messageStringArr) {
         const prop = message.split(':')
 
@@ -32,12 +32,25 @@ dataController.parseBasic = (req, res, next) => {
         basicObj[key] = value;
       }
       const timestamp = convertTime(logObj.timestamp);
+      // console.log(logObj.timestamp)
       basicObj.timestamp = timestamp;
       return basicObj;
     })
 
     // now basicData is an array of objects representing a single log
     basicData = basicData.filter(ele => ele)
+
+    //iterate through rawLogs again, looking for any error messages, and adding them to 
+    //the appropriate logObject
+    for (let errObj of res.locals.rawLogs) {
+      if (errObj.message.includes('ERROR')) {
+        const errorArr = errObj.message.split('\t')
+        const requestId = errorArr[1].trim();
+        for (let logObj of basicData) {
+          if (logObj.requestId === requestId) logObj.error = true;
+        }
+      }
+    }
 
     res.locals.basicData = basicData;
     next();
