@@ -23,6 +23,8 @@ const CreateGraph = () => {
       <h1>Create Graph</h1>
       <Select label='Graph Type'>
         <MenuItem>Line</MenuItem>
+        <MenuItem>Double Line</MenuItem>
+        <MenuItem>Double Line</MenuItem>
         <MenuItem>Bar</MenuItem>
       </Select>
     </div>
