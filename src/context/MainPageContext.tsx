@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // declare data types for states and hooks being passed to context in an interface
 interface FunctionContextProps {
-  functionName: string | undefined,
+  functionName: string,
   streamName: string,
 
   setFunctionName?: (name: string) => void,

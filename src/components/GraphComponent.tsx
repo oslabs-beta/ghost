@@ -4,7 +4,15 @@ import { Bar, Scatter, Pie, Line } from 'react-chartjs-2'
 import { fontSize } from '@mui/system';
 import { BoltRounded } from '@mui/icons-material';
 
+// initialize chartjs
 ChartJS.register(...registerables);
+
+// declare props
+interface GraphComponentProps {
+  timestamps: string[],
+  durations: number[],
+  memory: number[],
+}
 
 const fakeJson = {
   "data": [
@@ -48,22 +56,7 @@ const dates: Array<string> = fakeJson.data.map((item) => item.date);
 const dataset1: Array<number> = fakeJson.data.map((item) => item.nuts);
 const dataset2: Array<number> = fakeJson.data.map((item) => item.butts);
 
-const state = {
-  labels: dates,
-  datasets: [
-    {
-      label: 'amount',
-      backgroundColor: [
-        '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-        ],
-      borderWidth: 0,
-      borderColor: 'black',
-      data: dataset1,
-      fontSize: 20,
-      showLine: true
-    }
-  ]
-}
+
 
 const multiState = {
   labels: dates,
@@ -83,20 +76,7 @@ const multiState = {
   ]
 }
 
-const lineState = {
-  labels: dates,
-  datasets: [
-    {
-      label: 'Data',
-      data: dataset1,
-      backgroundColor: '#9cb59d',
-      borderColor: '#9cb59d',
-      fill: false,
-      showLine: true,
-      borderWidth: 1
-    }
-  ]
-}
+
 
 // const scatterState = {
 //   datasets:[
@@ -113,17 +93,99 @@ const lineState = {
 // }
 
 
-const GraphComponent = () => {
+const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) => {
+  // console.log('timestamps:', timestamps);
+  // console.log('durations:', durations);
+  // console.log('memory:', memory);
+
+  const invocationObj: any = {};
+  for (let i = 0; i < timestamps.length; i++) {
+    if (invocationObj[timestamps[i]]) {
+      invocationObj[timestamps[i]] += 1;
+    }
+    else {
+      invocationObj[timestamps[i]] = 1;
+    }
+  }
+
+  
+
+  const invocations = Object.values(invocationObj);
+  const singleTime = Object.keys(invocationObj);
+
+
+  console.log('invocationObj:', invocationObj);
+
+  const durationBarState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'amount',
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderWidth: 0,
+        borderColor: 'black',
+        data: durations,
+        fontSize: 20,
+        showLine: true,
+      }
+    ]
+  }
+
+  const durationState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'Data',
+        data: durations,
+        backgroundColor: '#9cb59d',
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const memoryState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'Memory',
+        data: memory,
+        backgroundColor: '#9cb59d',
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const invocationState = {
+    labels: singleTime,
+    datasets: [
+      {
+        label: 'Invocations',
+        data: invocations,
+        backgroundColor: '#9cb59d',
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
 
   return(
     <div className="flex flex-col p-4">
       {/* <button>Bar Graph</button> <button>Line Graph</button> <button>Pie Chart</button> */}
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
       <Bar
-        data = { state }
+        data = { durationBarState }
         // width={"50%"}
         options = {{
-          // maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
@@ -131,8 +193,8 @@ const GraphComponent = () => {
                 weight: 'bold',
                 size: 30,
               },
-              text: 'Bar Graph Title',
-              color: '#BEBEBE',
+              text: 'Duration',
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
@@ -143,20 +205,43 @@ const GraphComponent = () => {
               display: false,
               position: 'right'
             }
-          }
+          },
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'seconds'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'time'
+              }
+            }
+          },
         }}
       />
       </p>
       <br></br>
       <p className=" bg-white rounded-lg shadow-md m-2 p-4">
       <Line
-          data={ lineState }
-          
+          data={ durationState }
           options={{
             // indexAxis: 'y',
             scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: 'seconds'
+                }
+              },
               x: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'time',
+                }
               }
             },
             plugins: {
@@ -166,7 +251,7 @@ const GraphComponent = () => {
                 weight: 'bold',
                 size: 30,
               },
-              text: 'Line Graph Title',
+              text: 'Durations',
               color: '#BEBEBE',
               align: 'start',
               padding: {
@@ -178,21 +263,126 @@ const GraphComponent = () => {
               display: false,
               position: 'bottom'
             }
-          }
+          },
           }}
         />
         </p>
       <br></br>
+
+      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <Line
+          data={ memoryState }
+          options={{
+            // indexAxis: 'y',
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: 'mb'
+                }
+              },
+              x: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'time',
+                }
+              }
+            },
+            plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 30,
+              },
+              text: 'Memory',
+              color: '#BEBEBE',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend:{
+              display: false,
+              position: 'bottom'
+            }
+          },
+          }}
+        />
+        </p>
+      <br></br>
+
+      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <Line
+          data={ invocationState }
+          options={{
+            // indexAxis: 'y',
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: 'count'
+                }
+              },
+              x: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'time',
+                }
+              }
+            },
+            plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 30,
+              },
+              text: 'Invocations',
+              color: '#BEBEBE',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend:{
+              display: false,
+              position: 'bottom'
+            }
+          },
+          }}
+        />
+        </p>
+      <br></br>
+
+
       <p className=" bg-white rounded-lg shadow-md m-2 p-4">
       <Line
         data = { multiState }
         options = {{
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'seconds'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'time'
+              }
+            }
+          },
           responsive: true,
           plugins: {
             legend: {
               position: 'top',
             },
-            
             title: {
               display: true,
               font: {
@@ -212,9 +402,9 @@ const GraphComponent = () => {
       />
       </p>
       <br></br>
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      {/* <p className=" bg-white rounded-lg shadow-md m-2 p-4">
       <Pie
-        data = { state }
+        data = { durationBarState }
         options = {{
           plugins: {
             title: {
@@ -239,7 +429,7 @@ const GraphComponent = () => {
           }
         }}
       />
-      </p>
+      </p> */}
       {/* 
       <br></br>
       <p className=" bg-white rounded-lg shadow-md m-2 p-4">
