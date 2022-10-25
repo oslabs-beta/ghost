@@ -1,10 +1,6 @@
-const dataController = {}
+const { convertTime } = require("./timeFunctions");
 
-function convertTime(timestamp) {
-  const dateObject = new Date(timestamp); //declare new data object
-  const humanDataFormat = dateObject.toLocaleString("en-US"); //convert to human-readable string
-  return humanDataFormat
-}
+const dataController = {}
 
 // what message looks like:
 // "message": "REPORT RequestId: 5f57b973-45ed-4a5b-bd6a-1f97e3c1381c\tDuration: 

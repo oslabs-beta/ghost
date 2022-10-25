@@ -43,17 +43,26 @@ app.post('/basicMetrics',
   }
 )
 
-app.get('/moreMetrics',
+app.post('/moreMetrics',
   metricsController.getMetrics,
   (req, res) => {
-    res.status(200).json(res.locals.metricsData)
+    res.status(200).json(res.locals.metricStats)
   }
 )
 
+
+//for developer use
 app.get('/listMetrics',
   metricsController.listMetrics,
   (req, res) => {
     res.status(200).json(res.locals.metricsList)
+  }
+)
+
+app.get('/metricStreams',
+  metricsController.getMetricStreams,
+  (req, res) => {
+    res.status(200).json(res.locals.metricStreams)
   }
 )
 
