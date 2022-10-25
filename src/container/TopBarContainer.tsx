@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import { useDarkMode } from '../context/DarkModeHooks';
+import { useGraphContext } from '../context/GraphContext';
 
 interface TopBarProps {
   changeMuiTheme: () => void;
@@ -19,18 +20,15 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
     changeMuiTheme()
   };
 
+  const { createGraphIsShown, setCreateGraphIsShown } = useGraphContext()
+  const handleCreateGraph = () => {
+    setCreateGraphIsShown?.(!createGraphIsShown)
+  }
 
   return (
-    <div className='flex flex-row justify-around absolute top-5 right-0'> {/* align the two divz */}
-    <div> {/* need to style the div so that it looked like the button from before... */}
-      <DarkModeSwitch
-        style={{ marginBottom: '2rem' }} // can take this out or change
-        checked={isDark}
-        onChange={toggleDarkMode}
-        size={25}
-      />
-    </div>
-    <div>
+    <div className='flex flex-row justify-around absolute top-5 right-0 w-fit'> {/* align the two divz */}
+    
+    <div className='mr-1'>
       <Button 
         sx = {{
         height: '30px',
@@ -39,8 +37,9 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         backgroundColor: "#EDC09E",
         borderColor: "#EDC09E",
         mr: 0.4,
-        mt:0.45
+        mt: 0.45
         }}
+        onClick={handleCreateGraph}
       >
         <AddchartIcon 
         sx = {{
@@ -48,8 +47,29 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         }}/>
         Create Graph
       </Button>
-      </div>
-      <div>
+    </div>
+    
+    <div className='mr-1'>
+      <Button
+        sx = {{
+          height: '30px',
+          width: '10px',
+          backgroundColor: '#9cb59d',
+          mt: 0.45
+        }}> {/* need to style the div so that it looked like the button from before... */}
+        <DarkModeSwitch
+          style={{ 
+            marginBottom: '1rem',
+            marginTop: '1rem' }} // can take this out or change
+          checked={isDark}
+          onChange={toggleDarkMode}
+          size={25}
+        />
+        </Button>
+    </div>
+
+    
+      <div className='mr-1'>
       <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12'/>
       </div>
     </div>

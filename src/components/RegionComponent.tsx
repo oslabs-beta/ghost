@@ -31,9 +31,9 @@ export default function RegionComponent() {
             </Button>
           </div>
           <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>pee</MenuItem>
-            <MenuItem onClick={popupState.close}>poo</MenuItem>
-            <MenuItem onClick={popupState.close}>peepeepoo</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-1</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-2</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-3</MenuItem>
           </Menu>
 
   </React.Fragment>

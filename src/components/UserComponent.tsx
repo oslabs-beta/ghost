@@ -32,9 +32,9 @@ export default function UserComponent() {
             </Button>
           </div>
           <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>Pee</MenuItem>
-            <MenuItem onClick={popupState.close}>Poo</MenuItem>
-            <MenuItem onClick={popupState.close}>Peepeepoopoo</MenuItem>
+            <MenuItem onClick={popupState.close}>admin</MenuItem>
+            <MenuItem onClick={popupState.close}>user1</MenuItem>
+            <MenuItem onClick={popupState.close}>user2</MenuItem>
           </Menu>
 
   </React.Fragment>

@@ -4,6 +4,7 @@ import './index.css';
 import MainContainer from './container/mainContainer';
 import SidebarContainer from './container/SidebarContainer';
 import FunctionContextProvider from './context/FunctionContext';
+import GraphContextProvider from './context/GraphContext';
 import TopBarContainer from './container/TopBarContainer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -55,7 +56,7 @@ const App = () => {
     [prefersDarkMode],
   );
 
-  const [isDarkMui, setIsDarkMui] = React.useState(true);
+  const [isDarkMui, setIsDarkMui] = React.useState(false);
   const changeMuiTheme = () => {
     setIsDarkMui(!isDarkMui);
   };
@@ -65,9 +66,11 @@ const App = () => {
     <div className="flex flex-row">
       <ThemeProvider theme={isDarkMui ? createTheme(dark) : createTheme(light)}>
         <FunctionContextProvider>
-          <TopBarContainer changeMuiTheme={changeMuiTheme} />
-          <SidebarContainer />
-          <MainContainer />
+          <GraphContextProvider>
+            <TopBarContainer changeMuiTheme={changeMuiTheme} />
+            <SidebarContainer />
+            <MainContainer />
+          </GraphContextProvider>
         </FunctionContextProvider>
       </ThemeProvider>
     </div>
