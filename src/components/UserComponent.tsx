@@ -15,12 +15,19 @@ export default function UserComponent() {
                 variant="contained" {...bindTrigger(popupState)}
                 sx = {{
                 fontSize: 10,
-                color: "#FFFFFF",
                 backgroundColor: "#9cb59d",
                 borderColor: "#9cb59d",
+                color: "#FFFFFF",
+                '&:hover': {
+                  borderColor: '#9cb59d',
+                  backgroundColor: '#F5F5F5',
+                  color: '#9cb59d'
+                }
               }}
             >
-              <AccessibilityIcon className="px=0.5"/>
+              <AccessibilityIcon sx = {{
+                pr:0.5
+              }}/>
               Username
             </Button>
           </div>

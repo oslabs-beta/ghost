@@ -1,29 +1,36 @@
 import * as React from 'react'
 // import * as Logo from '../images/ghost.PNG'
 import Button from '@mui/material/Button';
-import NightsStayIcon from '@mui/icons-material/NightsStay';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import AddchartIcon from '@mui/icons-material/Addchart';
+import { useDarkMode } from '../context/DarkModeHooks';
 
-const TopBarContainer = () => {
+interface TopBarProps {
+  changeMuiTheme: () => void;
+}
+
+
+const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
+
+  const [isDark, setIsDark] = useDarkMode()
+  const toggleDarkMode = (checked: boolean) => {
+    // setMode(checked ? "dark" : "light");
+    setIsDark(checked)
+    changeMuiTheme()
+  };
+
+
   return (
-    <div className='flex justify-around absolute top-5 right-0'>
-      <Button 
-        sx = {{
-        maxHeight: '30px',
-        maxWidth: '30px',
-        minHeight: '30px',
-        minWidth: '30px',
-        color: "#9cb59d",
-        backgroundColor: "white",
-        borderColor: "#white",
-        m: 0.4
-        // borderRadius: '50%'
-        }}
-      > 
-        <NightsStayIcon /> 
-        {/* dark mode */}
-      </Button>
-
+    <div className='flex flex-row justify-around absolute top-5 right-0'> {/* align the two divz */}
+    <div> {/* need to style the div so that it looked like the button from before... */}
+      <DarkModeSwitch
+        style={{ marginBottom: '2rem' }} // can take this out or change
+        checked={isDark}
+        onChange={toggleDarkMode}
+        size={25}
+      />
+    </div>
+    <div>
       <Button 
         sx = {{
         height: '30px',
@@ -31,13 +38,19 @@ const TopBarContainer = () => {
         color: "#FFFFFF",
         backgroundColor: "#EDC09E",
         borderColor: "#EDC09E",
-        m: 0.4
+        m: 0.4,
         }}
       >
-        <QueryStatsIcon />
+        <AddchartIcon 
+        sx = {{
+          mr: 1
+        }}/>
         Create Graph
       </Button>
+      </div>
+      <div>
       <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12'/>
+      </div>
     </div>
   )
 }
