@@ -38,7 +38,8 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         color: "#FFFFFF",
         backgroundColor: "#EDC09E",
         borderColor: "#EDC09E",
-        m: 0.4,
+        mr: 0.4,
+        mt:0.45
         }}
       >
         <AddchartIcon 

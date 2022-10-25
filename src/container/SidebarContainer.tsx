@@ -21,7 +21,7 @@ export default function SidebarContainer() {
   const [openMenu, setOpenMenu] = React.useState(false);
   const handleOpenMenu = () => {
     setOpenMenu(!openMenu);
-    (!openMenu) ? document.querySelector('#list-select')?.classList.add('bg-[#B2CAB3]') : document.querySelector('#list-select')?.classList.remove('bg-[#B2CAB3]');
+    (!openMenu) ? document.querySelector('#list-select')?.classList.add('bg-[#B2CAB3]', 'dark:bg-[#7f9f80]') : document.querySelector('#list-select')?.classList.remove('dark:bg-[#7f9f80]', 'bg-[#B2CAB3]');
     }
   
   // home sends you to the home page
@@ -71,7 +71,7 @@ export default function SidebarContainer() {
         <List>
           {['Home'].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={handleHomeClick}>
                 <ListItemText primary={text} />
               </ListItemButton>
             </ListItem>

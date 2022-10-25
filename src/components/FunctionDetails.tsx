@@ -2,6 +2,16 @@ import * as React from 'react';
 import { useFunctionContext } from '../context/FunctionContext';
 import GraphComponent from './GraphComponent';
 
+/* 
+List of Metrics (each obj is 1 minute):
+
+Errors
+ConcurrentExecutions
+Invocations
+Duration
+Throttles
+UrlRequestCount */
+
 const FunctionDetails = () => {
   const [metrics, setMetrics] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
@@ -35,9 +45,8 @@ const FunctionDetails = () => {
       }
       );
   }, [functionName]);
-
   // take timestamps and put into array
-  const timestamps: Array<string> = metrics.map((item: any) => item.timestamp.slice(-10));
+  const timestamps: Array<string> = metrics.map((item: any) => item.timestamp.slice(-11));
   // take duration and put into array
   const durations: Array<number> = metrics.map((item: any) => parseInt(item.duration.replace(/\D/g,'')));
   // take memory and put into array

@@ -21,7 +21,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
             <p className="text-bold">{item.functionName}</p>
             <p className="text-xs text-gray-500 dark:text-gray-200 break-words">{item.functionARN}</p>
             <div className="flex flex-row justify-center mt-2">
-            <Button
+            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="outlined"
               disableElevation
               sx={{

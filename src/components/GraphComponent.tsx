@@ -48,15 +48,21 @@ const fakeJson = {
   ]
 }
 
-// nuts graph
-// need to take all the dates and put them in one array
-// take nuts values and put them in another array
 
 const dates: Array<string> = fakeJson.data.map((item) => item.date);
 const dataset1: Array<number> = fakeJson.data.map((item) => item.nuts);
 const dataset2: Array<number> = fakeJson.data.map((item) => item.butts);
 
 
+/* 
+List of Metrics (each obj is 1 minute):
+
+Errors
+ConcurrentExecutions
+Invocations
+Duration
+Throttles
+UrlRequestCount */
 
 const multiState = {
   labels: dates,
@@ -75,7 +81,6 @@ const multiState = {
     }
   ]
 }
-
 
 
 // const scatterState = {
@@ -181,7 +186,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
   return(
     <div className="flex flex-col p-4">
       {/* <button>Bar Graph</button> <button>Line Graph</button> <button>Pie Chart</button> */}
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white ">
       <Bar
         data = { durationBarState }
         // width={"50%"}
@@ -208,15 +213,23 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
           },
           scales: {
             y: {
+              ticks: {
+                color: '#bfbfbf'
+              },
               title: {
                 display: true,
-                text: 'seconds'
+                text: 'seconds',
+                color: '#bfbfbf'
               }
             },
             x: {
+              ticks: {
+                color: '#bfbfbf'
+              },
               title: {
                 display: true,
-                text: 'time'
+                text: 'time',
+                color: '#bfbfbf'
               }
             }
           },
@@ -224,26 +237,10 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
       />
       </p>
       <br></br>
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
       <Line
           data={ durationState }
           options={{
-            // indexAxis: 'y',
-            scales: {
-              y: {
-                title: {
-                  display: true,
-                  text: 'seconds'
-                }
-              },
-              x: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'time',
-                }
-              }
-            },
             plugins: {
             title: {
               display: true,
@@ -252,7 +249,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
                 size: 30,
               },
               text: 'Durations',
-              color: '#BEBEBE',
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
@@ -264,31 +261,38 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               position: 'bottom'
             }
           },
+          scales: {
+            y: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              title: {
+                display: true,
+                text: 'seconds',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
           }}
         />
         </p>
       <br></br>
 
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
       <Line
           data={ memoryState }
           options={{
-            // indexAxis: 'y',
-            scales: {
-              y: {
-                title: {
-                  display: true,
-                  text: 'mb'
-                }
-              },
-              x: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'time',
-                }
-              }
-            },
             plugins: {
             title: {
               display: true,
@@ -297,7 +301,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
                 size: 30,
               },
               text: 'Memory',
-              color: '#BEBEBE',
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
@@ -309,31 +313,38 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               position: 'bottom'
             }
           },
+          scales: {
+            y: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              title: {
+                display: true,
+                text: 'mb',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
           }}
         />
         </p>
       <br></br>
 
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
       <Line
           data={ invocationState }
           options={{
-            // indexAxis: 'y',
-            scales: {
-              y: {
-                title: {
-                  display: true,
-                  text: 'count'
-                }
-              },
-              x: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'time',
-                }
-              }
-            },
             plugins: {
             title: {
               display: true,
@@ -342,7 +353,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
                 size: 30,
               },
               text: 'Invocations',
-              color: '#BEBEBE',
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
@@ -354,30 +365,39 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               position: 'bottom'
             }
           },
+          scales: {
+            y: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              title: {
+                display: true,
+                text: 'count',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#bfbfbf'
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
           }}
         />
         </p>
       <br></br>
 
 
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
+      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
       <Line
         data = { multiState }
         options = {{
-          scales: {
-            y: {
-              title: {
-                display: true,
-                text: 'seconds'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'time'
-              }
-            }
-          },
           responsive: true,
           plugins: {
             legend: {
@@ -390,14 +410,30 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
                 size: 30,
               },
               text: 'Double Line Chart T',
-              color: '#BEBEBE',
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
                 bottom: 20
               }
             }
-          }
+          },
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'seconds',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
         }}
       />
       </p>
@@ -459,6 +495,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
         }}
       />
       </p>*/}
+      
     </div>
   );
 };
