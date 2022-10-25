@@ -5,7 +5,7 @@ import MainContainer from './container/mainContainer';
 import SidebarContainer from './container/SidebarContainer';
 import FunctionContextProvider from './context/FunctionContext';
 import TopBarContainer from './container/TopBarContainer';
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const light: any = {
   palette: {
@@ -18,7 +18,6 @@ const dark: any = {
     mode: "dark",
   },
 };
-
 
 const App = () => {
   const [isDarkMui, setIsDarkMui] = React.useState(false);

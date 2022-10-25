@@ -27,7 +27,7 @@ const FunctionDetails = () => {
             setMetrics(data);
           })
           .catch((err) => {
-            console.log('Error fetching raw logs:', err);
+            console.log('Error fetching metrics:', err);
           });
       })
       .catch((err) => {

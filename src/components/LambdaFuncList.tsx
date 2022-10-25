@@ -14,12 +14,12 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
     setFunctionName?.(funcName);
   }
   return (
-    <div className='bg-[#ebebeb]'>
+    <div className='bg-[#ebebeb] dark:bg-[#313131]'>
       {list.map(function(item: any) { // when i change this to object, it breaks
         return (
           <div className="px-5 py-3 hover:shadow-inner">
             <p className="text-bold">{item.functionName}</p>
-            <p className="text-xs text-gray-500">{item.functionARN}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-200 break-words">{item.functionARN}</p>
             <div className="flex flex-row justify-center mt-2">
             <Button
               variant="outlined"
