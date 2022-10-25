@@ -12,6 +12,7 @@ import RegionComponent from '../components/RegionComponent';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LambdaFuncList from '../components/LambdaFuncList';
+import { useFunctionContext } from '../context/FunctionContext';
 
 const drawerWidth = 255;
 
@@ -22,6 +23,12 @@ export default function SidebarContainer() {
     setOpenMenu(!openMenu);
     (!openMenu) ? document.querySelector('#list-select')?.classList.add('bg-[#B2CAB3]') : document.querySelector('#list-select')?.classList.remove('bg-[#B2CAB3]');
     }
+  
+  // home sends you to the home page
+  const { setFunctionName } = useFunctionContext();
+  const handleHomeClick = () => {
+    setFunctionName?.('');
+  }
 
   // fetch list of lambda functions
   // TODO: store in global context
@@ -39,6 +46,7 @@ export default function SidebarContainer() {
   }, []);
 
   return (
+    <div className='bg-[#F5F5F5] text-black dark:bg-[#242424] dark:text-white'>
     <Box sx={{ display: 'flex' }}>
       <Drawer
         sx={{
@@ -48,14 +56,14 @@ export default function SidebarContainer() {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            background: '#F5F5F5',
+            backgroundColor: 'transparent',
           },
         }}
         variant="permanent"
         anchor="left"
       >
         
-        <div className='pt-5 flex justify-around content-center'>
+        <div className='pt-5 flex justify-around '>
           <UserComponent />
           <RegionComponent />
         </div>
@@ -69,7 +77,7 @@ export default function SidebarContainer() {
             </ListItem>
           ))}
         </List>
-
+        
         <List id='list-select'>
           {['Your Lambda Functions'].map((text, index) => (
             <ListItem key={text} disablePadding>
@@ -123,5 +131,6 @@ export default function SidebarContainer() {
 
       </Drawer>
     </Box>
+    </div>
   );
 }

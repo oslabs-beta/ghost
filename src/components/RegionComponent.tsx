@@ -15,12 +15,18 @@ export default function RegionComponent() {
               variant="contained" {...bindTrigger(popupState)}
               sx = {{     
                 fontSize: 10,
-                color: "#FFFFFF",
-                backgroundColor: "#B2CAB3",
+                backgroundColor: "#9cb59d",
                 borderColor: "#9cb59d",
-              }}
+                color: "#FFFFFF",
+                '&:hover': {
+                  borderColor: '#9cb59d',
+                  backgroundColor: '#F5F5F5',
+                  color: '#9cb59d'
+              }}}
             >
-              <PublicIcon className="px=0.5"/>
+              <PublicIcon sx = {{
+                pr: 0.5
+              }}/>
               US-West-2
             </Button>
           </div>

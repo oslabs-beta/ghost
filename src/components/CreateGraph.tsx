@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { useFunctionContext } from '../context/FunctionContext'
+import { useGraphContext } from '../context/GraphContext'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
 
 /*
   1. should read the selected function from context
@@ -16,14 +18,27 @@ import Button from '@mui/material/Button'
 
 const CreateGraph = () => {
   const { functionName } = useFunctionContext();
+  const { graphName } = useGraphContext();
+  const { graphType } = useGraphContext();
+  const { dataset1 } = useGraphContext();
+  const { dataset2 } = useGraphContext();
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const body = {
+      name: e.target[0].value,
+      type: e.target[1].value,
+
+    }
+  }
 
   return (
-
     <div>
-      <h1>Create Graph</h1>
+      <h1>Create Graph for { functionName }</h1>
+      <TextField id="outlined-basic" label="Graph Name" defaultValue="Runtime Duration" variant="outlined" />
+
       <Select label='Graph Type'>
         <MenuItem>Line</MenuItem>
-        <MenuItem>Double Line</MenuItem>
         <MenuItem>Double Line</MenuItem>
         <MenuItem>Bar</MenuItem>
       </Select>
