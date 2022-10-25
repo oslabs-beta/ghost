@@ -4,7 +4,6 @@ import * as React from 'react';
 interface FunctionContextProps {
   functionName: string | undefined,
   streamName: string,
-
   setFunctionName?: (name: string) => void,
   setStreamName?: (name: string) => void,
 
@@ -36,7 +35,6 @@ const FunctionContextProvider = ({ children }: { children: React.ReactNode }) =>
         streamName,
         setFunctionName,
         setStreamName,
-
       }}
     >
       {children}

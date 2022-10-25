@@ -27,7 +27,7 @@ export default function SidebarContainer() {
   // home sends you to the home page
   const { setFunctionName } = useFunctionContext();
   const handleHomeClick = () => {
-    setFunctionName?.(undefined);
+    setFunctionName?.('');
   }
 
   // fetch list of lambda functions

@@ -6,16 +6,17 @@ import AddchartIcon from '@mui/icons-material/Addchart';
 import { useDarkMode } from '../context/DarkModeHooks';
 
 interface TopBarProps {
-  setMode: (mode: string) => void;
+  changeMuiTheme: () => void;
 }
 
 
-const TopBarContainer = ({ setMode }: TopBarProps) => {
+const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
 
   const [isDark, setIsDark] = useDarkMode()
   const toggleDarkMode = (checked: boolean) => {
-    setMode(checked ? "dark" : "light");
+    // setMode(checked ? "dark" : "light");
     setIsDark(checked)
+    changeMuiTheme()
   };
 
 
