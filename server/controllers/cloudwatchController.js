@@ -3,7 +3,7 @@ const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } =
 const cloudwatchController = {};
 
 cloudwatchController.getLogStreams = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName
