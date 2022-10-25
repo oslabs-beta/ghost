@@ -3,7 +3,8 @@ const app = express();
 
 const cloudwatchController = require('./controllers/cloudwatchController');
 const dataController = require('./controllers/dataController');
-const lambdaController = require('./controllers/lambdaController')
+const lambdaController = require('./controllers/lambdaController');
+const metricsController = require('./controllers/metricsController');
 
 app.use(express.json());
 
@@ -42,6 +43,29 @@ app.post('/basicMetrics',
   }
 )
 
+app.post('/moreMetrics',
+  metricsController.getMetrics,
+  (req, res) => {
+    res.status(200).json(res.locals.metricStats)
+  }
+)
+
+
+//for developer use
+app.get('/listMetrics',
+  metricsController.listMetrics,
+  (req, res) => {
+    res.status(200).json(res.locals.metricsList)
+  }
+)
+
+app.get('/metricStreams',
+  metricsController.getMetricStreams,
+  (req, res) => {
+    res.status(200).json(res.locals.metricStreams)
+  }
+)
+
 //undefined route handler
 app.use('/', (req, res) => {
   res.status(404).send('Invalid route endpoint');
@@ -49,7 +73,7 @@ app.use('/', (req, res) => {
 
 //global error handler
 app.use((err, req, res, next) => {
-  return res.status(500).send(err);
+  return res.status(500).send('global error handler invoked');
 })
 
 //listen on port
