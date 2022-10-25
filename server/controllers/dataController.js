@@ -1,8 +1,7 @@
 const dataController = {}
 
 function convertTime(timestamp) {
-  const milliseconds = timestamp //* 1000; //convert to milliseconds from unixTimestamp
-  const dateObject = new Date(milliseconds); //declare new data object
+  const dateObject = new Date(timestamp); //declare new data object
   const humanDataFormat = dateObject.toLocaleString("en-US"); //convert to human-readable string
   return humanDataFormat
 }
