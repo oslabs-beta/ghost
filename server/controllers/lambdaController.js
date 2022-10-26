@@ -1,4 +1,4 @@
-const { LambdaClient, ListFunctionsCommand } = require("@aws-sdk/client-lambda");
+const { LambdaClient, ListFunctionsCommand, GetFunctionConfigurationCommand  } = require("@aws-sdk/client-lambda");
 
 const lambdaController = {};
 
@@ -25,6 +25,30 @@ lambdaController.getFunctions = (req, res, next) => {
       return next('error in lambda.getFunctions')
     })
 
+}
+
+lambdaController.functionConfig = (req, res, next) => {
+  const client = new LambdaClient({ region: "us-west-1" });
+
+  const input = {
+    "FunctionName": req.body.functionName
+  };
+
+  const command = new GetFunctionConfigurationCommand(input);
+
+  client.send(command)
+    .then(data => {
+      res.locals.functionConfig = {
+        type: data.Architectures[0], 
+        memorySize: data.MemorySize,
+        runtime: data.Runtime
+      };
+      next();
+    })
+    .catch(err => {
+      console.log('error in functionConfig: ', err)
+      return next('error in lambda.functionConfig')
+    })
 }
 
 
