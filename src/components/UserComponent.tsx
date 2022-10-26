@@ -11,7 +11,7 @@ export default function UserComponent() {
       {(popupState) => (
         <React.Fragment>
           <div className="flex justify-between w-5.5/12">
-            <Button 
+            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
                 variant="contained" {...bindTrigger(popupState)}
                 sx = {{
                 fontSize: 10,
@@ -32,9 +32,9 @@ export default function UserComponent() {
             </Button>
           </div>
           <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>Pee</MenuItem>
-            <MenuItem onClick={popupState.close}>Poo</MenuItem>
-            <MenuItem onClick={popupState.close}>Peepeepoopoo</MenuItem>
+            <MenuItem onClick={popupState.close}>admin</MenuItem>
+            <MenuItem onClick={popupState.close}>user1</MenuItem>
+            <MenuItem onClick={popupState.close}>user2</MenuItem>
           </Menu>
 
   </React.Fragment>
