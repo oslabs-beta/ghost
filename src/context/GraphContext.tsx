@@ -2,28 +2,31 @@ import * as React from 'react';
 
 // declare data types for states and hooks being passed to context in an interface
 interface GraphContextProps {
+  createGraphIsShown: boolean,
   graphName: string,
   graphType: string,
   dataset1: string,
   dataset2: string,
-  dates: string[]
+  // dates: string[],
 
   setGraphName?: (name: string) => void,
   setGraphType?: (type: string) => void,
   setDataset1?: (data: string) => void,
   setDataset2?: (data: string) => void,
-  setDates?: (dates: string[]) => void,
+  // setDates?: (dates: string[]) => void,
+  setCreateGraphIsShown?: (value: boolean) => void,
 
   children?: React.ReactNode
 }
 
 // declare default values for states being passed to context
 const defaultState = {
+  createGraphIsShown: false,
   graphName: '',
   graphType: '',
   dataset1: '',
   dataset2: '',
-  dates: [],
+  // dates: [],
 }
 
 // use createContext to create a context object
@@ -37,7 +40,8 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [graphType, setGraphType] = React.useState('');
   const [dataset1, setDataset1] = React.useState('');
   const [dataset2, setDataset2] = React.useState('');
-  const [dates, setDates] = React.useState('');
+  // const [dates, setDates] = React.useState('');
+  const [createGraphIsShown, setCreateGraphIsShown] = React.useState(false);
 
   return (
     <GraphContext.Provider
@@ -46,12 +50,14 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
         graphType,
         dataset1,
         dataset2,
-        dates,
+        // dates,
+        createGraphIsShown,
         setGraphName,
         setGraphType,
         setDataset1,
         setDataset2,
-        setDates
+        // setDates,
+        setCreateGraphIsShown
       }}
     >
       {children}

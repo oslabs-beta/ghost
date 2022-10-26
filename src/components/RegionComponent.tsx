@@ -11,7 +11,7 @@ export default function RegionComponent() {
       {(popupState) => (
         <React.Fragment>
           <div className="flex justify-between w-5.5/12">
-            <Button 
+            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="contained" {...bindTrigger(popupState)}
               sx = {{     
                 fontSize: 10,
@@ -27,13 +27,13 @@ export default function RegionComponent() {
               <PublicIcon sx = {{
                 pr: 0.5
               }}/>
-              US-West-2
+              US-West-1
             </Button>
           </div>
           <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>pee</MenuItem>
-            <MenuItem onClick={popupState.close}>poo</MenuItem>
-            <MenuItem onClick={popupState.close}>peepeepoo</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-1</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-2</MenuItem>
+            <MenuItem onClick={popupState.close}>US-West-3</MenuItem>
           </Menu>
 
   </React.Fragment>
