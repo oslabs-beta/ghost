@@ -17,6 +17,14 @@ import TextField from '@mui/material/TextField'
   5. date/time picker to pick dates and times - end time must be +5 min from start time
   6. dropdown Y axes: Average, Sum, Minimum, Maximum - can we make this dynamic based on the metric selected? maybe post-MVP?
   7. on submit, save custom graphs to database? - post-MVP?
+
+  save to an object that will be sent to the backend: function name, metric, start time, end time
+  save the above + the graph type and axes in an object to the state
+    if object.graph === line, render line graph
+    if object.graph === bar, render bar graph
+    if object.graph === double line, render double line graph
+  back end will return an array of objects, each object is 1 minute
+
 */
 
 const CreateGraph = () => {
