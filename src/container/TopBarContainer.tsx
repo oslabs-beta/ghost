@@ -34,10 +34,15 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         height: '30px',
         fontSize: 10,
         color: "#FFFFFF",
-        backgroundColor: "#EDC09E",
-        borderColor: "#EDC09E",
+        backgroundColor: "#e8ad80",
+        borderColor: "#e09d69",
         mr: 0.4,
-        mt: 0.45
+        mt: 0.45,
+        '&:hover': {
+          borderColor: '#e09d69',
+          backgroundColor: '#e09d69',
+          color: "#FFFFFF",
+        }
         }}
         onClick={handleCreateGraph}
       >
@@ -50,14 +55,15 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
     </div>
     
     <div className='mr-1'>
-      <Button
+      <Button 
         sx = {{
-          height: '30px',
-          // minwidth: '10px',
-          // maxwidth: '10px',
+          maxWidth: "30px",
+          minWidth: "30px",
+          maxHeight: "30px",
+          minHeight: "30px",
           backgroundColor: '#BFBFBF',
           mt: 0.45
-        }}> {/* need to style the div so that it looked like the button from before... */}
+        }}> 
         <DarkModeSwitch
           style={{ 
             marginBottom: '1rem',
@@ -71,7 +77,7 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
 
     
       <div className='mr-1'>
-      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12'/>
+      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-30'/>
       </div>
     </div>
   )

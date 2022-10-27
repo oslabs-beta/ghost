@@ -25,13 +25,14 @@ export default function SidebarContainer() {
     }
   
   // home sends you to the home page
-  const { setFunctionName } = useFunctionContext();
+  const { isHomeEnabled, setIsHomeEnabled, isPricingEnabled, setIsPricingEnabled, isMetricsEnabled, setIsMetricsEnabled} = useFunctionContext();
   const handleHomeClick = () => {
-    setFunctionName?.('');
+    setIsHomeEnabled?.(true);
+    setIsMetricsEnabled?.(false);
+    setIsPricingEnabled?.(false);
   }
 
   // fetch list of lambda functions
-  // TODO: store in global context
   const [lambdaFuncList, setLambdaFuncList] = React.useState([]);
   React.useEffect(() => {
     fetch('http://localhost:3000/functions')
@@ -96,39 +97,7 @@ export default function SidebarContainer() {
 
         {openMenu && <LambdaFuncList list={lambdaFuncList} />}
 
-        <List 
-        sx={{ 
-          fontSize: 34, 
-          fontWeight: 'bold'
-          }}
-        >
-          {['Metrics'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <List 
-        sx={{ 
-          // color: 'text.primary', 
-          fontSize: 40, 
-          fontWeight: 'bold'
-          }}
-        >
-          {['Pricing'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
         <Divider />
-
       </Drawer>
     </Box>
     </div>

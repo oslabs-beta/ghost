@@ -9,9 +9,18 @@ interface Props {
 
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
   // when a function is clicked, set the function in context
-  const { setFunctionName } = useFunctionContext();
-  const handleLambdaFuncClick = (funcName: string) => {
+  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled} = useFunctionContext();
+  const handleMetricsClick = (funcName: string) => {
     setFunctionName?.(funcName);
+    setIsMetricsEnabled?.(true);
+    setIsPricingEnabled?.(false);
+    setIsHomeEnabled?.(false);
+  }
+  const handlePricingClick = (funcName: string) => {
+    setFunctionName?.(funcName);
+    setIsPricingEnabled?.(true);
+    setIsMetricsEnabled?.(false);
+    setIsHomeEnabled?.(false);
   }
   return (
     <div className='bg-[#ebebeb] dark:bg-[#313131]'>
@@ -20,7 +29,8 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
           <div className="px-5 py-3 hover:shadow-inner">
             <p className="text-bold">{item.functionName}</p>
             <p className="text-xs text-gray-500 dark:text-gray-200 break-words">{item.functionARN}</p>
-            <div className="flex flex-row justify-center mt-2">
+            <div className="flex flex-row justify-around mt-2">
+            <br></br>
             <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="outlined"
               disableElevation
@@ -36,10 +46,30 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
               }}
               size="small"
               onClick={() => {
-                handleLambdaFuncClick(item.functionName);
+                handleMetricsClick(item.functionName);
               }}
             >
-              more info
+              Metrics
+            </Button>
+            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
+              variant="outlined"
+              disableElevation
+              sx={{
+                backgroundColor: "#9cb59d",
+                borderColor: "#9cb59d",
+                color: "#FFFFFF",
+                '&:hover': {
+                  borderColor: '#9cb59d',
+                  backgroundColor: '#F5F5F5',
+                  color: '#9cb59d'
+                }
+              }}
+              size="small"
+              onClick={() => {
+                handlePricingClick(item.functionName);
+              }}
+            >
+              Pricing
             </Button>
             </div>
           </div>

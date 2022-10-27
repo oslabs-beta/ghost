@@ -3,6 +3,8 @@ import { Chart as ChartJS, registerables } from 'chart.js'
 import { Bar, Scatter, Pie, Line } from 'react-chartjs-2'
 import { fontSize } from '@mui/system';
 import { BoltRounded } from '@mui/icons-material';
+import { useGraphContext } from '../context/GraphContext';
+import { useFunctionContext } from '../context/FunctionContext';
 
 // initialize chartjs
 ChartJS.register(...registerables);
@@ -12,97 +14,19 @@ interface GraphComponentProps {
   timestamps: string[],
   durations: number[],
   memory: number[],
+  errors: any,
+  throttles: any,
+  concurrentExecutions: any,
+  invocationsMore: any,
+  durationMore: any,
+  urlRequestCount: any
 }
 
-const fakeJson = {
-  "data": [
-    {
-      "date": "2021-01-02",
-      "nuts": 4,
-      "butts": 11
-    },{
-      "date": "2021-03-30",
-      "nuts": 10,
-      "butts": 9
-    },{
-      "date": "2021-04-11",
-      "nuts": 1,
-      "butts": 2
-    },{
-      "date": "2021-06-09",
-      "nuts": 9,
-      "butts": 0
-    },{
-      "date": "2021-10-01",
-      "nuts": 5,
-      "butts": 5
-    }, {
-      "date": "2021-10-02",
-      "nuts": 22,
-      "butts": 2
-    },{
-      "date": "2021-10-10",
-      "nuts": 18,
-      "butts": 9
-    },
-  ]
-}
+const GraphComponent = ({ timestamps, memory, durations, errors, throttles, concurrentExecutions, invocationsMore, durationMore, urlRequestCount }: GraphComponentProps) => {
+  const { customGraphs } = useGraphContext();
+  const { functionName } = useFunctionContext();
 
-
-const dates: Array<string> = fakeJson.data.map((item) => item.date);
-const dataset1: Array<number> = fakeJson.data.map((item) => item.nuts);
-const dataset2: Array<number> = fakeJson.data.map((item) => item.butts);
-
-
-/* 
-List of Metrics (each obj is 1 minute):
-
-Errors
-ConcurrentExecutions
-Invocations
-Duration
-Throttles
-UrlRequestCount */
-
-const multiState = {
-  labels: dates,
-  datasets: [
-    {
-      label: 'nuts',
-      data: dataset1,
-      borderColor: '#B2CAB3',
-      backgroundColor: '#B2CAB3',
-    },
-    {
-      label: 'butts',
-      data: dataset2,
-      borderColor: '#B8E8FC',
-      backgroundColor: '#B8E8FC',
-    }
-  ]
-}
-
-
-// const scatterState = {
-//   datasets:[
-//   { 
-//     label: '',
-//     backgroundColor: ['#B2CAB3'],
-//     data: [
-//     { x: nuts[0], y: butts[0] },
-//     { x: nuts[1], y: butts[1] },
-//     { x: nuts[2], y: butts[2] },
-//   ],
-//   }
-//   ]
-// }
-
-
-const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) => {
-  // console.log('timestamps:', timestamps);
-  // console.log('durations:', durations);
-  // console.log('memory:', memory);
-
+  // manually counting invocations - can probably do away w/ this now that we have invocations from the back end
   const invocationObj: any = {};
   for (let i = 0; i < timestamps.length; i++) {
     if (invocationObj[timestamps[i]]) {
@@ -113,15 +37,203 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
     }
   }
 
-  
-
   const invocations = Object.values(invocationObj);
   const singleTime = Object.keys(invocationObj);
 
+  // pull out timestamps and sum from errors object
+  const errorTimestamps: Array<string> = errors.map((item: any) => item.Timestamp.slice(-11));
+  const errorCounts: Array<number> = errors.map((item: any) => item.Sum);
 
-  console.log('invocationObj:', invocationObj);
+  // pull out timestamps and sum from throttles object
+  const throttleTimestamps: Array<string> = throttles.map((item: any) => item.Timestamp.slice(-11));
+  const throttleCounts: Array<number> = throttles.map((item: any) => item.Maximum);
+
+  // pull out timestamps and max from concurrentExecutions object
+  const concurrentTimestamps: Array<string> = concurrentExecutions.map((item: any) => item.Timestamp.slice(-11));
+  const concurrentCounts: Array<number> = concurrentExecutions.map((item: any) => item.Maximum);
+
+  const invocationsMoreTimestamps: Array<string> = invocationsMore.map((item: any) => item.Timestamp.slice(-11));
+  const invocationsMoreCounts: Array<number> = invocationsMore.map((item: any) => item.Sum);
+
+  // pull out timestamps and sum from durationsMore object
+  const durationMoreTimestamps: Array<string> = durationMore.map((item: any) => item.Timestamp.slice(-11));
+  const durationMoreCounts: Array<number> = durationMore.map((item: any) => item.Maximum);
+
+  // pull out timestamps and sum from urlRequestCount object
+  const urlRequestTimestamps: Array<string> = urlRequestCount.map((item: any) => item.Timestamp.slice(-11));
+  const urlRequestCounts: Array<number> = urlRequestCount.map((item: any) => item.Sum);
 
   const durationBarState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'amount',
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderWidth: 0,
+        borderColor: 'black',
+        data: durations,
+        showLine: true,
+      }
+    ]
+  }
+
+  const memoryState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'Memory',
+        data: memory,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const invocationState = {
+    labels: singleTime,
+    datasets: [
+      {
+        label: 'Invocations',
+        data: invocations,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const errorState = {
+    labels: errorTimestamps,
+    datasets: [
+      {
+        label: 'Errors',
+        data: errorCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const throttleState = {
+    labels: throttleTimestamps,
+    datasets: [
+      {
+        label: 'Throttles',
+        data: throttleCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const concurrentExecState = {
+    labels: concurrentTimestamps,
+    datasets: [
+      {
+        label: 'Concurrent Executions',
+        data: concurrentCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const invocationsMoreState = {
+    labels: invocationsMoreTimestamps,
+    datasets: [
+      {
+        label: 'Invocations',
+        data: invocationsMoreCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const durationMoreState = {
+    labels: durationMoreTimestamps,
+    datasets: [
+      {
+        label: 'Durations',
+        data: durationMoreCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const urlState = {
+    labels: urlRequestTimestamps,
+    datasets: [
+      {
+        label: 'Durations',
+        data: urlRequestCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const multiState = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: 'Memory Used',
+        data: memory,
+        borderColor: '#B2CAB3',
+        backgroundColor: '#B2CAB3',
+      },
+      {
+        label: 'Duration',
+        data: durations,
+        borderColor: '#B8E8FC',
+        backgroundColor: '#B8E8FC',
+      }
+    ]
+  }
+
+  const customBarState = {
     labels: timestamps,
     datasets: [
       {
@@ -138,65 +250,21 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
     ]
   }
 
-  const durationState = {
-    labels: timestamps,
-    datasets: [
-      {
-        label: 'Data',
-        data: durations,
-        backgroundColor: '#9cb59d',
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
-
-  const memoryState = {
-    labels: timestamps,
-    datasets: [
-      {
-        label: 'Memory',
-        data: memory,
-        backgroundColor: '#9cb59d',
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
-
-  const invocationState = {
-    labels: singleTime,
-    datasets: [
-      {
-        label: 'Invocations',
-        data: invocations,
-        backgroundColor: '#9cb59d',
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
-
   return(
-    <div className="flex flex-col p-4">
-      {/* <button>Bar Graph</button> <button>Line Graph</button> <button>Pie Chart</button> */}
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white ">
+    <div className="grid grid-cols-2 gap-4 p-4">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
       <Bar
         data = { durationBarState }
         // width={"50%"}
         options = {{
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
               font: {
                 weight: 'bold',
-                size: 30,
+                size: 25,
               },
               text: 'Duration',
               color: '#bfbfbf',
@@ -213,9 +281,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
           },
           scales: {
             y: {
-              ticks: {
-                color: '#bfbfbf'
-              },
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'seconds',
@@ -223,9 +289,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             },
             x: {
-              ticks: {
-                color: '#bfbfbf'
-              },
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'time',
@@ -233,72 +297,21 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             }
           },
-        }}
-      />
+        }}/>
       </p>
-      <br></br>
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
-      <Line
-          data={ durationState }
-          options={{
-            plugins: {
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 30,
-              },
-              text: 'Durations',
-              color: '#bfbfbf',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
-              }
-            },
-            legend:{
-              display: false,
-              position: 'bottom'
-            }
-          },
-          scales: {
-            y: {
-              ticks: {
-                color: '#bfbfbf'
-              },
-              title: {
-                display: true,
-                text: 'seconds',
-                color: '#bfbfbf'
-              }
-            },
-            x: {
-              ticks: {
-                color: '#bfbfbf'
-              },
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'time',
-                color: '#bfbfbf'
-              }
-            }
-          },
-          }}
-        />
-        </p>
-      <br></br>
 
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
       <Line
           data={ memoryState }
           options={{
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
             title: {
               display: true,
               font: {
                 weight: 'bold',
-                size: 30,
+                size: 25,
               },
               text: 'Memory',
               color: '#bfbfbf',
@@ -315,9 +328,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
           },
           scales: {
             y: {
-              ticks: {
-                color: '#bfbfbf'
-              },
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'mb',
@@ -325,9 +336,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             },
             x: {
-              ticks: {
-                color: '#bfbfbf'
-              },
+              ticks: { color: '#bfbfbf' },
               beginAtZero: true,
               title: {
                 display: true,
@@ -336,21 +345,21 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             }
           },
-          }}
-        />
+          }}/>
         </p>
-      <br></br>
 
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
       <Line
           data={ invocationState }
           options={{
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
             title: {
               display: true,
               font: {
                 weight: 'bold',
-                size: 30,
+                size: 25,
               },
               text: 'Invocations',
               color: '#bfbfbf',
@@ -367,9 +376,103 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
           },
           scales: {
             y: {
-              ticks: {
+              ticks: { color: '#bfbfbf' },
+              title: {
+                display: true,
+                text: 'count',
                 color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: { color: '#bfbfbf' },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
+          }}/>
+        </p>
+
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      <Line
+          data={ errorState }
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 25,
               },
+              text: 'Errors',
+              color: '#bfbfbf',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend:{
+              display: false,
+              position: 'bottom'
+            }
+          },
+          scales: {
+            y: {
+              ticks: { color: '#bfbfbf' },
+              title: {
+                display: true,
+                text: 'count',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: { color: '#bfbfbf' },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
+          }}/>
+        </p>
+
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      <Line
+          data={ throttleState }
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 25,
+              },
+              text: 'Throttles',
+              color: '#bfbfbf',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend:{
+              display: false,
+              position: 'bottom'
+            }
+          },
+          scales: {
+            y: {
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'count',
@@ -388,17 +491,63 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             }
           },
-          }}
-        />
+          }}/>
         </p>
-      <br></br>
 
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      <Line
+          data={ concurrentExecState }
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 25,
+              },
+              text: 'Concurrent Executions',
+              color: '#bfbfbf',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend:{
+              display: false,
+              position: 'bottom'
+            }
+          },
+          scales: {
+            y: {
+              ticks: { color: '#bfbfbf' },
+              title: {
+                display: true,
+                text: 'count',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: { color: '#bfbfbf' },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
+          }}/>
+        </p>
 
-      <p className="bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
       <Line
         data = { multiState }
         options = {{
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: {
               position: 'top',
@@ -407,9 +556,9 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               display: true,
               font: {
                 weight: 'bold',
-                size: 30,
+                size: 25,
               },
-              text: 'Double Line Chart T',
+              text: 'Basic Metrics',
               color: '#bfbfbf',
               align: 'start',
               padding: {
@@ -420,6 +569,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
           },
           scales: {
             y: {
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'seconds',
@@ -427,6 +577,7 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             },
             x: {
+              ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
                 text: 'time',
@@ -434,53 +585,47 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               }
             }
           },
-        }}
-      />
+        }}/>
       </p>
-      <br></br>
-      {/* <p className=" bg-white rounded-lg shadow-md m-2 p-4">
-      <Pie
-        data = { durationBarState }
+      
+      {/* datasets: [
+      {
+        label: 'amount',
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderWidth: 0,
+        borderColor: 'black',
+        data: durations,
+        fontSize: 20,
+        showLine: true,
+      }
+    ] */}
+      {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
+      let chartState: any = {};
+      if (graph.metricName === 'Errors') chartState = errorState;
+      if (graph.metricName === 'Throttles') chartState = throttleState;
+      if (graph.metricName === 'Invocations') chartState = invocationsMoreState;
+      if (graph.metricName === 'Duration') chartState = durationMoreState;
+      if (graph.metricName === 'ConcurrentExecutions') chartState = concurrentExecState;
+      if (graph.metricName === 'UrlRequestCount') chartState = urlState;
+      if (graph.graphType === 'Bar') {
+        return (
+        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+        <Bar 
+        data = { chartState }
         options = {{
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
               font: {
                 weight: 'bold',
-                size: 30,
+                size: 25,
               },
-              text: 'Pie Chart Title',
-              color: '#BEBEBE',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
-              }
-              // fontSize: 20,
-            },
-            legend: {
-              display: true,
-              position: 'left'
-            }
-          }
-        }}
-      />
-      </p> */}
-      {/* 
-      <br></br>
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
-      <Scatter
-        data = { scatterState }
-        options = {{
-          plugins: {
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 30,
-              },
-              text: 'Scatter Plot Title',
-              color: '#BEBEBE',
+              text: graph.graphName,
+              color: '#bfbfbf',
               align: 'start',
               padding: {
                 top: 20,
@@ -491,11 +636,113 @@ const GraphComponent = ({ timestamps, memory, durations }: GraphComponentProps) 
               display: false,
               position: 'right'
             }
+          },
+          scales: {
+            y: {
+              ticks: { color: '#bfbfbf' },
+              title: {
+                display: true,
+                text: 'seconds',
+                color: '#bfbfbf'
+              }
+            },
+            x: {
+              ticks: { color: '#bfbfbf' },
+              title: {
+                display: true,
+                text: 'time',
+                color: '#bfbfbf'
+              }
+            }
+          },
+        }}/>
+        </div>)
+      }
+  
+      if (graph.graphType === 'Line') {
+        return (
+        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+        <Line 
+        data = { chartState } 
+        options = {{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+          title: {
+            display: true,
+            font: {
+              weight: 'bold',
+              size: 25,
+            },
+            text: graph.graphName,
+            color: '#bfbfbf',
+            align: 'start',
+            padding: {
+              top: 20,
+              bottom: 20
+            }
+          },
+          legend:{
+            display: false,
+            position: 'bottom'
           }
-        }}
-      />
-      </p>*/}
-      
+        },
+        scales: {
+          y: {
+            ticks: { color: '#bfbfbf' },
+            title: {
+              display: true,
+              text: 'count',
+              color: '#bfbfbf'
+            }
+          },
+          x: {
+            ticks: { color: '#bfbfbf' },
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'time',
+              color: '#bfbfbf'
+            }
+          }
+        },
+        }}/>
+        </div>
+      )}
+
+      if (graph.graphType === 'Pie') {
+        return (
+        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+        <Pie
+        data = { chartState } 
+        options = {{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              font: {
+                weight: 'bold',
+                size: 25,
+              },
+              text: graph.graphName,
+              color: '#BEBEBE',
+              align: 'start',
+              padding: {
+                top: 20,
+                bottom: 20
+              }
+            },
+            legend: {
+              display: false,
+              position: 'left'
+            }
+          }
+        }}/>
+        </div>
+        )
+      }
+    })}
     </div>
   );
 };
