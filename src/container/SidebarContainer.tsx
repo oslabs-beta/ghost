@@ -31,7 +31,6 @@ export default function SidebarContainer() {
   }
 
   // fetch list of lambda functions
-  // TODO: store in global context
   const [lambdaFuncList, setLambdaFuncList] = React.useState([]);
   React.useEffect(() => {
     fetch('http://localhost:3000/functions')

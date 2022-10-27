@@ -30,7 +30,7 @@ export default function RegionComponent() {
               US-West-1
             </Button>
           </div>
-          <Menu {...bindMenu(popupState)}>
+          <Menu className="w-5.5/12" {...bindMenu(popupState)}>
             <MenuItem onClick={popupState.close}>US-West-1</MenuItem>
             <MenuItem onClick={popupState.close}>US-West-2</MenuItem>
             <MenuItem onClick={popupState.close}>US-West-3</MenuItem>

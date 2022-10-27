@@ -46,21 +46,10 @@ const dark: any = {
 const App = () => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? 'dark' : 'light',
-        },
-      }),
-    [prefersDarkMode],
-  );
-
-  const [isDarkMui, setIsDarkMui] = React.useState(false);
+  const [isDarkMui, setIsDarkMui] = React.useState(prefersDarkMode);  // this should hopefully work
   const changeMuiTheme = () => {
     setIsDarkMui(!isDarkMui);
   };
-
 
   return (
     <div className="flex flex-row">

@@ -50,14 +50,15 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
     </div>
     
     <div className='mr-1'>
-      <Button
+      <Button 
         sx = {{
-          height: '30px',
-          // minwidth: '10px',
-          // maxwidth: '10px',
+          maxWidth: "30px",
+          minWidth: "30px",
+          maxHeight: "30px",
+          minHeight: "30px",
           backgroundColor: '#BFBFBF',
           mt: 0.45
-        }}> {/* need to style the div so that it looked like the button from before... */}
+        }}> 
         <DarkModeSwitch
           style={{ 
             marginBottom: '1rem',

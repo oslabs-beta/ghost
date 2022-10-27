@@ -10,13 +10,19 @@ ConcurrentExecutions
 Invocations
 Duration
 Throttles
-UrlRequestCount */
+UrlRequestCount
+*/
+
 
 const FunctionDetails = () => {
   const [metrics, setMetrics] = React.useState<any>([]);
+  const [errors, setErrors] = React.useState<any>([]);
+  const [concurrentExecutions, setConcurrentExecutions] = React.useState<any>([]);
+  const [throttles, setThrottles] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
+  
 
-  // noticeable delay in rendering the fetched data
+  // noticeable delay in rendering the fetched data - implement loading skeleton?
     React.useEffect(() => {
     fetch('http://localhost:3000/logStreams', {
         method: 'POST',
@@ -27,7 +33,6 @@ const FunctionDetails = () => {
       .then((data) => { 
         // how to iterate thru streamNames then call fetch on each iteration?
         const streamName = (data[0].streamName);
-        console.log('streamName:', streamName);
         fetch('http://localhost:3000/basicMetrics', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
@@ -45,19 +50,50 @@ const FunctionDetails = () => {
       }
       );
   }, [functionName]);
-  // take timestamps and put into array
+
+  // pull out timestamps, durations, memory from basicMetrics
   const timestamps: Array<string> = metrics.map((item: any) => item.timestamp.slice(-11));
-  // take duration and put into array
   const durations: Array<number> = metrics.map((item: any) => parseInt(item.duration.replace(/\D/g,'')));
-  // take memory and put into array
   const memory: Array<number> = metrics.map((item: any) => parseInt(item.maxMemoryUsed.replace(/\D/g,'')));
 
-  
+  // hardcoding moreMetrics for now
+  React.useEffect(() => {
+  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Throttles'];
+  metricNames.forEach((metricName) => {
+    fetch('http://localhost:3000/moreMetrics', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        functionName: functionName,
+        metricName: metricName,
+        startTime: '10/22/2022 12:00:00 AM',
+        endTime: '10/22/2022 11:59:59 PM'
+      })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      if (metricName === 'Errors') {
+        console.log('Errors:', data.Datapoints);
+        setErrors(data.Datapoints);
+      } else if (metricName === 'ConcurrentExecutions') {
+        console.log('Concurrent Execs:', data.Datapoints);
+        setConcurrentExecutions(data.Datapoints);
+      } else if (metricName === 'Throttles') {
+        console.log('Throttles:', data.Datapoints);
+        setThrottles(data.Datapoints);
+      }
+    })
+    .catch((err) => {
+      console.log('Error fetching metrics:', err);
+    });
+  })
+  }, [functionName]);
+
   return (
     <div className='p-5'>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing metrics for:</p>
       <p className='text-gray-900 dark:text-gray-100 text-4xl'>{functionName}</p>
-    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} />
+    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} errors={errors} throttles={throttles} concurrentExecutions={concurrentExecutions} />
     </div>
   )
 }
