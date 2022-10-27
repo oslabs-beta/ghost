@@ -37,7 +37,7 @@ const MainContainer = () => {
       .then(data => {
         console.log('default function config: ', data);
         setDefaultFunctionConfig(data)});
-  }, []);
+  }, [functionName]);
   
   return (
     <div className="bg-[#d6d4d4] dark:bg-[#191919] min-h-screen w-screen px-4/5">

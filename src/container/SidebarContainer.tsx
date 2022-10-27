@@ -13,6 +13,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LambdaFuncList from '../components/LambdaFuncList';
 import { useFunctionContext } from '../context/FunctionContext';
+import { useGraphContext } from '../context/GraphContext';
 
 const drawerWidth = 255;
 
@@ -26,10 +27,12 @@ export default function SidebarContainer() {
   
   // home sends you to the home page
   const { isHomeEnabled, setIsHomeEnabled, isPricingEnabled, setIsPricingEnabled, isMetricsEnabled, setIsMetricsEnabled} = useFunctionContext();
+  const { setCreateGraphIsShown } = useGraphContext();
   const handleHomeClick = () => {
     setIsHomeEnabled?.(true);
     setIsMetricsEnabled?.(false);
     setIsPricingEnabled?.(false);
+    setCreateGraphIsShown?.(false);
   }
 
   // fetch list of lambda functions
