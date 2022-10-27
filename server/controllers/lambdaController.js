@@ -41,6 +41,7 @@ lambdaController.functionConfig = (req, res, next) => {
       res.locals.functionConfig = {
         type: data.Architectures[0], 
         memorySize: data.MemorySize,
+        storage: data.EphemeralStorage.Size,
         runtime: data.Runtime
       };
       next();
