@@ -60,8 +60,9 @@ const FunctionDetails = () => {
   const memory: Array<number> = metrics.map((item: any) => parseInt(item.maxMemoryUsed.replace(/\D/g,'')));
 
   // hardcoding moreMetrics for now
+  // TODO: move to create graph component
   React.useEffect(() => {
-  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Throttles'];
+  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Throttles', 'UrlRequestCount', 'Duration'];
   metricNames.forEach((metricName) => {
     fetch('http://localhost:3000/moreMetrics', {
       method: 'POST',

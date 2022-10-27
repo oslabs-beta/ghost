@@ -5,6 +5,8 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import { useDarkMode } from '../context/DarkModeHooks';
 import { useGraphContext } from '../context/GraphContext';
+import { AppBar, Toolbar, CssBaseline, Typography, makeStyles, } from "@mui/material";
+
 
 interface TopBarProps {
   changeMuiTheme: () => void;
@@ -26,7 +28,7 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
   }
 
   return (
-    <div className='flex flex-row justify-around absolute top-5 right-0 w-fit'> {/* align the two divz */}
+    <div className='flex flex-row justify-end absolute top-5 right-2 w-11/12'> 
     
     <div className='mr-1'>
       <Button 

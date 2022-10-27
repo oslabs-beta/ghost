@@ -40,28 +40,36 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
   const invocations = Object.values(invocationObj);
   const singleTime = Object.keys(invocationObj);
 
-  // pull out timestamps and sum from errors object
+
+  errors.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const errorTimestamps: Array<string> = errors.map((item: any) => item.Timestamp.slice(-11));
   const errorCounts: Array<number> = errors.map((item: any) => item.Sum);
+  const errorLabels: Array<string> = errors.map((item: any) => item.Unit);
 
-  // pull out timestamps and sum from throttles object
+  throttles.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const throttleTimestamps: Array<string> = throttles.map((item: any) => item.Timestamp.slice(-11));
   const throttleCounts: Array<number> = throttles.map((item: any) => item.Maximum);
+  const throttleLabels: Array<string> = throttles.map((item: any) => item.Unit);
 
-  // pull out timestamps and max from concurrentExecutions object
+  concurrentExecutions.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const concurrentTimestamps: Array<string> = concurrentExecutions.map((item: any) => item.Timestamp.slice(-11));
   const concurrentCounts: Array<number> = concurrentExecutions.map((item: any) => item.Maximum);
+  const concurrentLabels: Array<string> = concurrentExecutions.map((item: any) => item.Unit);
 
+  invocationsMore.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const invocationsMoreTimestamps: Array<string> = invocationsMore.map((item: any) => item.Timestamp.slice(-11));
   const invocationsMoreCounts: Array<number> = invocationsMore.map((item: any) => item.Sum);
+  const invocationsMoreLabels: Array<string> = invocationsMore.map((item: any) => item.Unit);
 
-  // pull out timestamps and sum from durationsMore object
+  durationMore.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const durationMoreTimestamps: Array<string> = durationMore.map((item: any) => item.Timestamp.slice(-11));
-  const durationMoreCounts: Array<number> = durationMore.map((item: any) => item.Maximum);
+  const durationMoreCounts: Array<number> = durationMore.map((item: any) => item.Average);
+  const durationMoreLabels: Array<string> = durationMore.map((item: any) => item.Unit);
 
-  // pull out timestamps and sum from urlRequestCount object
+  urlRequestCount.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
   const urlRequestTimestamps: Array<string> = urlRequestCount.map((item: any) => item.Timestamp.slice(-11));
   const urlRequestCounts: Array<number> = urlRequestCount.map((item: any) => item.Sum);
+  const urlRequestLabels: Array<string> = urlRequestCount.map((item: any) => item.Unit);
 
   const durationBarState = {
     labels: timestamps,
@@ -215,40 +223,6 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
     ]
   }
 
-  const multiState = {
-    labels: timestamps,
-    datasets: [
-      {
-        label: 'Memory Used',
-        data: memory,
-        borderColor: '#B2CAB3',
-        backgroundColor: '#B2CAB3',
-      },
-      {
-        label: 'Duration',
-        data: durations,
-        borderColor: '#B8E8FC',
-        backgroundColor: '#B8E8FC',
-      }
-    ]
-  }
-
-  const customBarState = {
-    labels: timestamps,
-    datasets: [
-      {
-        label: 'amount',
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderWidth: 0,
-        borderColor: 'black',
-        data: durations,
-        fontSize: 20,
-        showLine: true,
-      }
-    ]
-  }
 
   return(
     <div className="grid grid-cols-2 gap-4 p-4">
@@ -284,7 +258,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
               ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
-                text: 'seconds',
+                text: 'milliseconds',
                 color: '#bfbfbf'
               }
             },
@@ -542,51 +516,6 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
           }}/>
         </p>
 
-      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
-      <Line
-        data = { multiState }
-        options = {{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 25,
-              },
-              text: 'Basic Metrics',
-              color: '#bfbfbf',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
-              }
-            }
-          },
-          scales: {
-            y: {
-              ticks: { color: '#bfbfbf' },
-              title: {
-                display: true,
-                text: 'seconds',
-                color: '#bfbfbf'
-              }
-            },
-            x: {
-              ticks: { color: '#bfbfbf' },
-              title: {
-                display: true,
-                text: 'time',
-                color: '#bfbfbf'
-              }
-            }
-          },
-        }}/>
-      </p>
       
       {/* datasets: [
       {
@@ -603,12 +532,31 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
     ] */}
       {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
       let chartState: any = {};
-      if (graph.metricName === 'Errors') chartState = errorState;
-      if (graph.metricName === 'Throttles') chartState = throttleState;
-      if (graph.metricName === 'Invocations') chartState = invocationsMoreState;
-      if (graph.metricName === 'Duration') chartState = durationMoreState;
-      if (graph.metricName === 'ConcurrentExecutions') chartState = concurrentExecState;
-      if (graph.metricName === 'UrlRequestCount') chartState = urlState;
+      let label = '';
+      if (graph.metricName === 'Errors') {
+        chartState = errorState;
+        label = errorLabels[0];
+      } 
+      if (graph.metricName === 'Throttles') {
+        chartState = throttleState;
+        label = throttleLabels[0];
+      }
+      if (graph.metricName === 'Invocations') {
+        chartState = invocationsMoreState;
+        label = invocationsMoreLabels[0];
+      }
+      if (graph.metricName === 'Duration') {
+        chartState = durationMoreState;
+        label = durationMoreLabels[0];
+      }
+      if (graph.metricName === 'ConcurrentExecutions') {
+        chartState = concurrentExecState;
+        label = concurrentLabels[0];
+      }
+      if (graph.metricName === 'UrlRequestCount') {
+        chartState = urlState;
+        label = urlRequestLabels[0];
+      }
       if (graph.graphType === 'Bar') {
         return (
         <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
@@ -642,7 +590,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
               ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
-                text: 'seconds',
+                text: label,
                 color: '#bfbfbf'
               }
             },
@@ -692,7 +640,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
             ticks: { color: '#bfbfbf' },
             title: {
               display: true,
-              text: 'count',
+              text: label,
               color: '#bfbfbf'
             }
           },

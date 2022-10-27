@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import { useFunctionContext } from '../context/FunctionContext';
+import { useGraphContext } from '../context/GraphContext';
 
 // pass down lambdaFuncList by declaring it as interface first
 interface Props {
@@ -10,17 +11,20 @@ interface Props {
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
   // when a function is clicked, set the function in context
   const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled} = useFunctionContext();
+  const { setCreateGraphIsShown } = useGraphContext();
   const handleMetricsClick = (funcName: string) => {
     setFunctionName?.(funcName);
     setIsMetricsEnabled?.(true);
     setIsPricingEnabled?.(false);
     setIsHomeEnabled?.(false);
+    setCreateGraphIsShown?.(false);
   }
   const handlePricingClick = (funcName: string) => {
     setFunctionName?.(funcName);
     setIsPricingEnabled?.(true);
     setIsMetricsEnabled?.(false);
     setIsHomeEnabled?.(false);
+    setCreateGraphIsShown?.(false);
   }
   return (
     <div className='bg-[#ebebeb] dark:bg-[#313131]'>
