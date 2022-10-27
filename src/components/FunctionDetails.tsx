@@ -69,8 +69,8 @@ const FunctionDetails = () => {
       body: JSON.stringify({
         functionName: functionName,
         metricName: metricName,
-        startTime: '10/22/2022 12:00:00 PM',
-        endTime: '10/22/2022 11:59:59 PM'
+        startTime: '10/27/2022 12:00:00 AM',
+        endTime: '10/27/2022 11:59:59 PM'
       })
     })
     .then((res) => res.json())

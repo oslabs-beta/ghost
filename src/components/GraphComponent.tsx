@@ -46,7 +46,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
 
   // pull out timestamps and sum from throttles object
   const throttleTimestamps: Array<string> = throttles.map((item: any) => item.Timestamp.slice(-11));
-  const throttleCounts: Array<number> = throttles.map((item: any) => item.Sum);
+  const throttleCounts: Array<number> = throttles.map((item: any) => item.Maximum);
 
   // pull out timestamps and max from concurrentExecutions object
   const concurrentTimestamps: Array<string> = concurrentExecutions.map((item: any) => item.Timestamp.slice(-11));
@@ -62,9 +62,6 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
   // pull out timestamps and sum from urlRequestCount object
   const urlRequestTimestamps: Array<string> = urlRequestCount.map((item: any) => item.Timestamp.slice(-11));
   const urlRequestCounts: Array<number> = urlRequestCount.map((item: any) => item.Sum);
-
-  
-
 
   const durationBarState = {
     labels: timestamps,
@@ -604,7 +601,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
         showLine: true,
       }
     ] */}
-      {customGraphs && customGraphs.map((graph: any) => {
+      {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
       let chartState: any = {};
       if (graph.metricName === 'Errors') chartState = errorState;
       if (graph.metricName === 'Throttles') chartState = throttleState;

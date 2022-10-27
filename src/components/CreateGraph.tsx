@@ -68,7 +68,7 @@ const CreateGraph = () => {
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
       <h1 className="text-[#313131] dark:text-[#ebebeb]">Create Graph for { functionName }</h1>
       <br></br>
-      <TextField className="w-auto" id="outlined-basic" placeholder="Nuts per second" label="Graph Name" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
+      <TextField className="w-auto" id="outlined-basic" placeholder="Invocations per minute" label="Graph Name" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
       <br></br>
 
       {/* <FormHelperText>Metrics</FormHelperText> */}

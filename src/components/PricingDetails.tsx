@@ -1,33 +1,135 @@
 import * as React from 'react'
 import { useFunctionContext } from '../context/FunctionContext'
+import { Box, Typography, styled, Button, Slider, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField  } from '@mui/material'
 
-const PricingDetails = () => {
+interface PricingDetailsProps {
+  defaultFunctionConfig: any,
+}
+
+const PricingDetails = ({ defaultFunctionConfig }: any) => {
   const { functionName } = useFunctionContext();
-  
+
+  const PrettoSlider = styled(Slider)({
+    color: '#87c78a',
+    height: 8,
+    width: 300, 
+    '& .MuiSlider-track': {
+      border: 'none',
+    },
+    '& .MuiSlider-thumb': {
+      height: 24,
+      width: 24,
+      backgroundColor: '#fff',
+      border: '2px solid currentColor',
+      '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+        boxShadow: 'inherit',
+      },
+      '&:before': {
+        display: 'none',
+      },
+    },
+    '& .MuiSlider-valueLabel': {
+      lineHeight: 1.2,
+      fontSize: 12,
+      background: 'unset',
+      padding: 0,
+      width: 32,
+      height: 32,
+      borderRadius: '50% 50% 50% 0',
+      backgroundColor: '#B2CAB3',
+      transformOrigin: 'bottom left',
+      transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+      '&:before': { display: 'none' },
+      '&.MuiSlider-valueLabelOpen': {
+        transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+      },
+      '& > *': {
+        transform: 'rotate(45deg)',
+      },
+    },
+  });
+
+
   return (
-    <div className='p-5'>
-      <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price for:</p>
-      <p className='text-gray-900 dark:text-gray-100 text-4xl'>{functionName}</p>
+    <div className='p-5 flex flex-col text-gray-700 dark:text-[#D3D4D4]'>
+      <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price calculator for:</p>
+      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      
+      <br></br>
+      
+      <FormControl>
+      <FormLabel id="Type">Type</FormLabel>
+      <RadioGroup
+        aria-labelledby="Type"
+        defaultValue="ARM"
+        name="radio-buttons-group"
+      >
+        <FormControlLabel value="ARM" control={<Radio />} label="ARM" />
+        <FormControlLabel value="X86_64" control={<Radio />} label="X86_64" />
+      </RadioGroup>
+    </FormControl>
+
+    <Box sx={{ width: '75%' }}>
+    <Box sx={{ m: 3 }} />
+      <Typography gutterBottom>Memory Size (MB):</Typography>
+      <PrettoSlider 
+        valueLabelDisplay="auto"
+        aria-label="pretto slider"
+        defaultValue={20}
+        step={200}
+        marks
+        min={130}
+        max={10240}
+      />
+
+    <Box sx={{ m: 3 }} />
+      <Typography gutterBottom>Storage Size (MB):</Typography>
+      <PrettoSlider 
+        valueLabelDisplay="auto"
+        aria-label="pretto slider"
+        defaultValue={20}
+        step={200}
+        marks
+        min={520}
+        max={10240}
+      />
+
+    <Box sx={{ m: 3 }} />
+      <Typography gutterBottom>Billed Duration</Typography>
+      <PrettoSlider 
+        valueLabelDisplay="auto"
+        aria-label="pretto slider"
+        step={1000}
+        marks
+        min={1}
+        max={90000}
+      />
+
+    <Box sx={{ m: 3 }} />
+      <Typography gutterBottom>Total Invocations</Typography>
+      <PrettoSlider 
+        valueLabelDisplay="auto"
+        aria-label="pretto slider"
+        step={1000000000000000000}
+        marks
+        min={1}
+        max={1000000000000000000000}
+      />
+    
+    </Box>
+
     </div>
   )
 }
 
 export default PricingDetails
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//req.body will have these props:
+  //type: "x86_64" or "Arm"
+  //memorySize: 128 //must be b/w 128 and 10240 (10gb)
+  //storage: 512 (number) //must be between 512 to 10240
+  //billedDurationAvg: Number //must be b/w 1 to 900000
+  //invocationsTotal: Number //must be b/w 1 to 1e+21
 
 /* 
 choose which func to get price data
