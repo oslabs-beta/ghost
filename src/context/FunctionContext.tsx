@@ -4,8 +4,14 @@ import * as React from 'react';
 interface FunctionContextProps {
   functionName: string | undefined,
   streamName: string,
+  isMetricsEnabled: boolean,
+  isPricingEnabled: boolean,
+  isHomeEnabled: boolean,
   setFunctionName?: (name: string) => void,
   setStreamName?: (name: string) => void,
+  setIsMetricsEnabled?: (isMetricsEnabled: boolean) => void,
+  setIsPricingEnabled?: (isPricingEnabled: boolean) => void,
+  setIsHomeEnabled?: (isHomeEnabled: boolean) => void,
 
   children?: React.ReactNode
 }
@@ -14,7 +20,9 @@ interface FunctionContextProps {
 const defaultState = {
   functionName: '',
   streamName: '',
-
+  isMetricsEnabled: false,
+  isPricingEnabled: false,
+  isHomeEnabled: true,
 }
 
 // use createContext to create a context object
@@ -26,6 +34,9 @@ export const FunctionContext = React.createContext<FunctionContextProps>(default
 const FunctionContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [functionName, setFunctionName] = React.useState('');
   const [streamName, setStreamName] = React.useState('');
+  const [isMetricsEnabled, setIsMetricsEnabled] = React.useState(false);
+  const [isPricingEnabled, setIsPricingEnabled] = React.useState(false);
+  const [isHomeEnabled, setIsHomeEnabled] = React.useState(true);
 
 
   return (
@@ -35,6 +46,12 @@ const FunctionContextProvider = ({ children }: { children: React.ReactNode }) =>
         streamName,
         setFunctionName,
         setStreamName,
+        isMetricsEnabled,
+        isPricingEnabled,
+        isHomeEnabled,
+        setIsMetricsEnabled,
+        setIsPricingEnabled,
+        setIsHomeEnabled,
       }}
     >
       {children}

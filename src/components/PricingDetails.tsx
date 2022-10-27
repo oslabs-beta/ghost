@@ -1,4 +1,33 @@
 import * as React from 'react'
+import { useFunctionContext } from '../context/FunctionContext'
+
+const PricingDetails = () => {
+  const { functionName } = useFunctionContext();
+  
+  return (
+    <div className='p-5'>
+      <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price for:</p>
+      <p className='text-gray-900 dark:text-gray-100 text-4xl'>{functionName}</p>
+    </div>
+  )
+}
+
+export default PricingDetails
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* 
 choose which func to get price data
@@ -8,61 +37,63 @@ post /price requires functionName, type, memorySize, storage: 512 - 10240: numbe
 returns $ 20.21 per month
 */
 
-{/* <p className=" bg-white rounded-lg shadow-md m-2 p-4">
-      <Pie
-        data = { durationBarState }
-        options = {{
-          plugins: {
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 30,
-              },
-              text: 'Pie Chart Title',
-              color: '#BEBEBE',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
-              }
-              // fontSize: 20,
+/* 
+<p className=" bg-white rounded-lg shadow-md m-2 p-4">
+  <Pie
+    data = { durationBarState }
+    options = {{
+      plugins: {
+      title: {
+        display: true,
+          font: {
+            weight: 'bold',
+            size: 30,
             },
-            legend: {
-              display: true,
-              position: 'left'
+          text: 'Pie Chart Title',
+          color: '#BEBEBE',
+          align: 'start',
+          padding: {
+            top: 20,
+            bottom: 20
             }
+          // fontSize: 20,
+          },
+        legend: {
+          display: true,
+          position: 'left'
           }
-        }}
-      />
-      </p> */}
-      {/* 
-      <br></br>
-      <p className=" bg-white rounded-lg shadow-md m-2 p-4">
-      <Scatter
-        data = { scatterState }
-        options = {{
-          plugins: {
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 30,
-              },
-              text: 'Scatter Plot Title',
-              color: '#BEBEBE',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
-              }
+        }
+    }}
+  />
+</p> 
+
+<br></br>
+
+<p className=" bg-white rounded-lg shadow-md m-2 p-4">
+  <Scatter
+    data = { scatterState }
+    options = {{
+      plugins: {
+        title: {
+          display: true,
+          font: {
+            weight: 'bold',
+            size: 30,
             },
-            legend: {
-              display: false,
-              position: 'right'
+          text: 'Scatter Plot Title',
+          color: '#BEBEBE',
+          align: 'start',
+          padding: {
+            top: 20,
+            bottom: 20
             }
+          },
+        legend: {
+          display: false,
+          position: 'right'
           }
-        }}
-      />
-      </p>*/}
-      
+        }
+    }}
+  />
+</p>
+*/

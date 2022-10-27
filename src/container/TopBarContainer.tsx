@@ -34,10 +34,15 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         height: '30px',
         fontSize: 10,
         color: "#FFFFFF",
-        backgroundColor: "#EDC09E",
-        borderColor: "#EDC09E",
+        backgroundColor: "#e8ad80",
+        borderColor: "#e09d69",
         mr: 0.4,
-        mt: 0.45
+        mt: 0.45,
+        '&:hover': {
+          borderColor: '#e09d69',
+          backgroundColor: '#e09d69',
+          color: "#FFFFFF",
+        }
         }}
         onClick={handleCreateGraph}
       >
@@ -72,7 +77,7 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
 
     
       <div className='mr-1'>
-      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12'/>
+      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-30'/>
       </div>
     </div>
   )

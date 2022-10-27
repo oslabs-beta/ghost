@@ -17,12 +17,12 @@ interface GraphComponentProps {
   errors: any,
   throttles: any,
   concurrentExecutions: any,
-  invocations: any,
-  durationsMore: any,
+  invocationsMore: any,
+  durationMore: any,
   urlRequestCount: any
 }
 
-const GraphComponent = ({ timestamps, memory, durations, errors, throttles, concurrentExecutions, durationsMore, urlRequestCount }: GraphComponentProps) => {
+const GraphComponent = ({ timestamps, memory, durations, errors, throttles, concurrentExecutions, invocationsMore, durationMore, urlRequestCount }: GraphComponentProps) => {
   const { customGraphs } = useGraphContext();
   const { functionName } = useFunctionContext();
 
@@ -52,11 +52,12 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
   const concurrentTimestamps: Array<string> = concurrentExecutions.map((item: any) => item.Timestamp.slice(-11));
   const concurrentCounts: Array<number> = concurrentExecutions.map((item: any) => item.Maximum);
 
-  //
+  const invocationsMoreTimestamps: Array<string> = invocationsMore.map((item: any) => item.Timestamp.slice(-11));
+  const invocationsMoreCounts: Array<number> = invocationsMore.map((item: any) => item.Sum);
 
   // pull out timestamps and sum from durationsMore object
-  const durationsMoreTimestamps: Array<string> = durationsMore.map((item: any) => item.Timestamp.slice(-11));
-  const durationsMoreCounts: Array<number> = durationsMore.map((item: any) => item.Maximum);
+  const durationMoreTimestamps: Array<string> = durationMore.map((item: any) => item.Timestamp.slice(-11));
+  const durationMoreCounts: Array<number> = durationMore.map((item: any) => item.Maximum);
 
   // pull out timestamps and sum from urlRequestCount object
   const urlRequestTimestamps: Array<string> = urlRequestCount.map((item: any) => item.Timestamp.slice(-11));
@@ -155,6 +156,57 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
       {
         label: 'Concurrent Executions',
         data: concurrentCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const invocationsMoreState = {
+    labels: invocationsMoreTimestamps,
+    datasets: [
+      {
+        label: 'Invocations',
+        data: invocationsMoreCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const durationMoreState = {
+    labels: durationMoreTimestamps,
+    datasets: [
+      {
+        label: 'Durations',
+        data: durationMoreCounts,
+        backgroundColor: [
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          ],
+        borderColor: '#9cb59d',
+        fill: false,
+        showLine: true,
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const urlState = {
+    labels: urlRequestTimestamps,
+    datasets: [
+      {
+        label: 'Durations',
+        data: urlRequestCounts,
         backgroundColor: [
           '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
           ],
@@ -556,7 +608,10 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
       let chartState: any = {};
       if (graph.metricName === 'Errors') chartState = errorState;
       if (graph.metricName === 'Throttles') chartState = throttleState;
+      if (graph.metricName === 'Invocations') chartState = invocationsMoreState;
+      if (graph.metricName === 'Duration') chartState = durationMoreState;
       if (graph.metricName === 'ConcurrentExecutions') chartState = concurrentExecState;
+      if (graph.metricName === 'UrlRequestCount') chartState = urlState;
       if (graph.graphType === 'Bar') {
         return (
         <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 

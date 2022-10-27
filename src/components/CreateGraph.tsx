@@ -32,7 +32,7 @@ const CreateGraph = () => {
 
   // store list of metrics and graphtypes in an array
   const graphTypeNames = ['Line', 'Bar', 'Pie'];
-  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles'];
+  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
 
   // on submit, save the graph to the state, in addition to all the previous graphs
   const handleSubmit = () => {

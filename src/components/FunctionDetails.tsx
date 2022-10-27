@@ -19,6 +19,9 @@ const FunctionDetails = () => {
   const [errors, setErrors] = React.useState<any>([]);
   const [concurrentExecutions, setConcurrentExecutions] = React.useState<any>([]);
   const [throttles, setThrottles] = React.useState<any>([]);
+  const [invocationsMore, setInvocationsMore] = React.useState<any>([]);
+  const [durationMore, setDurationMore] = React.useState<any>([]);
+  const [urlRequestCount, setUrlRequestCount] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
   
 
@@ -66,23 +69,25 @@ const FunctionDetails = () => {
       body: JSON.stringify({
         functionName: functionName,
         metricName: metricName,
-        startTime: '10/22/2022 12:00:00 AM',
+        startTime: '10/22/2022 12:00:00 PM',
         endTime: '10/22/2022 11:59:59 PM'
       })
     })
     .then((res) => res.json())
     .then((data) => {
       if (metricName === 'Errors') {
-        console.log('Errors:', data.Datapoints);
         setErrors(data.Datapoints);
       } else if (metricName === 'ConcurrentExecutions') {
-        console.log('Concurrent Execs:', data.Datapoints);
         setConcurrentExecutions(data.Datapoints);
       } else if (metricName === 'Throttles') {
-        console.log('Throttles:', data.Datapoints);
         setThrottles(data.Datapoints);
-      }
-    })
+      } else if (metricName === 'Invocations') {
+        setInvocationsMore(data.Datapoints);
+      } else if (metricName === 'Duration') {
+        setDurationMore(data.Datapoints);
+      } else if (metricName === 'UrlRequestCount') {
+        setUrlRequestCount(data.Datapoints);
+    }})
     .catch((err) => {
       console.log('Error fetching metrics:', err);
     });
@@ -93,7 +98,7 @@ const FunctionDetails = () => {
     <div className='p-5'>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing metrics for:</p>
       <p className='text-gray-900 dark:text-gray-100 text-4xl'>{functionName}</p>
-    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} errors={errors} throttles={throttles} concurrentExecutions={concurrentExecutions} />
+    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} errors={errors} throttles={throttles} concurrentExecutions={concurrentExecutions} invocationsMore={invocationsMore} durationMore={durationMore} urlRequestCount={urlRequestCount} />
     </div>
   )
 }
