@@ -1,10 +1,11 @@
-const express = require('express')
+ const express = require('express')
 const app = express();
 
 const cloudwatchController = require('./controllers/cloudwatchController');
 const dataController = require('./controllers/dataController');
 const lambdaController = require('./controllers/lambdaController');
 const metricsController = require('./controllers/metricsController');
+const priceController = require('./controllers/priceController')
 
 app.use(express.json());
 
@@ -50,8 +51,29 @@ app.post('/moreMetrics',
   }
 )
 
+app.post('/pricing',
+  priceController.getEstimate,
+  (req, res) => {
+    res.status.json(res.locals.estimate)
+  }
+)
+
+app.post('/functionConfig',
+  lambdaController.functionConfig,
+  (req, res) => {
+    res.status(200).json(res.locals.functionConfig)
+  }
+)
+
+app.post('/price',
+  priceController.getEstimate,
+  (req, res) => {
+    res.status(200).json(res.locals.cost)
+  }
+)
 
 //for developer use
+
 app.get('/listMetrics',
   metricsController.listMetrics,
   (req, res) => {
