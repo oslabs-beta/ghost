@@ -5,7 +5,7 @@ function convertTime(timestamp) {
 }
 
 function convertToUnix(date) {
-  const dateObject = new Date(date); //declare new date
+  const dateObject = new Date(date += ' UTC'); //declare new date
   const unix = dateObject.getTime(); //convert to unix
   return unix
 }
