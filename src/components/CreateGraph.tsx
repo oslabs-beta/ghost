@@ -71,8 +71,8 @@ const CreateGraph = () => {
       <TextField className="w-auto" id="outlined-basic" placeholder="Invocations per minute" label="Graph Name" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
       <br></br>
 
-      {/* <FormHelperText>Metrics</FormHelperText> */}
-      <InputLabel id="metrics">Metrics</InputLabel>
+      <FormHelperText>Metrics</FormHelperText>
+      {/* <InputLabel id="metrics">Metrics</InputLabel> */}
       <Select labelId="metrics" id="metrics-select" className="w-auto" label='Metrics'>     
         {metricNames.map((metricName) => (
           <MenuItem key={metricName} value={metricName} onClick={() => setMetricName?.(metricName)}>{metricName}</MenuItem>
