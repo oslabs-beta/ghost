@@ -370,7 +370,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
           }}/>
         </p>
 
-      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      {/* <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
       <Line
           data={ errorState }
           options={{
@@ -514,7 +514,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
             }
           },
           }}/>
-        </p>
+        </p> */}
 
       
       {/* datasets: [
