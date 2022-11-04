@@ -44,7 +44,7 @@ metricsController.getMetrics = (req, res, next) => {
   const client = new CloudWatchClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
 
   const input = {
-    "StartTime": new Date(convertToUnix(req.body.startTime)),
+    "StartTime": new Date(convertToUnix(req.body.startTime)), // "10/27/2022, 12:00:00 AM"
     "EndTime": new Date(convertToUnix(req.body.endTime)),
     "MetricName": req.body.metricName,
     "Namespace": "AWS/Lambda",

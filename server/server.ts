@@ -1,4 +1,3 @@
-// import { Express, Request, Response } = require('express');
 const express = require('express');
 const app = express();
 
@@ -55,7 +54,7 @@ app.post('/moreMetrics',
 app.post('/pricing',
   priceController.getEstimate,
   (req, res) => {
-    res.status(200).json(res.locals.estimate)
+    res.status.json(res.locals.estimate)
   }
 )
 

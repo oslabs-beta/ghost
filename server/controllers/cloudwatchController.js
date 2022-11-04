@@ -22,7 +22,7 @@ cloudwatchController.getLogStreams = (req, res, next) => {
         streamData.streamName = streamObj.logStreamName;
         return streamData;
       })
-      res.locals.logStreams = logStreams;
+      res.locals.logStreams = [...logStreams];
       return next();
     })
     .catch(err => {
@@ -39,11 +39,14 @@ cloudwatchController.getRawLogs = (req, res, next) => {
     logStreamName: req.body.streamName,
   };
 
+  req.body.nextToken ? input.nextToken = req.body.nextToken : null;
+
   const command = new GetLogEventsCommand(input);
 
   client.send(command)
     .then(data => {
       res.locals.rawLogs = data.events;
+      // res.locals.rawLogs = data;
       next();
     })
     .catch(err => {
