@@ -12,6 +12,15 @@ module.exports = {
         'gray1': '#D9D9D9',
         'gray2': '#828282',
       },
+      keyframes: {
+        'bounce-ghost': {
+          
+        },
+        'wiggle': {
+          '0%, 100%': { transform: 'rotate(-3deg) translateY(-15%)' },
+          '50%': { transform: 'rotate(3deg) translateY(0)' },
+        },
+      },
     },
   },
   plugins: [],

@@ -5,6 +5,7 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import { useDarkMode } from '../context/DarkModeHooks';
 import { useGraphContext } from '../context/GraphContext';
+import { useFunctionContext } from '../context/FunctionContext';
 import { AppBar, Toolbar, CssBaseline, Typography, makeStyles, } from "@mui/material";
 
 
@@ -14,7 +15,7 @@ interface TopBarProps {
 
 
 const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
-
+  const { isHomeEnabled } = useFunctionContext()
   const [isDark, setIsDark] = useDarkMode()
   const toggleDarkMode = (checked: boolean) => {
     // setMode(checked ? "dark" : "light");
@@ -27,10 +28,9 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
     setCreateGraphIsShown?.(!createGraphIsShown)
   }
 
-  return (
-    <div className='flex flex-row justify-end absolute top-5 right-2 w-11/12'> 
-    
-    <div className='mr-1'>
+  const createGraphButton = () => {
+    return (
+      <div className='mr-1'>
       <Button 
         sx = {{
         height: '30px',
@@ -55,6 +55,21 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         Create Graph
       </Button>
     </div>
+    )
+  }
+
+  const ghostIcon = () => {
+    return (
+      <div className='mr-1'>
+      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12 transition ease-in-out delay-150 hover:animate-[wiggle_1.5s_ease-in-out_infinite]'/>
+      </div>
+    )
+  }
+
+  return (
+    <div className='flex flex-row justify-end absolute top-5 right-2 w-11/12'> 
+    
+    { !isHomeEnabled ? createGraphButton() : null }
     
     <div className='mr-1'>
       <Button 
@@ -77,10 +92,8 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         </Button>
     </div>
 
-    
-      <div className='mr-1'>
-      <img src='https://i.postimg.cc/zf8ZDycV/ghost.png' className='object-cover mr-0.5 h-12 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-30'/>
-      </div>
+    { !isHomeEnabled ? ghostIcon() : null }
+      
     </div>
   )
 }

@@ -1,9 +1,41 @@
 import * as React from 'react'
 import { useFunctionContext } from '../context/FunctionContext'
-import { Box, Typography, styled, Button, Slider, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField  } from '@mui/material'
+import { Box, Slider, Typography, styled, Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField, FormHelperText, Select, Tabs, Tab } from '@mui/material'
 
 interface PricingDetailsProps {
   defaultFunctionConfig: any,
+}
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
 }
 
 const PricingDetails = ({ defaultFunctionConfig }: any) => {
@@ -15,6 +47,11 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
   const [invocationsTotal, setInvocationsTotal] = React.useState(1);
   const [pricing, setPricing] = React.useState(0);
   const [showPricing, setShowPricing] = React.useState(false);
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -43,59 +80,39 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
   }
 
   const financial = (num: any) => {
-    return Number.parseFloat(num).toFixed(2);
+    return new Intl.NumberFormat().format(num);
   }
-
-  const PrettoSlider = styled(Slider)({
-    color: '#87c78a',
-    height: 8,
-    width: 700, 
-    '& .MuiSlider-track': {
-      border: 'none',
-    },
-    '& .MuiSlider-thumb': {
-      height: 24,
-      width: 24,
-      backgroundColor: '#fff',
-      border: '2px solid currentColor',
-      '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-        boxShadow: 'inherit',
-      },
-      '&:before': {
-        display: 'none',
-      },
-    },
-    '& .MuiSlider-valueLabel': {
-      lineHeight: 1.2,
-      fontSize: 12,
-      background: 'unset',
-      padding: 0,
-      width: 32,
-      height: 32,
-      borderRadius: '50% 50% 50% 0',
-      backgroundColor: '#B2CAB3',
-      transformOrigin: 'bottom left',
-      transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-      '&:before': { display: 'none' },
-      '&.MuiSlider-valueLabelOpen': {
-        transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
-      },
-      '& > *': {
-        transform: 'rotate(45deg)',
-      },
-    },
-  });
 
 
   return (
-    <div className='p-5 flex flex-col text-gray-700 dark:text-[#D3D4D4]'>
+    <div className='p-5 flex flex-col text-[#000000] dark:text-[#D3D4D4]'>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5 }}>
+        <Tabs 
+          TabIndicatorProps={{style:{background:'white'}}} 
+          value={value}
+          onChange={handleChange}
+          textColor="primary"
+          sx={{
+            '& .MuiTab-textColorPrimary': {
+              color: '#ffffff',
+            },
+            '& .Mui-focused': {
+              color: '#7f9f80',
+            }
+          }}>
+          <Tab label="Calculator" {...a11yProps(0)} sx={{background: '#7f9f80'}}/>
+          <Tab label="History" {...a11yProps(1)} sx={{background: '#7f9f80'}}/>
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price calculator for:</p>
       <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
-      <p className='text-gray-700 dark:text-[#D3D4D4] text-md mt-10'>Configure your function below to estimate how much it will cost you per month.</p>
+      <p className='text-gray-700 dark:text-[#D3D4D4] text-md mt-10'>Configure your function below to estimate how much it will cost you per month. The default values are your function's current configuration.</p>
 
       <br></br>
-      
-      <FormControl sx={{m: 3}}>
+    
+    <Box sx={{ width: '70%', m: 3 }}>
+    <FormControl>
       <Typography gutterBottom>Type:</Typography>
       <RadioGroup
         aria-labelledby="Type"
@@ -108,41 +125,37 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
           '&, &.Mui-checked': {
             color: '#7f9f80',
           },
-        }}/>} label="ARM" />
-        
+        }}/>} label="ARM" 
+        />
         <FormControlLabel value="x86_64" control={<Radio sx={{
           '&, &.Mui-checked': {
             color: '#7f9f80',
           },
-        }}/>} label="x86_64" />
-
+        }}/>} label="x86_64" 
+        />
       </RadioGroup>
     </FormControl>
 
-    <Box sx={{ width: '100%', m: 3 }}>
     <Box sx={{ m: 3 }} />
       <Typography gutterBottom>Memory Size (MB):</Typography>
-      <PrettoSlider 
+      <Slider 
+        sx={{color:"#9cb59d"}}
+        aria-label="default"
         valueLabelDisplay="auto"
         value={memorySize}
-        aria-label="pretto slider"
-        defaultValue={20}
-        step={200}
-        marks
         min={130}
         max={10240}
+        // color="secondary"
         onChange={(e, value) => setMemorySize(value as number)}
       />
 
     <Box sx={{ m: 3 }} />
       <Typography gutterBottom>Storage Size (MB):</Typography>
-      <PrettoSlider 
+      <Slider 
+        sx={{color:"#9cb59d"}}
+        aria-label="default"
         valueLabelDisplay="auto"
         value={storage}
-        aria-label="pretto slider"
-        defaultValue={20}
-        step={200}
-        marks
         min={520}
         max={10240}
         onChange={(e, value) => setStorage(value as number)}
@@ -150,12 +163,11 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
 
     <Box sx={{ m: 3 }} />
       <Typography gutterBottom>Billed Duration:</Typography>
-      <PrettoSlider 
+      <Slider 
+        sx={{color:"#9cb59d"}}
+        aria-label="default"
         valueLabelDisplay="auto"
         value={billedDurationAvg}
-        aria-label="pretto slider"
-        step={1000}
-        marks
         min={1}
         max={90000}
         onChange={(e, value) => setBilledDurationAvg(value as number)}
@@ -163,18 +175,17 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
 
     <Box sx={{ m: 3 }} />
       <Typography gutterBottom>Total Invocations:</Typography>
-      <PrettoSlider 
-        valueLabelDisplay="auto"
-        value={invocationsTotal}
-        aria-label="pretto slider"
-        step={100}
-        marks
-        min={1}
-        max={9999}
-        onChange={(e, value) => setInvocationsTotal(value as number)}
+      <TextField 
+        type="number"
+        className="w-auto" 
+        id="outlined-basic" 
+        value={invocationsTotal} 
+        placeholder="100000000000" 
+        variant="outlined" 
+        onChange={(e) => setInvocationsTotal(Number(e.target.value))
+        } 
       />
-    
-    </Box>
+    </Box> 
 
     <div className="flex w-11/12">
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
@@ -201,8 +212,19 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
         <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl'>${financial(pricing)}</p>
       )}
     </div>
+    </TabPanel>
 
-    </div>
+
+
+    <TabPanel value={value} index={1}>
+      <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price history for:</p>
+      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      
+      beeep boooooop peee pooooo
+      
+    </TabPanel>
+
+  </div>
   )
 }
 

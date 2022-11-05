@@ -17,14 +17,7 @@ UrlRequestCount
 
 const FunctionDetails = () => {
   const [metrics, setMetrics] = React.useState<any>([]);
-  const [errors, setErrors] = React.useState<any>([]);
-  const [concurrentExecutions, setConcurrentExecutions] = React.useState<any>([]);
-  const [throttles, setThrottles] = React.useState<any>([]);
-  const [invocationsMore, setInvocationsMore] = React.useState<any>([]);
-  const [durationMore, setDurationMore] = React.useState<any>([]);
-  const [urlRequestCount, setUrlRequestCount] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
-  const { startTime, endTime } = useGraphContext();
   
 
   // noticeable delay in rendering the fetched data - implement loading skeleton?
@@ -61,47 +54,11 @@ const FunctionDetails = () => {
   const durations: Array<number> = metrics.map((item: any) => parseInt(item.duration.replace(/\D/g,'')));
   const memory: Array<number> = metrics.map((item: any) => parseInt(item.maxMemoryUsed.replace(/\D/g,'')));
 
-  // hardcoding moreMetrics for now
-  // TODO: move to create graph component
-  React.useEffect(() => {
-  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Throttles', 'UrlRequestCount', 'Duration'];
-  metricNames.forEach((metricName) => {
-    fetch('http://localhost:3000/moreMetrics', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        functionName: functionName,
-        metricName: metricName,
-        startTime: startTime,
-        endTime: endTime
-      })
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      if (metricName === 'Errors') {
-        setErrors(data.Datapoints);
-      } else if (metricName === 'ConcurrentExecutions') {
-        setConcurrentExecutions(data.Datapoints);
-      } else if (metricName === 'Throttles') {
-        setThrottles(data.Datapoints);
-      } else if (metricName === 'Invocations') {
-        setInvocationsMore(data.Datapoints);
-      } else if (metricName === 'Duration') {
-        setDurationMore(data.Datapoints);
-      } else if (metricName === 'UrlRequestCount') {
-        setUrlRequestCount(data.Datapoints);
-    }})
-    .catch((err) => {
-      console.log('Error fetching metrics:', err);
-    });
-  })
-  }, [functionName]);
-
   return (
     <div className='p-5'>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing metrics for:</p>
       <p className='text-gray-900 dark:text-gray-100 text-4xl'>{functionName}</p>
-    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} errors={errors} throttles={throttles} concurrentExecutions={concurrentExecutions} invocationsMore={invocationsMore} durationMore={durationMore} urlRequestCount={urlRequestCount} />
+    <GraphComponent timestamps={timestamps} durations={durations} memory={memory} />
     </div>
   )
 }

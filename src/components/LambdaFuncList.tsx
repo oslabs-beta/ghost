@@ -76,6 +76,25 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
               Pricing
             </Button>
             </div>
+            <div className="flex flex-row justify-around mt-2">
+            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
+              variant="outlined"
+              disableElevation
+              sx={{
+                backgroundColor: "#9cb59d",
+                borderColor: "#9cb59d",
+                color: "#FFFFFF",
+                '&:hover': {
+                  borderColor: '#9cb59d',
+                  backgroundColor: '#F5F5F5',
+                  color: '#9cb59d'
+                }
+              }}
+              size="small"
+            >
+              Permissions
+            </Button>
+            </div>
           </div>
         );
       })}

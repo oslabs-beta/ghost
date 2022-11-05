@@ -17,7 +17,7 @@ const light: any = {
   palette: {
     mode: "light",
     text: {
-      primary: '#000000'
+      primary: '#000000',
     },
     primary: {
       main: "#F5F5F5",
@@ -33,7 +33,8 @@ const dark: any = {
   palette: {
     mode: "dark",
     text: {
-      primary: '#F5F5F5'
+      primary: '#F5F5F5',
+      
     },
     primary: {
       main: "#242424",
@@ -41,7 +42,7 @@ const dark: any = {
     secondary: {
       main: "#636262",
     },
-    button: '#7f9f80'
+    button: '#7f9f80',
   },
 };
 
