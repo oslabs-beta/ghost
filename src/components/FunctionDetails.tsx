@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useFunctionContext } from '../context/FunctionContext';
+import { useGraphContext } from '../context/GraphContext';
 import GraphComponent from './GraphComponent';
 
 /* 
@@ -23,6 +24,7 @@ const FunctionDetails = () => {
   const [durationMore, setDurationMore] = React.useState<any>([]);
   const [urlRequestCount, setUrlRequestCount] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
+  const { startTime, endTime } = useGraphContext();
   
 
   // noticeable delay in rendering the fetched data - implement loading skeleton?
@@ -70,8 +72,8 @@ const FunctionDetails = () => {
       body: JSON.stringify({
         functionName: functionName,
         metricName: metricName,
-        startTime: '10/27/2022 12:00:00 AM',
-        endTime: '10/27/2022 11:59:59 PM'
+        startTime: startTime,
+        endTime: endTime
       })
     })
     .then((res) => res.json())

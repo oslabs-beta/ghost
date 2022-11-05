@@ -33,7 +33,6 @@ export default function RegionComponent() {
           <Menu className="w-5.5/12" {...bindMenu(popupState)}>
             <MenuItem onClick={popupState.close}>US-West-1</MenuItem>
             <MenuItem onClick={popupState.close}>US-West-2</MenuItem>
-            <MenuItem onClick={popupState.close}>US-West-3</MenuItem>
           </Menu>
 
   </React.Fragment>
