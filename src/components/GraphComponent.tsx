@@ -22,8 +22,13 @@ interface GraphComponentProps {
   urlRequestCount: any
 }
 
+const customGwaphs = () => {
+    
+}
+
+
 const GraphComponent = ({ timestamps, memory, durations, errors, throttles, concurrentExecutions, invocationsMore, durationMore, urlRequestCount }: GraphComponentProps) => {
-  const { customGraphs } = useGraphContext();
+  const { customGraphs, metricData } = useGraphContext();
   const { functionName } = useFunctionContext();
 
   // manually counting invocations - can probably do away w/ this now that we have invocations from the back end
@@ -31,14 +36,18 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
   for (let i = 0; i < timestamps.length; i++) {
     if (invocationObj[timestamps[i]]) {
       invocationObj[timestamps[i]] += 1;
-    }
-    else {
+    } else {
       invocationObj[timestamps[i]] = 1;
     }
   }
 
   const invocations = Object.values(invocationObj);
   const singleTime = Object.keys(invocationObj);
+
+
+
+  // metricData.Datapoints.sort((a:any, b:any) => a.Timestamp.localeCompare(b.Timestamp));
+
 
 
   errors.sort((a: any, b: any) => a.Timestamp.localeCompare(b.Timestamp));
@@ -75,7 +84,7 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
     labels: timestamps,
     datasets: [
       {
-        label: 'amount',
+        label: 'Duration',
         backgroundColor: [
           '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
           ],
@@ -121,107 +130,109 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
     ]
   }
 
-  const errorState = {
-    labels: errorTimestamps,
-    datasets: [
-      {
-        label: 'Errors',
-        data: errorCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const errorState = {
+  //   labels: errorTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Errors',
+  //       data: errorCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
-  const throttleState = {
-    labels: throttleTimestamps,
-    datasets: [
-      {
-        label: 'Throttles',
-        data: throttleCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const throttleState = {
+  //   labels: throttleTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Throttles',
+  //       data: throttleCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
-  const concurrentExecState = {
-    labels: concurrentTimestamps,
-    datasets: [
-      {
-        label: 'Concurrent Executions',
-        data: concurrentCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const concurrentExecState = {
+  //   labels: concurrentTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Concurrent Executions',
+  //       data: concurrentCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
-  const invocationsMoreState = {
-    labels: invocationsMoreTimestamps,
-    datasets: [
-      {
-        label: 'Invocations',
-        data: invocationsMoreCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const invocationsMoreState = {
+  //   labels: invocationsMoreTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Invocations',
+  //       data: invocationsMoreCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
-  const durationMoreState = {
-    labels: durationMoreTimestamps,
-    datasets: [
-      {
-        label: 'Durations',
-        data: durationMoreCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const durationMoreState = {
+  //   labels: durationMoreTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Durations',
+  //       data: durationMoreCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
-  const urlState = {
-    labels: urlRequestTimestamps,
-    datasets: [
-      {
-        label: 'Durations',
-        data: urlRequestCounts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const urlState = {
+  //   labels: urlRequestTimestamps,
+  //   datasets: [
+  //     {
+  //       label: 'Durations',
+  //       data: urlRequestCounts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
+
+ 
 
 
   return(
@@ -530,42 +541,67 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
         showLine: true,
       }
     ] */}
-      {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
-      let chartState: any = {};
-      let label = '';
-      if (graph.metricName === 'Errors') {
-        chartState = errorState;
-        label = errorLabels[0];
-      } 
-      if (graph.metricName === 'Throttles') {
-        chartState = throttleState;
-        label = throttleLabels[0];
-      }
-      if (graph.metricName === 'Invocations') {
-        chartState = invocationsMoreState;
-        label = invocationsMoreLabels[0];
-      }
-      if (graph.metricName === 'Duration') {
-        chartState = durationMoreState;
-        label = durationMoreLabels[0];
-      }
-      if (graph.metricName === 'ConcurrentExecutions') {
-        chartState = concurrentExecState;
-        label = concurrentLabels[0];
-      }
-      if (graph.metricName === 'UrlRequestCount') {
-        chartState = urlState;
-        label = urlRequestLabels[0];
-      }
-      if (graph.graphType === 'Bar') {
-        return (
-        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
-        <Bar 
-        data = { chartState }
-        options = {{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
+
+      {/* {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
+        if (graph.graphType === 'Bar') {
+          return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+          <Bar 
+          data = { memoryState }
+          options = {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                font: {
+                  weight: 'bold',
+                  size: 25,
+                },
+                text: graph.graphName,
+                color: '#bfbfbf',
+                align: 'start',
+                padding: {
+                  top: 20,
+                  bottom: 20
+                }
+              },
+              legend: {
+                display: false,
+                position: 'right'
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#bfbfbf' },
+                title: {
+                  display: true,
+                  text: 'hi',
+                  color: '#bfbfbf'
+                }
+              },
+              x: {
+                ticks: { color: '#bfbfbf' },
+                title: {
+                  display: true,
+                  text: 'time',
+                  color: '#bfbfbf'
+                }
+              }
+            },
+          }}/>
+          </div>)
+        }
+
+        if (graph.graphType === 'Line') {
+          return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+          <Line 
+          data = { memoryState } 
+          options = {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
             title: {
               display: true,
               font: {
@@ -580,9 +616,9 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
                 bottom: 20
               }
             },
-            legend: {
+            legend:{
               display: false,
-              position: 'right'
+              position: 'bottom'
             }
           },
           scales: {
@@ -590,12 +626,13 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
               ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
-                text: label,
+                text: 'Meow',
                 color: '#bfbfbf'
               }
             },
             x: {
               ticks: { color: '#bfbfbf' },
+              beginAtZero: true,
               title: {
                 display: true,
                 text: 'time',
@@ -603,96 +640,288 @@ const GraphComponent = ({ timestamps, memory, durations, errors, throttles, conc
               }
             }
           },
-        }}/>
-        </div>)
-      }
-  
-      if (graph.graphType === 'Line') {
-        return (
-        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
-        <Line 
-        data = { chartState } 
-        options = {{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-          title: {
-            display: true,
-            font: {
-              weight: 'bold',
-              size: 25,
-            },
-            text: graph.graphName,
-            color: '#bfbfbf',
-            align: 'start',
-            padding: {
-              top: 20,
-              bottom: 20
-            }
-          },
-          legend:{
-            display: false,
-            position: 'bottom'
-          }
-        },
-        scales: {
-          y: {
-            ticks: { color: '#bfbfbf' },
-            title: {
-              display: true,
-              text: label,
-              color: '#bfbfbf'
-            }
-          },
-          x: {
-            ticks: { color: '#bfbfbf' },
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'time',
-              color: '#bfbfbf'
-            }
-          }
-        },
-        }}/>
-        </div>
-      )}
+          }}/>
+          </div>
+        )}
 
-      if (graph.graphType === 'Pie') {
-        return (
-        <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
-        <Pie
-        data = { chartState } 
-        options = {{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              font: {
-                weight: 'bold',
-                size: 25,
+        if (graph.graphType === 'Pie') {
+          return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+          <Pie
+          data = { memoryState } 
+          options = {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                font: {
+                  weight: 'bold',
+                  size: 25,
+                },
+                text: graph.graphName,
+                color: '#BEBEBE',
+                align: 'start',
+                padding: {
+                  top: 20,
+                  bottom: 20
+                }
               },
-              text: graph.graphName,
-              color: '#BEBEBE',
-              align: 'start',
-              padding: {
-                top: 20,
-                bottom: 20
+              legend: {
+                display: false,
+                position: 'left'
               }
-            },
-            legend: {
-              display: false,
-              position: 'left'
             }
+          }}/>
+          </div>
+          )
+        }
+  })} */}
+
+    {customGraphs && customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
+      // extract the label from the metric data
+      const label = graph.metricData.Label;
+      
+      // sort the datapoints by time
+      graph.metricData.Datapoints.sort((a: any, b: any) => a[1] - b[1]);
+
+      // extract time & data from each datapoint
+      const timestamps = graph.metricData.Datapoints.map((item: any) => item.Timestamp.slice(-11)); // removes date from string
+      const sums = graph.metricData.Datapoints.map((item:any) => item.Sum);
+      const average = graph.metricData.Datapoints.map((item:any) => item.Average);
+      const max = graph.metricData.Datapoints.map((item:any) => item.Maximum);
+      const min = graph.metricData.Datapoints.map((item:any) => item.Minimum);
+
+      // states for most graphs
+      const state = {
+        labels: timestamps,
+        datasets: [
+          {
+            label: label,
+            backgroundColor: [
+              '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+              ],
+            borderWidth: 0,
+            borderColor: 'black',
+            data: sums,
+            showLine: true,
           }
-        }}/>
-        </div>
+        ]
+      }
+
+       // MULTI LINE GRAPH STATE
+      const multiState = {
+        labels: timestamps,
+        datasets: [
+          {
+            label: 'Maximum',
+            data: max,
+            borderColor: '#B2CAB3',
+            backgroundColor: '#B2CAB3',
+          },
+          {
+            label: 'Minimum',
+            data: min,
+            borderColor: '#B8E8FC',
+            backgroundColor: '#B8E8FC',
+          },
+          {
+            label: 'Average',
+            data: average,
+            borderColor: '#EDC09E',
+            backgroundColor: '#EDC09E',
+          }
+        ]
+      }
+
+      // if conditionals for each graph type
+      if (graph.graphType === 'Bar') {
+        return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+          <Bar
+            data = { state }
+            // width={"50%"}
+            options = {{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  font: {
+                    weight: 'bold',
+                    size: 25,
+                  },
+                  text: graph.graphName,
+                  color: '#bfbfbf',
+                  align: 'start',
+                  padding: {
+                    top: 20,
+                    bottom: 20
+                  }
+                },
+                legend: {
+                  display: false,
+                  position: 'right'
+                }
+              },
+              scales: {
+                y: {
+                  ticks: { color: '#bfbfbf' },
+                  title: {
+                    display: true,
+                    text: label,
+                    color: '#bfbfbf'
+                  }
+                },
+                x: {
+                  ticks: { color: '#bfbfbf' },
+                  title: {
+                    display: true,
+                    text: 'time',
+                    color: '#bfbfbf'
+                  }
+                }
+              },
+            }}/>
+          </div>
         )
       }
-    })}
-    </div>
+      if (graph.graphType === 'Line') {
+        return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+          <Line
+              data={ state }
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                title: {
+                  display: true,
+                  font: {
+                    weight: 'bold',
+                    size: 25,
+                  },
+                  text: graph.graphName,
+                  color: '#bfbfbf',
+                  align: 'start',
+                  padding: {
+                    top: 20,
+                    bottom: 20
+                  }
+                },
+                legend:{
+                  display: false,
+                  position: 'bottom'
+                }
+              },
+              scales: {
+                y: {
+                  ticks: { color: '#bfbfbf' },
+                  title: {
+                    display: true,
+                    text: label,
+                    color: '#bfbfbf'
+                  }
+                },
+                x: {
+                  ticks: { color: '#bfbfbf' },
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: 'time',
+                    color: '#bfbfbf'
+                  }
+                }
+              },
+              }}/>
+            </div>
+        );
+      }
+      if (graph.graphType === 'Pie') {
+        return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+          <Pie
+          data = { state } 
+          options = {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                font: {
+                  weight: 'bold',
+                  size: 25,
+                },
+                text: graph.graphName,
+                color: '#BEBEBE',
+                align: 'start',
+                padding: {
+                  top: 20,
+                  bottom: 20
+                }
+              },
+              legend: {
+                display: false,
+                position: 'left'
+              }
+            }
+          }}/>
+          </div>
+        );
+      }
+      if (graph.graphType === 'MultiLine') {
+        return (
+          <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+          <Line
+            data = { multiState }
+            options = {{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  font: {
+                    weight: 'bold',
+                    size: 25,
+                  },
+                  text: graph.graphName,
+                  color: '#bfbfbf',
+                  align: 'start',
+                  padding: {
+                    top: 20,
+                    bottom: 20
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  ticks: { color: '#bfbfbf' },
+                  title: {
+                    display: true,
+                    text: label,
+                    color: '#bfbfbf'
+                  }
+                },
+                x: {
+                  ticks: { color: '#bfbfbf' },
+                  title: {
+                    display: true,
+                    text: 'time',
+                    color: '#bfbfbf'
+                  }
+                }
+              },
+            }}/>
+          </div>
+        );
+      }
+    }
+  )}
+  </div>
   );
-};
+}
 
 export default GraphComponent;

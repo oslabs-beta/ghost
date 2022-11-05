@@ -9,6 +9,8 @@ import TopBarContainer from './container/TopBarContainer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 const light: any = {
@@ -56,9 +58,11 @@ const App = () => {
       <ThemeProvider theme={isDarkMui ? createTheme(dark) : createTheme(light)}>
         <FunctionContextProvider>
           <GraphContextProvider>
-            <TopBarContainer changeMuiTheme={changeMuiTheme} />
-            <SidebarContainer />
-            <MainContainer />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TopBarContainer changeMuiTheme={changeMuiTheme} />
+              <SidebarContainer />
+              <MainContainer />
+            </LocalizationProvider>
           </GraphContextProvider>
         </FunctionContextProvider>
       </ThemeProvider>
