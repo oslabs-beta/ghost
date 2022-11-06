@@ -38,11 +38,11 @@ function a11yProps(index: number) {
   };
 }
 
-const PricingDetails = ({ defaultFunctionConfig }: any) => {
+const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const { functionName } = useFunctionContext();
-  const [type, setType] = React.useState('x86_64');
-  const [memorySize, setMemorySize] = React.useState(128);
-  const [storage, setStorage] = React.useState(512);
+  const [type, setType] = React.useState(defaultFunctionConfig.type);
+  const [memorySize, setMemorySize] = React.useState(defaultFunctionConfig.memorySize);
+  const [storage, setStorage] = React.useState(defaultFunctionConfig.storage);
   const [billedDurationAvg, setBilledDurationAvg] = React.useState(1);
   const [invocationsTotal, setInvocationsTotal] = React.useState(1);
   const [pricing, setPricing] = React.useState(0);
@@ -53,8 +53,8 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
     setValue(newValue);
   };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
     // post request to backend
     const body = {
       functionName: functionName,
@@ -116,16 +116,16 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
       <Typography gutterBottom>Type:</Typography>
       <RadioGroup
         aria-labelledby="Type"
-        defaultValue="ARM"
+        defaultValue="Arm"
         name="radio-buttons-group"
         value={type}
         onChange={(e) => setType(e.target.value)}
       >
-        <FormControlLabel value="ARM" control={<Radio sx={{
+        <FormControlLabel value="Arm" control={<Radio sx={{
           '&, &.Mui-checked': {
             color: '#7f9f80',
           },
-        }}/>} label="ARM" 
+        }}/>} label="Arm" 
         />
         <FormControlLabel value="x86_64" control={<Radio sx={{
           '&, &.Mui-checked': {
@@ -143,7 +143,7 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
         aria-label="default"
         valueLabelDisplay="auto"
         value={memorySize}
-        min={130}
+        min={128}
         max={10240}
         // color="secondary"
         onChange={(e, value) => setMemorySize(value as number)}
@@ -156,7 +156,7 @@ const PricingDetails = ({ defaultFunctionConfig }: any) => {
         aria-label="default"
         valueLabelDisplay="auto"
         value={storage}
-        min={520}
+        min={512}
         max={10240}
         onChange={(e, value) => setStorage(value as number)}
       />
