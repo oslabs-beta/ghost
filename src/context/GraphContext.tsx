@@ -13,7 +13,6 @@ interface GraphContextProps {
   concurrent: string,
   startTime: any,
   endTime: any,
-  metricData: {},
 
   setGraphName?: (name: string) => void,
   setGraphType?: (type: string) => void,
@@ -24,7 +23,6 @@ interface GraphContextProps {
   setConcurrent?: (data: string) => void,
   setStartTime?: (data: any) => void,
   setEndTime?: (date: any) => void,
-  setMetricData?: (data: {}) => void,
   setCreateGraphIsShown?: (value: boolean) => void,
   setCustomGraphs?: (value: any) => any | void,
 
@@ -43,7 +41,6 @@ const defaultState = {
   concurrent: '',
   startTime: '',
   endTime: '',
-  metricData: {},
   customGraphs: [],
 }
 
@@ -62,7 +59,6 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [concurrent, setConcurrent] = React.useState('');
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
-  const [metricData, setMetricData] = React.useState({});
   const [createGraphIsShown, setCreateGraphIsShown] = React.useState(false);
   const [customGraphs, setCustomGraphs] = React.useState([]);
   const [metricName, setMetricName] = React.useState('');
@@ -78,7 +74,6 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
         concurrent,
         startTime,
         endTime,
-        metricData,
         createGraphIsShown,
         setGraphName,
         setGraphType,
@@ -88,7 +83,6 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
         setConcurrent,
         setStartTime,
         setEndTime,
-        setMetricData,
         setCreateGraphIsShown,
         customGraphs,
         setCustomGraphs,

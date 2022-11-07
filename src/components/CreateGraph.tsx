@@ -34,25 +34,16 @@ import * as dayjs from 'dayjs';
 const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
-  const { customGraphs, setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime, metricData, setMetricData } = useGraphContext();
+  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime } = useGraphContext();
 
   // store list of metrics and graphtypes in an array
-  const graphTypeNames = ['Line', 'Bar', 'Pie'];
+  const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
   const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
 
-  // on submit, save all user-inputted data to object
-  const handleSubmit = () => {
-    const newCustomGraph = {
-      functionName: functionName,
-      graphName: graphName,
-      graphType: graphType,
-      metricName: metricName,
-      startTime: startTime,
-      endTime: endTime,
-      metricData: metricData
-    }
-    // post request to backend to get metric data
-    fetch('http://localhost:3000/moreMetrics', {
+  // on submit, send the data to the backend
+  async function handleSubmit() {
+    // call the fetch function
+    const res = await fetch('http://localhost:3000/moreMetrics', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -62,15 +53,21 @@ const CreateGraph = () => {
         endTime: endTime
       })
     })
-    .then(res => res.json())
-    .then(data => {
-      // set the metric data to the state
-      setMetricData?.(data);
-      // save the graph setup to the state, in addition to all the previous graphs
-      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
-      console.log('custom graphs in array: ', customGraphs)
-    })
+    const data = await res.json();
+
+    // save the graph setup to the state, in addition to all the previous graphs
+    const newCustomGraph = {
+      functionName: functionName,
+      graphName: graphName,
+      graphType: graphType,
+      metricName: metricName,
+      startTime: startTime,
+      endTime: endTime,
+      metricData: data
+    }
+    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
   }
+
 
   return (
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
@@ -99,15 +96,16 @@ const CreateGraph = () => {
         <DateTimePicker
           label="Start Date & Time"
           minutesStep={5}
-          value={startTime}
+          value={startTime || null}
           onChange={(newValue) => {
             const newDate = new Date(newValue).toLocaleString();
-            console.log(newDate);
             setStartTime?.(newDate);
+            // set the default end time to 23h59m after the start time
+            const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').toLocaleString();
+            setEndTime?.(newDatePlus24);
           }}
           renderInput={(params) => <TextField {...params} />}
         />
-      
       </LocalizationProvider>
       <br></br>
 
@@ -115,15 +113,14 @@ const CreateGraph = () => {
         <DateTimePicker
           label="End Date & Time"
           minutesStep={5}
-          value={endTime}
+          value={endTime || null}
           onChange={(newValue) => {
             // only allow the date and time to be set, if the time within 12 hours time difference
               let newDate = new Date(newValue).toLocaleString();
-              dayjs(newDate).isAfter(dayjs(startTime).add(12, 'hour')) ? alert('Please select a time within 12 hours of the start time') : setEndTime?.(newDate);
+              dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour')) ? alert('Please select a time within 24 hours of the start time') : setEndTime?.(newDate);
           }}
           renderInput={(params) => <TextField {...params} />}
         />
-      
       </LocalizationProvider>
       <br></br>
 
