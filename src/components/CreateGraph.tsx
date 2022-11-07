@@ -3,6 +3,12 @@ import { useFunctionContext } from '../context/FunctionContext'
 import { useGraphContext } from '../context/GraphContext'
 import { Select, Button, TextField } from '@mui/material'
 import { Menu, MenuItem, FormControl, FormHelperText, InputLabel } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { HouseRounded } from '@mui/icons-material';
+import * as dayjs from 'dayjs';
+
 /*
   1. should read the selected function from context
   2. dropdown for metrics: Errors, ConcurrentExecutions, Invocations, Duration, Throttles
@@ -26,43 +32,42 @@ import { Menu, MenuItem, FormControl, FormHelperText, InputLabel } from '@mui/ma
 */
 
 const CreateGraph = () => {
-  // pull functionName out of context
+  // pull relevant state out of context
   const { functionName } = useFunctionContext();
-  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName } = useGraphContext();
+  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime } = useGraphContext();
 
   // store list of metrics and graphtypes in an array
-  const graphTypeNames = ['Line', 'Bar', 'Pie'];
+  const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
   const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
 
-  // on submit, save the graph to the state, in addition to all the previous graphs
-  const handleSubmit = () => {
+  // on submit, send the data to the backend
+  async function handleSubmit() {
+    // call the fetch function
+    const res = await fetch('http://localhost:3000/moreMetrics', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        functionName: functionName,
+        metricName: metricName,
+        startTime: startTime,
+        endTime: endTime
+      })
+    })
+    const data = await res.json();
+
+    // save the graph setup to the state, in addition to all the previous graphs
     const newCustomGraph = {
       functionName: functionName,
       graphName: graphName,
       graphType: graphType,
-      metricName: metricName
+      metricName: metricName,
+      startTime: startTime,
+      endTime: endTime,
+      metricData: data
     }
-    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph]);
+    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
   }
 
-  // declare a function: handleMetricsClick, to test out the onClick setMetrics
-  // const handleMetricsClick = (e) => {
-  //   setMetrics({})
-  // }  
-
-  // const { graphName } = useGraphContext();
-  // const { graphType } = useGraphContext();
-  // const { dataset1 } = useGraphContext();
-  // const { dataset2 } = useGraphContext();
-
-  // const handleClick = async (e) => {
-  //   e.preventDefault();
-  //   const body = {
-  //     name: e.target[0].value,
-  //     type: e.target[1].value,
-
-  //   }
-  // }
 
   return (
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
@@ -71,8 +76,7 @@ const CreateGraph = () => {
       <TextField className="w-auto" id="outlined-basic" placeholder="Invocations per minute" label="Graph Name" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
       <br></br>
 
-      <FormHelperText>Metrics</FormHelperText>
-      {/* <InputLabel id="metrics">Metrics</InputLabel> */}
+      <InputLabel id="metrics">Metrics</InputLabel>
       <Select labelId="metrics" id="metrics-select" className="w-auto" label='Metrics'>     
         {metricNames.map((metricName) => (
           <MenuItem key={metricName} value={metricName} onClick={() => setMetricName?.(metricName)}>{metricName}</MenuItem>
@@ -87,7 +91,39 @@ const CreateGraph = () => {
         ))}
       </Select>
       <br></br>
-      
+
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateTimePicker
+          label="Start Date & Time"
+          minutesStep={5}
+          value={startTime || null}
+          onChange={(newValue) => {
+            const newDate = new Date(newValue).toLocaleString();
+            setStartTime?.(newDate);
+            // set the default end time to 23h59m after the start time
+            const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').toLocaleString();
+            setEndTime?.(newDatePlus24);
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+      <br></br>
+
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateTimePicker
+          label="End Date & Time"
+          minutesStep={5}
+          value={endTime || null}
+          onChange={(newValue) => {
+            // only allow the date and time to be set, if the time within 12 hours time difference
+              let newDate = new Date(newValue).toLocaleString();
+              dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour')) ? alert('Please select a time within 24 hours of the start time') : setEndTime?.(newDate);
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+      <br></br>
+
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="outlined"
               disableElevation

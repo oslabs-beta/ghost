@@ -9,13 +9,15 @@ import TopBarContainer from './container/TopBarContainer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 const light: any = {
   palette: {
     mode: "light",
     text: {
-      primary: '#000000'
+      primary: '#000000',
     },
     primary: {
       main: "#F5F5F5",
@@ -31,7 +33,8 @@ const dark: any = {
   palette: {
     mode: "dark",
     text: {
-      primary: '#F5F5F5'
+      primary: '#F5F5F5',
+      
     },
     primary: {
       main: "#242424",
@@ -39,7 +42,7 @@ const dark: any = {
     secondary: {
       main: "#636262",
     },
-    button: '#7f9f80'
+    button: '#7f9f80',
   },
 };
 
@@ -56,9 +59,11 @@ const App = () => {
       <ThemeProvider theme={isDarkMui ? createTheme(dark) : createTheme(light)}>
         <FunctionContextProvider>
           <GraphContextProvider>
-            <TopBarContainer changeMuiTheme={changeMuiTheme} />
-            <SidebarContainer />
-            <MainContainer />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TopBarContainer changeMuiTheme={changeMuiTheme} />
+              <SidebarContainer />
+              <MainContainer />
+            </LocalizationProvider>
           </GraphContextProvider>
         </FunctionContextProvider>
       </ThemeProvider>
