@@ -23,6 +23,13 @@ app.get('/functions',
   }
 )
 
+app.post('/moreMetrics',
+  metricsController.getMetrics,
+  (req, res) => {
+    res.status(200).json(res.locals.metricStats)
+  }
+)
+
 app.post('/logStreams', 
   cloudwatchController.getLogStreams,
   (req, res) => {
@@ -30,6 +37,7 @@ app.post('/logStreams',
   }
 )
 
+//dev
 app.post('/rawLogs', 
   cloudwatchController.getRawLogs,
   (req, res) => {
@@ -45,20 +53,6 @@ app.post('/basicMetrics',
   }
 )
 
-app.post('/moreMetrics',
-  metricsController.getMetrics,
-  (req, res) => {
-    res.status(200).json(res.locals.metricStats)
-  }
-)
-
-app.post('/pricing',
-  priceController.getEstimate,
-  (req, res) => {
-    res.status(200).json(res.locals.estimate)
-  }
-)
-
 app.post('/functionConfig',
   lambdaController.functionConfig,
   (req, res) => {
@@ -66,10 +60,63 @@ app.post('/functionConfig',
   }
 )
 
-app.post('/price',
+app.post('/priceCalc',
   priceController.getEstimate,
   (req, res) => {
     res.status(200).json(res.locals.cost)
+  }
+)
+
+app.post('/priceHistory',
+  priceController.getHistory,
+  (req, res) => {
+    res.status(200).json(res.locals.cost)
+  }
+)
+
+app.post('/logStreamsAll',
+  cloudwatchController.getAllLogStreams,
+  (req, res) => {
+    res.status(200).json(res.locals.logStreams)
+  }
+)
+
+app.post('/rawLogsAll',
+  cloudwatchController.getAllRawLogs,
+  (req, res) => {
+    res.status(200).json(res.locals.rawLogs)
+  }
+)
+
+app.post('/priceMetrics',
+  cloudwatchController.getAllRawLogs,
+  dataController.parseBasic,
+  dataController.parsePrice,
+  (req, res) => {
+    res.status(200).json(res.locals.priceMetrics)
+  }
+)
+
+app.post('/coldMetrics',
+  cloudwatchController.getAllRawLogs,
+  dataController.parseBasic,
+  dataController.parseColdStarts,
+  (req, res) => {
+    res.status(200).json(res.locals.coldMetrics)
+  }
+)
+
+app.post('/listPermissions',
+  lambdaController.getPolicies,
+  (req, res) => {
+    res.status(200).json(res.locals.policies)
+  }
+)
+
+app.post('/addPermission',
+  lambdaController.addPermission,
+  (req, res) => {
+    res.status(200).json("permission added")
   }
 )
 
@@ -82,13 +129,6 @@ app.get('/listMetrics',
   }
 )
 
-app.get('/metricStreams',
-  metricsController.getMetricStreams,
-  (req, res) => {
-    res.status(200).json(res.locals.metricStreams)
-  }
-)
-
 //undefined route handler
 app.use('/', (req, res) => {
   res.status(404).send('Invalid route endpoint');
@@ -96,7 +136,15 @@ app.use('/', (req, res) => {
 
 //global error handler
 app.use((err, req, res, next) => {
-  return res.status(500).send('global error handler invoked');
+  const errObj = {
+    log: 'global error handler invoked',
+    status: 400,
+    message: err,
+  };
+  if (err.name === 'InvalidParameterCombinationException') {
+    errObj.tooManyDatapoints = true;
+  }
+  return res.status(errObj.status).json(errObj);
 })
 
 //listen on port
