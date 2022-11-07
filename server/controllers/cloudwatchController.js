@@ -105,7 +105,30 @@ cloudwatchController.getAllRawLogs = async (req, res, next) => {
   return next();
 }
 
+cloudwatchController.iterateStreamsForLogs = async (req, res, next) => {
+  res.locals.rawLogs = [];
 
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
+
+  for (let stream of res.locals.logStreams) {
+    const input = {
+      logGroupName: "/aws/lambda/" + req.body.functionName,
+      logStreamName: stream.streamName,
+    };
+  
+    let data = null;
+  
+    do {
+      data ? input.nextToken = data.nextBackwardToken : null
+      const command = new GetLogEventsCommand(input);
+      data = await client.send(command);
+      res.locals.rawLogs = res.locals.rawLogs.concat(data.events)
+    } while (data.events.length)
+
+  }
+  
+  return next();
+}
 
 
 

@@ -45,7 +45,6 @@ app.post('/logStreams',
   }
 )
 
-//dev
 app.post('/rawLogs', 
   cloudwatchController.getRawLogs,
   (req, res) => {
@@ -107,6 +106,26 @@ app.post('/priceMetrics',
 
 app.post('/coldMetrics',
   cloudwatchController.getAllRawLogs,
+  dataController.parseBasic,
+  dataController.parseColdStarts,
+  (req, res) => {
+    res.status(200).json(res.locals.coldMetrics)
+  }
+)
+
+app.post('/priceMetricsPlus',
+  cloudwatchController.getAllLogStreams,
+  cloudwatchController.iterateStreamsForLogs,
+  dataController.parseBasic,
+  dataController.parsePrice,
+  (req, res) => {
+    res.status(200).json(res.locals.priceMetrics)
+  }
+)
+
+app.post('/coldMetricsPlus',
+  cloudwatchController.getAllLogStreams,
+  cloudwatchController.iterateStreamsForLogs,
   dataController.parseBasic,
   dataController.parseColdStarts,
   (req, res) => {
