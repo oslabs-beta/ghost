@@ -56,6 +56,44 @@ dataController.parseBasic = (req, res, next) => {
   
 }
 
+dataController.parsePrice = (req, res, next) => {
+  //res.locals.basicData is an array of basic Data objects
+  let totalBilledDuration = 0;
+  let invocations = 0;
+
+  for (let logEvent of res.locals.basicData) {
+    invocations++
+    totalBilledDuration += parseInt(logEvent.billedDuration, 10);
+  }
+
+  res.locals.priceMetrics = {
+    durationTotal: totalBilledDuration,
+    invocationsTotal: invocations
+  };
+
+  return next();
+}
+
+dataController.parseColdStarts = (req, res, next) => {
+  //res.locals.basicData is an array of basic Data objects
+  //initDuration
+
+  const coldMetrics = [];
+
+  for (let logEvent of res.locals.basicData) {
+    if (logEvent.hasOwnProperty("initDuration")) {
+      const coldStart = {
+        initDuration: logEvent.initDuration,
+        timestamp: logEvent.timestamp
+      }
+      coldMetrics.push(coldStart)
+    }
+  }
+
+  res.locals.coldMetrics = coldMetrics;
+
+  return next();
+}
 
 
 module.exports = dataController;

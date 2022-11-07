@@ -1,4 +1,4 @@
-const { CloudWatchClient, ListMetricsCommand, ListMetricStreamsCommand, GetMetricStatisticsCommand   } = require("@aws-sdk/client-cloudwatch")
+const { CloudWatchClient, ListMetricsCommand, GetMetricStatisticsCommand  } = require("@aws-sdk/client-cloudwatch")
 const { convertToUnix, convertTime } = require("./timeFunctions");
 
 const metricsController = {};
@@ -22,27 +22,8 @@ metricsController.listMetrics = (req, res, next) => {
     })
 }
 
-metricsController.getMetricStreams = (req, res, next) => {
-  const client = new CloudWatchClient({ region: "us-west-1" });
-
-  const input = {};;
-
-  const command = new ListMetricStreamsCommand(input);
-
-  client.send(command)
-    .then(data => {
-      res.locals.metricStreams = data;
-      return next()
-    })
-    .catch(error => {
-      console.log("error in get Metric Streams: ", error)
-      return next(error)
-    })
-}
-
 metricsController.getMetrics = (req, res, next) => {
   const client = new CloudWatchClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
-
   const input = {
     "StartTime": new Date(convertToUnix(req.body.startTime)), // "10/27/2022, 12:00:00 AM"
     "EndTime": new Date(convertToUnix(req.body.endTime)),
@@ -76,7 +57,7 @@ metricsController.getMetrics = (req, res, next) => {
       return next()
     })
     .catch(error => {
-      console.log("error in get Metric Stats: ", error)
+      console.log("error in get Metric Stats: ", error.name)
       return next(error)
     })
 }
