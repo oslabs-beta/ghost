@@ -11,6 +11,12 @@ interface TabPanelProps {
   value: number;
 }
 
+const StyledTab = styled(Tab)({
+  "&.Mui-selected": {
+    color: "#7f9f80"
+  }
+})
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -88,20 +94,11 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
     <div className='p-5 flex flex-col text-[#000000] dark:text-[#D3D4D4]'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5 }}>
         <Tabs 
-          TabIndicatorProps={{style:{background:'white'}}} 
+          TabIndicatorProps={{style: {background: '#7f9f80'}}}
           value={value}
-          onChange={handleChange}
-          textColor="primary"
-          sx={{
-            '& .MuiTab-textColorPrimary': {
-              color: '#ffffff',
-            },
-            '& .Mui-focused': {
-              color: '#7f9f80',
-            }
-          }}>
-          <Tab label="Calculator" {...a11yProps(0)} sx={{background: '#7f9f80'}}/>
-          <Tab label="History" {...a11yProps(1)} sx={{background: '#7f9f80'}}/>
+          onChange={handleChange}>
+          <StyledTab label="Calculator" {...a11yProps(0)} />
+          <StyledTab label="History" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
