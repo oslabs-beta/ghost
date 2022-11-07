@@ -1,9 +1,10 @@
 const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } = require("@aws-sdk/client-cloudwatch-logs");
+const regionController = require('./regionController')
 
 const cloudwatchController = {};
 
 cloudwatchController.getLogStreams = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -32,7 +33,7 @@ cloudwatchController.getLogStreams = (req, res, next) => {
 }
 
 cloudwatchController.getRawLogs = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -53,7 +54,7 @@ cloudwatchController.getRawLogs = (req, res, next) => {
 }
 
 cloudwatchController.getAllLogStreams = async (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -82,7 +83,7 @@ cloudwatchController.getAllLogStreams = async (req, res, next) => {
 }
 
 cloudwatchController.getAllRawLogs = async (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,

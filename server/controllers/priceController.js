@@ -1,4 +1,4 @@
-const priceTable = require('./priceTable');
+const priceTable = require('../assets/priceTable');
 
 const pricingController = {};
 
