@@ -7,6 +7,7 @@ const dataController = require('./controllers/dataController');
 const lambdaController = require('./controllers/lambdaController');
 const metricsController = require('./controllers/metricsController');
 const priceController = require('./controllers/priceController')
+const regionController = require('./controllers/regionController')
 
 app.use(express.json());
 
@@ -20,6 +21,13 @@ app.get('/functions',
   lambdaController.getFunctions,
   (req, res) => {
     res.status(200).json(res.locals.functions)
+  }
+)
+
+app.post('/changeRegion',
+  regionController.changeRegion,
+  (req, res) => {
+    res.status(200).json(res.locals.response)
   }
 )
 
@@ -117,6 +125,13 @@ app.post('/addPermission',
   lambdaController.addPermission,
   (req, res) => {
     res.status(200).json("permission added")
+  }
+)
+
+app.post('/removePermission',
+  lambdaController.removePermission,
+  (req, res) => {
+    res.status(200).json("permission removed")
   }
 )
 
