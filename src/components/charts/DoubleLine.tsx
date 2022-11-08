@@ -74,33 +74,3 @@
 //           },
 //       }}/>
 //  </p>
-
-
-// SCATTER PLOT
-{/* <p className=" bg-white rounded-lg shadow-md m-2 p-4">
-  <Scatter
-    data = { scatterState }
-    options = {{
-      plugins: {
-        title: {
-          display: true,
-          font: {
-            weight: 'bold',
-            size: 30,
-            },
-          text: 'Scatter Plot Title',
-          color: '#BEBEBE',
-          align: 'start',
-          padding: {
-            top: 20,
-            bottom: 20
-            }
-          },
-        legend: {
-          display: false,
-          position: 'right'
-          }
-        }
-    }}
-  />
-</p> */}
