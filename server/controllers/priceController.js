@@ -103,11 +103,18 @@ pricingController.getHistory = (req, res, next) => {
   //durationTotal: Number //must be b/w 1 to 900000
   //invocationsTotal: Number //must be b/w 1 to 1e+21
 
-  const typeKey = req.body.type;
-  const memKey = req.body.memorySize;
-  const totalDuration = req.body.durationTotal;
-  const invocations = req.body.invocationsTotal;
-  const storage = req.body.storage; 
+  console.log('res locals in get History')
+  console.log(res.locals.type);
+  console.log(res.locals.memorySize);
+  console.log(res.locals.durationTotal);
+  console.log(res.locals.invocationsTotal);
+  console.log(res.locals.storage);
+
+  const typeKey = res.locals.type;
+  const memKey = res.locals.memorySize;
+  const totalDuration = res.locals.durationTotal;
+  const invocations = res.locals.invocationsTotal;
+  const storage = res.locals.storage; 
 
   //unit conversions:
   const memoryGb = memKey * 0.0009765625;
