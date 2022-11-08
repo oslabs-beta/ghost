@@ -34,11 +34,12 @@ import * as dayjs from 'dayjs';
 const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
-  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime } = useGraphContext();
+  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime, datapointType, setDatapointType } = useGraphContext();
 
   // store list of metrics and graphtypes in an array
   const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
   const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
+  const datapointTypeNames = ['Average', 'Sum', 'Minimum', 'Maximum'];
 
   // on submit, send the data to the backend
   async function handleSubmit() {
@@ -54,6 +55,11 @@ const CreateGraph = () => {
       })
     })
     const data = await res.json();
+    
+    // if there are too many datapoints, alert the user
+    if (data.tooManyDatapoints) {
+      alert('Too many datapoints. Please select a smaller time range.')
+    }
 
     // save the graph setup to the state, in addition to all the previous graphs
     const newCustomGraph = {
@@ -63,7 +69,8 @@ const CreateGraph = () => {
       metricName: metricName,
       startTime: startTime,
       endTime: endTime,
-      metricData: data
+      metricData: data,
+      datapointType: datapointType
     }
     setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
   }
@@ -84,13 +91,27 @@ const CreateGraph = () => {
       </Select>
       <br></br>
 
-      <FormHelperText>Graph Type</FormHelperText>
+      <InputLabel id="graph-type">Graph Type</InputLabel>
       <Select id="graph-type" className="w-auto" label='Graph Type'>
         {graphTypeNames.map((graphType) => (
           <MenuItem value={graphType} onClick={() => setGraphType?.(graphType)}>{graphType}</MenuItem>
         ))}
       </Select>
       <br></br>
+
+      { graphType === 'Bar' || graphType === 'Pie' || graphType === 'Line' ? 
+      <>
+        <InputLabel id="datapoints-type">Datapoints Type</InputLabel>
+        <Select id="datapoints-type" className="w-auto" label='Graph Type'>
+          {datapointTypeNames.map((datapointType) => (
+            <MenuItem value={datapointType} onClick={() => setDatapointType?.(datapointType)}>{datapointType}</MenuItem>
+          ))}
+        </Select>
+        <br></br>
+      </>
+      :
+      null
+      }
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker

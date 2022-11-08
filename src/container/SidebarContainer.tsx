@@ -26,13 +26,14 @@ export default function SidebarContainer() {
     }
   
   // home sends you to the home page
-  const { isHomeEnabled, setIsHomeEnabled, isPricingEnabled, setIsPricingEnabled, isMetricsEnabled, setIsMetricsEnabled} = useFunctionContext();
+  const { isHomeEnabled, setIsHomeEnabled, isPricingEnabled, setIsPricingEnabled, isMetricsEnabled, setIsMetricsEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
   const { setCreateGraphIsShown } = useGraphContext();
   const handleHomeClick = () => {
     setIsHomeEnabled?.(true);
     setIsMetricsEnabled?.(false);
     setIsPricingEnabled?.(false);
     setCreateGraphIsShown?.(false);
+    setIsPermissionsEnabled?.(false);
   }
 
   // fetch list of lambda functions

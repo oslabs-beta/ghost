@@ -1,10 +1,14 @@
 import * as React from 'react'
 import { useFunctionContext } from '../context/FunctionContext'
-import { Box, Slider, Typography, styled, Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField, FormHelperText, Select, Tabs, Tab } from '@mui/material'
+import { Box, Slider, Typography, styled, Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField, FormHelperText, Select, Tabs, Tab, Stack } from '@mui/material'
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import * as dayjs from 'dayjs';
 
 interface PricingDetailsProps {
   defaultFunctionConfig: any,
 }
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -54,6 +58,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const [pricing, setPricing] = React.useState(0);
   const [showPricing, setShowPricing] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-07'));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -61,7 +66,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    // post request to backend
+    // post request to backend for pricing calculator
     const body = {
       functionName: functionName,
       type: type,
@@ -81,9 +86,34 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         setShowPricing(true);
         })
         .catch((err) => {
-          console.log('Error fetching metrics:', err);
+          console.log('Error fetching pricing calc:', err);
         });
   }
+
+  // post request to backend for pricing history
+  // const handleSubmit2 = (event: React.SyntheticEvent) => {
+  //   event.preventDefault();
+  //   const body = {
+  //     functionName: functionName,
+  //     type: type,
+  //     billedDurationAvg: billedDurationAvg,
+  //     invocationsTotal: invocationsTotal, 
+  //     date: date,
+  //   }
+  //   fetch('http://localhost:3000/priceHistory', {
+  //     method: 'POST',
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(body)
+  //     })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setPricing(data);
+  //       setShowPricing(true);
+  //       })
+  //       .catch((err) => {
+  //         console.log('Error fetching pricing history:', err);
+  //       });
+  // }
 
   const financial = (num: any) => {
     return new Intl.NumberFormat().format(num);
@@ -91,7 +121,9 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
 
 
   return (
-    <div className='p-5 flex flex-col text-[#000000] dark:text-[#D3D4D4]'>
+    <div className='p-5 flex flex-col text-gray-900 dark:text-[#D3D4D4]'>
+
+      {/* PRICING CALCULATOR */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5 }}>
         <Tabs 
           TabIndicatorProps={{style: {background: '#7f9f80'}}}
@@ -142,7 +174,6 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         value={memorySize}
         min={128}
         max={10240}
-        // color="secondary"
         onChange={(e, value) => setMemorySize(value as number)}
       />
 
@@ -212,13 +243,24 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
     </TabPanel>
 
 
-
+    {/* PRICING HISTORY */}
     <TabPanel value={value} index={1}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price history for:</p>
       <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
       
-      beeep boooooop peee pooooo
-      
+      <Typography gutterBottom>Billed month:</Typography>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Stack spacing={3}>
+        {/* <DatePicker
+          views={['year', 'month']}
+          label="Year and Month"
+          minDate={dayjs('2012-03-01')}
+          maxDate={dayjs('2023-06-01')}
+          value={value}
+          renderInput={(params) => <TextField {...params} helperText={null} />}
+        /> */}
+      </Stack>
+    </LocalizationProvider>
     </TabPanel>
 
   </div>
