@@ -24,6 +24,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
   const timestamps: Array<string> = defaultMetrics.map((item: any) => item.timestamp.slice(-11));
   const durations: Array<number> = defaultMetrics.map((item: any) => parseInt(item.duration.replace(/\D/g,'')));
   const memory: Array<number> = defaultMetrics.map((item: any) => parseInt(item.maxMemoryUsed.replace(/\D/g,'')));
+  const date: Array<string> = defaultMetrics.map((item: any) => item.timestamp.slice(0,10));
 
   // manually counting invocations
   const invocationObj: any = {};
@@ -143,7 +144,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
             },
             subtitle: {
               display: true,
-              text: 'Put the date here',
+              text: date[0],
               color: '#bfbfbf',
               align: 'start',
               padding: {
