@@ -174,7 +174,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
               ticks: { color: '#bfbfbf' },
               title: {
                 display: true,
-                text: 'time',
+                text: 'Time (UTC)',
                 color: '#bfbfbf'
               }
             }
@@ -204,7 +204,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
             },
             subtitle: {
               display: true,
-              text: 'Put the date here',
+              text: date[0],
               color: '#bfbfbf',
               align: 'start',
               padding: {
@@ -235,7 +235,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
               beginAtZero: true,
               title: {
                 display: true,
-                text: 'time',
+                text: 'Time (UTC)',
                 color: '#bfbfbf'
               }
             }
@@ -265,7 +265,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
             },
             subtitle: {
               display: true,
-              text: 'Put the date here',
+              text: date[0],
               color: '#bfbfbf',
               align: 'start',
               padding: {
@@ -296,7 +296,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
               beginAtZero: true,
               title: {
                 display: true,
-                text: 'Time',
+                text: 'Time (UTC)',
                 color: '#bfbfbf'
               }
             }
@@ -357,7 +357,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
                   beginAtZero: true,
                   title: {
                     display: true,
-                    text: 'Time',
+                    text: 'Time (UTC)',
                     color: '#bfbfbf'
                   }
                 }
@@ -492,7 +492,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
                       ticks: { color: '#bfbfbf' },
                       title: {
                         display: true,
-                        text: 'Time',
+                        text: 'Time (UTC)',
                         color: '#bfbfbf'
                       }
                     }
@@ -559,7 +559,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
                       beginAtZero: true,
                       title: {
                         display: true,
-                        text: 'Time',
+                        text: 'Time (UTC)',
                         color: '#bfbfbf'
                       }
                     }
@@ -675,7 +675,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
                       ticks: { color: '#bfbfbf' },
                       title: {
                         display: true,
-                        text: 'Time',
+                        text: 'Time (UTC)',
                         color: '#bfbfbf'
                       }
                     }
