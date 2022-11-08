@@ -67,7 +67,7 @@ const MainContainer = () => {
         {createGraphIsShown ? <CreateGraph /> : null}
         {isMetricsEnabled ? <FunctionDetails /> : null}
         {isPricingEnabled ? <PricingDetails defaultFunctionConfig={defaultFunctionConfig}/> : null}
-        {isPermissionsEnabled ? <PermissionsDetails permissionList={permissionList} /> : null}
+        {isPermissionsEnabled ? <PermissionsDetails permissionList={permissionList} setPermissionList={setPermissionList} /> : null}
         {isHomeEnabled ? <Home /> : null}
     </div>
   )

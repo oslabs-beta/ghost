@@ -16,7 +16,7 @@ interface Props {
 
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
   // when a function is clicked, set the function in context
-  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
+  const { setFunctionName, setFunctionARN, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
   const { setCreateGraphIsShown } = useGraphContext();
   const [openOptions, setOpenOptions] = React.useState(false);
   const handleOpenOptions = () => {
@@ -42,8 +42,9 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
     setIsPermissionsEnabled?.(false);
   }
   
-  const handlePermissionsClick = (funcName: string) => {
+  const handlePermissionsClick = (funcName: string, funcARN: string) => {
     setFunctionName?.(funcName);
+    setFunctionARN?.(funcARN);
     setIsPricingEnabled?.(false);
     setIsMetricsEnabled?.(false);
     setIsHomeEnabled?.(false);
@@ -138,7 +139,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
               }}
               size="small"
               onClick={() => {
-                handlePermissionsClick(item.functionName);
+                handlePermissionsClick(item.functionName, item.functionARN);
               }}
             >
               Permissions
