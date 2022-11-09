@@ -14,6 +14,7 @@ const MainContainer = () => {
   const { isMetricsEnabled, isPricingEnabled, isHomeEnabled, isPermissionsEnabled } = useFunctionContext();
   const { createGraphIsShown } = useGraphContext();
   const { functionName } = useFunctionContext();
+  const [priceHistoryStats, setPriceHistoryStats] = React.useState({});
   // const [ loading, setLoading ] = React.useState(false);
 
   // React.useEffect(() => {
@@ -27,7 +28,7 @@ const MainContainer = () => {
   const [permissionList, setPermissionList] = React.useState([]);
 
   React.useEffect(() => {
-    fetch('http://localhost:3000/functionConfig',
+    fetch('http://localhost:3000/price/defaultConfig',
       {
         method: 'POST',
         headers: {
@@ -43,7 +44,7 @@ const MainContainer = () => {
 
   // fetch list of permissions for the current function
   React.useEffect(() => {
-    fetch('http://localhost:3000/listPermissions', {
+    fetch('http://localhost:3000/permission/list', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -66,7 +67,7 @@ const MainContainer = () => {
     <div className="bg-[#d6d4d4] dark:bg-[#191919] min-h-screen w-screen px-4/5">
         {createGraphIsShown ? <CreateGraph /> : null}
         {isMetricsEnabled ? <FunctionDetails /> : null}
-        {isPricingEnabled ? <PricingDetails defaultFunctionConfig={defaultFunctionConfig}/> : null}
+        {isPricingEnabled ? <PricingDetails defaultFunctionConfig={defaultFunctionConfig} /> : null}
         {isPermissionsEnabled ? <PermissionsDetails permissionList={permissionList} setPermissionList={setPermissionList} /> : null}
         {isHomeEnabled ? <Home /> : null}
     </div>

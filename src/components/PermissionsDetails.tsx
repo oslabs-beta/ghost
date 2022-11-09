@@ -80,7 +80,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
       principal: principal,
       principalOrgId: principalOrgId
     }
-    fetch('http://localhost:3000/addPermission', {
+    fetch('http://localhost:3000/permission/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -113,7 +113,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
     // if yes, post request to /removePermission
     // parameters are the current function and the passed in statementId
     if (answer) {
-      fetch('http://localhost:3000/removePermission', {
+      fetch('http://localhost:3000/permission/remove', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -203,6 +203,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
       <TabPanel value={value} index={1}>
         <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Add new permission for:</p>
         <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+        <br></br>
             <Box sx={{ m: 1, mb: 2, minWidth: 120 }}>
               <TextField
                 id="outlined-basic"
@@ -290,7 +291,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
               }
             }}
             size="small"
-            onClick={addPermission}>Add Permission</Button>
+            onClick={addPermission}>ADD PERMISSION</Button>
             <br />
             {errorText ? (
               <span className="text-red-600">

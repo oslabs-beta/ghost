@@ -31,7 +31,10 @@ export default function UserComponent() {
               Username
             </Button>
           </div>
-          <Menu className="w-5.5/12" {...bindMenu(popupState)}>
+          <Menu 
+          sx={{
+            width: '100%'
+          }} {...bindMenu(popupState)}>
             <MenuItem onClick={popupState.close}>admin</MenuItem>
             <MenuItem onClick={popupState.close}>user1</MenuItem>
             <MenuItem onClick={popupState.close}>user2</MenuItem>

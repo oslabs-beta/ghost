@@ -46,7 +46,7 @@ const CreateGraph = () => {
   // on submit, send the data to the backend
   async function handleSubmit() {
     // call the fetch function
-    const res = await fetch('http://localhost:3000/moreMetrics', {
+    const res = await fetch('http://localhost:3000/metric/custom', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -166,7 +166,7 @@ const CreateGraph = () => {
               size="small"
               onClick={handleSubmit}
             >
-              Submit
+              SUBMIT
             </Button>
             <br></br>
             { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
