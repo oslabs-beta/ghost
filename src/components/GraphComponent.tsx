@@ -39,18 +39,18 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
   const singleTime = Object.keys(invocationObj);
 
   // manually counting cold starts
-  const coldStartObj: any = {};
-  let coldStartDate = '';
-  for (let i = 0; i < coldStartMetrics.length; i++) {
-    if (coldStartObj[coldStartMetrics[i]]) {
-        coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] += 1;
-      } else {
-        coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] = 1;
-      }
-    coldStartDate = coldStartMetrics[i].timestamp.slice(0, 10);
-  }
-  const coldStarts = Object.values(coldStartObj);
-  const coldStartTimes = Object.keys(coldStartObj);
+  // const coldStartObj: any = {};
+  // let coldStartDate = '';
+  // for (let i = 0; i < coldStartMetrics.length; i++) {
+  //   if (coldStartObj[coldStartMetrics[i]]) {
+  //       coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] += 1;
+  //     } else {
+  //       coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] = 1;
+  //     }
+  //   coldStartDate = coldStartMetrics[i].timestamp.slice(0, 10);
+  // }
+  // const coldStarts = Object.values(coldStartObj);
+  // const coldStartTimes = Object.keys(coldStartObj);
 
   // state for the default graphs
   const durationBarState = {
@@ -103,22 +103,22 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
     ]
   }
 
-  const coldStartState = {
-    labels: coldStartTimes,
-    datasets: [
-      {
-        label: 'Counts',
-        data: coldStarts,
-        backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-          ],
-        borderColor: '#9cb59d',
-        fill: false,
-        showLine: true,
-        borderWidth: 1
-      }
-    ]
-  }
+  // const coldStartState = {
+  //   labels: coldStartTimes,
+  //   datasets: [
+  //     {
+  //       label: 'Counts',
+  //       data: coldStarts,
+  //       backgroundColor: [
+  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+  //         ],
+  //       borderColor: '#9cb59d',
+  //       fill: false,
+  //       showLine: true,
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // }
 
   return(
     <div className="grid grid-cols-2 gap-4 p-4">
@@ -304,7 +304,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
           }}/>
         </p>
 
-        <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+        {/* <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
           <Line
               data={ coldStartState }
               options={{
@@ -363,7 +363,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
                 }
               },
               }}/>
-        </p>
+        </p> */}
 
       {customGraphs ? customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
       // if datapoints array is empty, do not render or else it will break react

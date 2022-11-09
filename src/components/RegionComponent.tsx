@@ -5,11 +5,74 @@ import MenuItem from '@mui/material/MenuItem';
 import PublicIcon from '@mui/icons-material/Public';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-export default function RegionComponent() {
+interface RegionProps {
+  currentRegion: string;
+  setCurrentRegion: (region: string) => void;
+}
 
-  // const handleRegionClick = (event: React.ChangeEvent<{ name?: string; value: value }>) => {
-  //   props.input.onChange(event.target.value);
-  // };
+export default function RegionComponent({ currentRegion, setCurrentRegion }: RegionProps) {
+  // list of AWS regions
+  const awsRegions = [
+    'us-west-1',
+    'us-west-2',
+    'us-east-1',
+    'us-east-2',
+    'af-south-1',
+    'ap-east-1',
+    'ap-south-1',
+    'ap-northeast-1',
+    'ap-northeast-2',
+    'ap-northeast-3',
+    'ap-southeast-1',
+    'ap-southeast-2',
+    'ca-central-1',
+    'cn-north-1',
+    'cn-northwest-1',
+    'eu-central-1',
+    'eu-west-1',
+    'eu-west-2',
+    'eu-west-3',
+    'eu-south-1',
+    'eu-north-1',
+    'me-south-1',
+    'sa-east-1',
+    'us-gov-east-1',
+    'us-gov-west-1',
+  ]
+
+  const ITEM_HEIGHT = 48
+
+  // to capitalize the country code in the region
+  const displayCapitalizedRegion = (region: string) => {
+    const firstTwoLetters = region.slice(0, 2).toUpperCase();
+    const restOfRegion = region.slice(2);
+    return firstTwoLetters + restOfRegion;
+  }
+
+  const handleRegionClick = (region: any) => {
+    // post request to /changeRegion with value
+    // set region to value
+    console.log('region clicked:', region)
+    fetch('http://localhost:3000/main/changeRegion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ region: region })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data === 'region changed') {
+            setCurrentRegion(region);
+            console.log('region successfully changed to', region);
+          }
+          else alert(data);
+        })
+        .catch(err => {
+          console.log('Error changing region:', err);
+        }
+      );
+  };
 
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -32,35 +95,27 @@ export default function RegionComponent() {
               <PublicIcon sx = {{
                 pr: 0.5
               }}/>
-              US-West-1
+              {currentRegion}
             </Button>
           </div>
-          <Menu className="w-5.5/12" {...bindMenu(popupState)}>
-
-          <MenuItem onClick={popupState.close} value={"us-east-1"}>US-East-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"us-east-2"}>US-West-2</MenuItem>
-          <MenuItem onClick={popupState.close} value={"us-west-1"}>US-West-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"us-west-2"}>US-West-2</MenuItem>
-          <MenuItem onClick={popupState.close} value={"af-south-1"}>AF-South-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-east-1"}>AP-East-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-southeast-3"}>AP-Southeast-3</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-south-1"}>AP-South-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-northeast-2"}>AP-Northeast-2</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-northeast-3"}>AP-Northeast-3</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-southeast-1"}>AP-Southeast-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-southeast-2"}>AP-Southeast-2</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ap-northeast-1"}>AP-Northeast-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"ca-central-1"}>CA-Central-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-central-1"}>EU-Central-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-west-1"}>EU-West-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-west-2"}>EU-West-2</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-south-1"}>EU-South-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-west-3"}>EU-West-3</MenuItem>
-          <MenuItem onClick={popupState.close} value={"eu-north-1"}>EU-North-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"me-south-1"}>ME-South-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"me-central-1"}>ME-Central-1</MenuItem>
-          <MenuItem onClick={popupState.close} value={"sa-east-1"}>SA-East-1</MenuItem>
-
+          <Menu 
+          sx={{
+            width: 'auto'
+          }}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+            }
+          }}
+          className="w-5.5/12" {...bindMenu(popupState)}>
+          {awsRegions.map((region) => (
+            <MenuItem onClick={(event) => {
+              handleRegionClick(region);
+              popupState.close();
+            }} value={region}>
+              <span className="capitalize">{displayCapitalizedRegion(region)}</span>
+            </MenuItem>
+          ))}
           </Menu>
 
   </React.Fragment>
