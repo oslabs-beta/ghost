@@ -10,12 +10,12 @@ const override: React.CSSProperties = {
 
 
 const Loader = () => {
-  const { priceLoading, setPriceLoading } = useMainPageContext();
+  const { priceLoading } = useMainPageContext();
   let [color, setColor] = React.useState("#ffffff");
 
     return priceLoading ? (
         <div className='overlay-content'>
-            <div>
+            <div className="p-10">
                 <BeatLoader
                   color={color}
                   loading={priceLoading}

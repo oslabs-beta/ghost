@@ -104,7 +104,7 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
           }}
           PaperProps={{
             style: {
-              maxHeight: ITEM_HEIGHT * 4.5,
+              maxHeight: ITEM_HEIGHT * 5.5,
             }
           }}
           className="w-5.5/12" {...bindMenu(popupState)}>
