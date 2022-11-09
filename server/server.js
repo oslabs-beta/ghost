@@ -8,6 +8,7 @@ const mainRouter = require('./routes/mainRouter')
 const metricRouter = require('./routes/metricRouter')
 const priceRouter = require('./routes/priceRouter')
 const permissionRouter = require('./routes/permissionRouter')
+const logRouter = require('./routes/logRouter')
 
 //define routes
 app.use('/main', mainRouter)
@@ -17,6 +18,8 @@ app.use('/metric', metricRouter)
 app.use('/price', priceRouter)
 
 app.use('/permission', permissionRouter)
+
+app.use('/log', logRouter)
 
 //undefined route handler
 app.use('/', (req, res) => {

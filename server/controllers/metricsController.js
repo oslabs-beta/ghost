@@ -1,27 +1,8 @@
-const { CloudWatchClient, ListMetricsCommand, GetMetricStatisticsCommand  } = require("@aws-sdk/client-cloudwatch")
+const { CloudWatchClient, GetMetricStatisticsCommand  } = require("@aws-sdk/client-cloudwatch")
 const { convertToUnix, convertTime } = require("../assets/timeFunctions");
 const regionController = require('./regionController')
 
 const metricsController = {};
-
-//for developer use
-metricsController.listMetrics = (req, res, next) => {
-  const client = new CloudWatchClient(regionController.currentRegion);
-
-  const input = {};
-
-  const command = new ListMetricsCommand(input);
-
-  client.send(command)
-    .then(data => {
-      res.locals.metricsList = data;
-      return next();
-    })
-    .catch(error => {
-      console.log("error in List Metrics", error)
-      next(error)
-    })
-}
 
 metricsController.getMetrics = (req, res, next) => {
   const client = new CloudWatchClient(regionController.currentRegion); //req.body.region (object with key/value pair)
@@ -35,11 +16,11 @@ metricsController.getMetrics = (req, res, next) => {
     "Dimensions": [
       {
         "Name": "FunctionName",
-        "Value": req.body.functionName //lambda function name (i.e. advancedTest)
+        "Value": req.body.functionName 
       },
       {
         "Name": "Resource",
-        "Value": req.body.functionName //lambda function name (i.e. advancedTest)
+        "Value": req.body.functionName 
       }
     ]
   };
