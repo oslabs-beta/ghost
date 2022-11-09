@@ -1,49 +1,44 @@
 import * as React from 'react';
 
 // declare data types for states and hooks being passed to context in an interface
-interface FunctionContextProps {
-  functionName: string,
-  streamName: string,
-
-  setFunctionName?: (name: string) => void,
-  setStreamName?: (name: string) => void,
-
+interface MainPageContextProps {
+  loading: boolean,
+  priceLoading: boolean,
+  setLoading?: (loading: boolean) => void,
+  setPriceLoading?: (priceLoading: boolean) => void,
   children?: React.ReactNode
 }
 
 // declare default values for states being passed to context
 const defaultState = {
-  functionName: '',
-  streamName: '',
-
+  loading: false,
+  priceLoading: false,
 }
 
 // use createContext to create a context object
-export const FunctionContext = React.createContext<FunctionContextProps>(defaultState);
+export const MainPageContext = React.createContext<MainPageContextProps>(defaultState);
 
 // create a provider component to wrap around components that need access to context
 // pass in children as props to provider component
 // children = all the components that need access to context
-const FunctionContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [functionName, setFunctionName] = React.useState('');
-  const [streamName, setStreamName] = React.useState('');
-
+const MainPageContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [priceLoading, setPriceLoading] = React.useState(false);
 
   return (
-    <FunctionContext.Provider
+    <MainPageContext.Provider
       value={{
-        functionName,
-        streamName,
-        setFunctionName,
-        setStreamName,
-
+        loading,
+        priceLoading,
+        setLoading,
+        setPriceLoading,
       }}
     >
       {children}
-    </FunctionContext.Provider>
+    </MainPageContext.Provider>
   )
 }
 
-export const useFunctionContext = () =>  React.useContext(FunctionContext);
+export const useMainPageContext = () =>  React.useContext(MainPageContext);
 
-export default FunctionContextProvider
+export default MainPageContextProvider

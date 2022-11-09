@@ -1,4 +1,4 @@
-const { convertTime } = require("./timeFunctions");
+const { convertTime } = require("../assets/timeFunctions");
 
 const dataController = {}
 

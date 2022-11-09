@@ -1,11 +1,12 @@
 const { CloudWatchClient, ListMetricsCommand, GetMetricStatisticsCommand  } = require("@aws-sdk/client-cloudwatch")
-const { convertToUnix, convertTime } = require("./timeFunctions");
+const { convertToUnix, convertTime } = require("../assets/timeFunctions");
+const regionController = require('./regionController')
 
 const metricsController = {};
 
 //for developer use
 metricsController.listMetrics = (req, res, next) => {
-  const client = new CloudWatchClient({ region: "us-west-1" });
+  const client = new CloudWatchClient(regionController.currentRegion);
 
   const input = {};
 
@@ -23,10 +24,10 @@ metricsController.listMetrics = (req, res, next) => {
 }
 
 metricsController.getMetrics = (req, res, next) => {
-  const client = new CloudWatchClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new CloudWatchClient(regionController.currentRegion); //req.body.region (object with key/value pair)
   const input = {
     "StartTime": new Date(convertToUnix(req.body.startTime)), // "10/27/2022, 12:00:00 AM"
-    "EndTime": new Date(convertToUnix(req.body.endTime)),
+    "EndTime": new Date(convertToUnix(req.body.endTime)), // "10/27/2022, 11:59:59 PM"
     "MetricName": req.body.metricName,
     "Namespace": "AWS/Lambda",
     "Period": 60, //req.body.period (60, 300, 3600)

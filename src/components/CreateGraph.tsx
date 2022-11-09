@@ -34,16 +34,19 @@ import * as dayjs from 'dayjs';
 const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
-  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime } = useGraphContext();
+  const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime, datapointType, setDatapointType } = useGraphContext();
+  const [errorNoData, setErrorNoData] = React.useState(false);
+  const [errorTooMuchData, setErrorTooMuchData] = React.useState(false);
 
   // store list of metrics and graphtypes in an array
   const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
   const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
+  const datapointTypeNames = ['Average', 'Sum', 'Minimum', 'Maximum'];
 
   // on submit, send the data to the backend
   async function handleSubmit() {
     // call the fetch function
-    const res = await fetch('http://localhost:3000/moreMetrics', {
+    const res = await fetch('http://localhost:3000/metric/custom', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -54,7 +57,16 @@ const CreateGraph = () => {
       })
     })
     const data = await res.json();
-
+    
+    // if there are too many datapoints, alert the user
+    if (data.tooManyDatapoints) {
+      setErrorTooMuchData(true);
+    }
+    // if there are no datapoints in array, alert the user
+    else if (data.Datapoints.length === 0) {
+      setErrorNoData(true);
+    }
+    else {
     // save the graph setup to the state, in addition to all the previous graphs
     const newCustomGraph = {
       functionName: functionName,
@@ -63,11 +75,11 @@ const CreateGraph = () => {
       metricName: metricName,
       startTime: startTime,
       endTime: endTime,
-      metricData: data
+      metricData: data,
+      datapointType: datapointType
     }
     setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
-  }
-
+  }}
 
   return (
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
@@ -84,7 +96,7 @@ const CreateGraph = () => {
       </Select>
       <br></br>
 
-      <FormHelperText>Graph Type</FormHelperText>
+      <InputLabel id="graph-type">Graph Type</InputLabel>
       <Select id="graph-type" className="w-auto" label='Graph Type'>
         {graphTypeNames.map((graphType) => (
           <MenuItem value={graphType} onClick={() => setGraphType?.(graphType)}>{graphType}</MenuItem>
@@ -92,16 +104,30 @@ const CreateGraph = () => {
       </Select>
       <br></br>
 
+      { graphType === 'Bar' || graphType === 'Pie' || graphType === 'Line' ? 
+      <>
+        <InputLabel id="datapoints-type">Datapoints Type</InputLabel>
+        <Select id="datapoints-type" className="w-auto" label='Graph Type'>
+          {datapointTypeNames.map((datapointType) => (
+            <MenuItem value={datapointType} onClick={() => setDatapointType?.(datapointType)}>{datapointType}</MenuItem>
+          ))}
+        </Select>
+        <br></br>
+      </>
+      :
+      null
+      }
+
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
           label="Start Date & Time"
           minutesStep={5}
-          value={startTime || null}
+          value={startTime}
           onChange={(newValue) => {
             const newDate = new Date(newValue).toLocaleString();
             setStartTime?.(newDate);
             // set the default end time to 23h59m after the start time
-            const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').toLocaleString();
+            const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').format('MM/DD/YY, HH:mm:ss A');
             setEndTime?.(newDatePlus24);
           }}
           renderInput={(params) => <TextField {...params} />}
@@ -113,7 +139,7 @@ const CreateGraph = () => {
         <DateTimePicker
           label="End Date & Time"
           minutesStep={5}
-          value={endTime || null}
+          value={endTime}
           onChange={(newValue) => {
             // only allow the date and time to be set, if the time within 12 hours time difference
               let newDate = new Date(newValue).toLocaleString();
@@ -140,8 +166,11 @@ const CreateGraph = () => {
               size="small"
               onClick={handleSubmit}
             >
-              Submit
+              SUBMIT
             </Button>
+            <br></br>
+            { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
+            { errorTooMuchData ? <p className="text-lg text-red-600 dark:text-red-400">Error: Too many datapoints available for this time range. Please select a smaller time range.</p> : null }
     </div>
   )
 }

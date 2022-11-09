@@ -1,9 +1,39 @@
 const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } = require("@aws-sdk/client-cloudwatch-logs");
+const regionController = require('./regionController')
 
 const cloudwatchController = {};
 
 cloudwatchController.getLogStreams = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
+
+  const input = {
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    descending: true,
+  };
+
+  req.body.date ? input.logStreamNamePrefix = req.body.date : null;
+
+  const command = new DescribeLogStreamsCommand(input);
+
+  client.send(command)
+    .then(data => {
+      const logStreams = data.logStreams.map(streamObj => {
+        const streamData = {};
+        streamData.arn = streamObj.arn;
+        streamData.streamName = streamObj.logStreamName;
+        return streamData;
+      })
+      res.locals.logStreams = [...logStreams];
+      return next();
+    })
+    .catch(err => {
+      console.log('error in getLogStreams: ', err)
+      return next('error in cw.getLogStreams')
+    })
+}
+
+cloudwatchController.getLogStreamFirst = (req, res, next) => {
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -32,7 +62,7 @@ cloudwatchController.getLogStreams = (req, res, next) => {
 }
 
 cloudwatchController.getRawLogs = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -52,8 +82,29 @@ cloudwatchController.getRawLogs = (req, res, next) => {
     })
 }
 
+cloudwatchController.getRawLogsMiddle = (req, res, next) => {
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
+
+  const input = {
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    logStreamName: res.locals.logStreams[0].streamName
+  };
+
+  const command = new GetLogEventsCommand(input);
+
+  client.send(command)
+    .then(data => {
+      res.locals.rawLogs = data.events;
+      next();
+    })
+    .catch(err => {
+      console.log('error in getRawLogs: ', err)
+      return next('error in cw.getRawLogs')
+    })
+}
+
 cloudwatchController.getAllLogStreams = async (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -82,7 +133,7 @@ cloudwatchController.getAllLogStreams = async (req, res, next) => {
 }
 
 cloudwatchController.getAllRawLogs = async (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
@@ -104,7 +155,30 @@ cloudwatchController.getAllRawLogs = async (req, res, next) => {
   return next();
 }
 
+cloudwatchController.iterateStreamsForLogs = async (req, res, next) => {
+  res.locals.rawLogs = [];
 
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
+
+  for (let stream of res.locals.logStreams) {
+    const input = {
+      logGroupName: "/aws/lambda/" + req.body.functionName,
+      logStreamName: stream.streamName,
+    };
+  
+    let data = null;
+  
+    do {
+      data ? input.nextToken = data.nextBackwardToken : null
+      const command = new GetLogEventsCommand(input);
+      data = await client.send(command);
+      res.locals.rawLogs = res.locals.rawLogs.concat(data.events)
+    } while (data.events.length)
+
+  }
+  
+  return next();
+}
 
 
 

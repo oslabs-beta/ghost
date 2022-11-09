@@ -1,9 +1,10 @@
-const { LambdaClient, ListFunctionsCommand, GetFunctionConfigurationCommand, GetPolicyCommand, AddPermissionCommand } = require("@aws-sdk/client-lambda");
+const { LambdaClient, ListFunctionsCommand, GetFunctionConfigurationCommand, GetPolicyCommand, AddPermissionCommand, RemovePermissionCommand } = require("@aws-sdk/client-lambda");
+const regionController = require('./regionController')
 
 const lambdaController = {};
 
 lambdaController.getFunctions = (req, res, next) => {
-  const client = new LambdaClient({ region: "us-west-1" }); //req.body.region (object with key/value pair)
+  const client = new LambdaClient(regionController.currentRegion); 
 
   const input = {};
 
@@ -22,13 +23,13 @@ lambdaController.getFunctions = (req, res, next) => {
     })
     .catch(err => {
       console.log('error in getFunctions: ', err)
-      return next('error in lambda.getFunctions')
+      return next(err)
     })
 
 }
 
 lambdaController.functionConfig = (req, res, next) => {
-  const client = new LambdaClient({ region: "us-west-1" });
+  const client = new LambdaClient(regionController.currentRegion);
 
   const input = {
     "FunctionName": req.body.functionName
@@ -48,12 +49,12 @@ lambdaController.functionConfig = (req, res, next) => {
     })
     .catch(err => {
       console.log('error in functionConfig: ', err)
-      return next('error in lambda.functionConfig')
+      return next(err)
     })
 }
 
 lambdaController.getPolicies = (req, res, next) => {
-  const client = new LambdaClient({ region: "us-west-1" });
+  const client = new LambdaClient(regionController.currentRegion);
 
   const input = {
     "FunctionName": req.body.functionName
@@ -67,7 +68,7 @@ lambdaController.getPolicies = (req, res, next) => {
         const policyData = {
           statementId: policyObj.Sid,
           action: policyObj.Action,
-          resource: policyObj.Resource,
+          resource: policyObj.Resource
         }
         if (typeof policyObj.Principal === "object") {
           for (const key in policyObj.Principal) {
@@ -76,6 +77,10 @@ lambdaController.getPolicies = (req, res, next) => {
         } else {
           policyData.principal = policyObj.Principal;
         }
+        if (policyObj?.Condition?.StringEquals?.["aws:PrincipalOrgID"]) {
+          policyData.principalOrgId = policyObj.Condition.StringEquals["aws:PrincipalOrgID"]
+        }
+
         return policyData
       })
       res.locals.policies = policies
@@ -83,29 +88,52 @@ lambdaController.getPolicies = (req, res, next) => {
     })
     .catch(err => {
       console.log('error in getPolicies: ', err)
-      return next('error in lambda.getPolicies')
+      return next(err)
     })
 }
 
 lambdaController.addPermission = (req, res, next) => {
-  const client = new LambdaClient({ region: "us-west-1" });
+  const client = new LambdaClient(regionController.currentRegion);
 
   const input = {
     "Action": req.body.action,
     "FunctionName": req.body.functionName,
     "Principal": req.body.principal,
-    "StatementId": req.body.statementId
+    "StatementId": req.body.statementId,
   }
+
+  req.body.principalOrgId ? input.PrincipalOrgID = req.body.principalOrgId : null;
 
   const command = new AddPermissionCommand(input);
 
   client.send(command)
     .then(data => {
-      res.locals.data = data;
+      res.locals.addedPermission = data;
       return next();
     })
     .catch(err => {
-      console.log(err)
+      console.log('error in addPermissions: ', err)
+      return next(err)
+    })
+}
+
+lambdaController.removePermission = (req, res, next) => {
+  const client = new LambdaClient(regionController.currentRegion);
+
+  const input = {
+    "FunctionName": req.body.functionName,
+    "StatementId": req.body.statementId
+  }
+
+  const command = new RemovePermissionCommand(input);
+
+  client.send(command)
+    .then(data => {
+      res.locals.removedPermission = data;
+      return next();
+    })
+    .catch(err => {
+      console.log('error in removePermissions: ', err)
       return next(err)
     })
 }

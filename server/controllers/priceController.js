@@ -1,4 +1,4 @@
-const priceTable = require('./priceTable');
+const priceTable = require('../assets/priceTable');
 
 const pricingController = {};
 
@@ -103,11 +103,18 @@ pricingController.getHistory = (req, res, next) => {
   //durationTotal: Number //must be b/w 1 to 900000
   //invocationsTotal: Number //must be b/w 1 to 1e+21
 
-  const typeKey = req.body.type;
-  const memKey = req.body.memorySize;
-  const totalDuration = req.body.durationTotal;
-  const invocations = req.body.invocationsTotal;
-  const storage = req.body.storage; 
+  console.log('res locals in get History')
+  console.log(res.locals.functionConfig.type);
+  console.log(res.locals.functionConfig.memorySize);
+  console.log(res.locals.priceMetrics.durationTotal);
+  console.log(res.locals.priceMetrics.invocationsTotal);
+  console.log(res.locals.functionConfig.storage);
+
+  const typeKey = res.locals.functionConfig.type;
+  const memKey = res.locals.functionConfig.memorySize;
+  const totalDuration = res.locals.priceMetrics.durationTotal;
+  const invocations = res.locals.priceMetrics.invocationsTotal;
+  const storage = res.locals.functionConfig.storage; 
 
   //unit conversions:
   const memoryGb = memKey * 0.0009765625;
@@ -115,6 +122,8 @@ pricingController.getHistory = (req, res, next) => {
   const storageGb = storage * 0.0009765625; 
   //gb-sec calculation
   const totalGbSec = memoryGb * totalDurationSec;
+
+  console.log('totalGbSec is', totalGbSec)
 
   //calculating cost
   let firstTier;

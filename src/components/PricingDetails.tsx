@@ -1,10 +1,16 @@
 import * as React from 'react'
 import { useFunctionContext } from '../context/FunctionContext'
-import { Box, Slider, Typography, styled, Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField, FormHelperText, Select, Tabs, Tab } from '@mui/material'
+import { Box, Slider, Typography, styled, Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel, TextField, FormHelperText, Select, Tabs, Tab, Stack } from '@mui/material'
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useMainPageContext } from '../context/MainPageContext';
+import PriceLoader from './PriceLoader';
+import * as dayjs from 'dayjs';
 
 interface PricingDetailsProps {
   defaultFunctionConfig: any,
 }
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -46,6 +52,7 @@ function a11yProps(index: number) {
 
 const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const { functionName } = useFunctionContext();
+  const { priceLoading, setPriceLoading } = useMainPageContext();
   const [type, setType] = React.useState(defaultFunctionConfig.type);
   const [memorySize, setMemorySize] = React.useState(defaultFunctionConfig.memorySize);
   const [storage, setStorage] = React.useState(defaultFunctionConfig.storage);
@@ -54,14 +61,18 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const [pricing, setPricing] = React.useState(0);
   const [showPricing, setShowPricing] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [date, setDate] = React.useState<Date | null>(new Date());
+  const [displayDate, setDisplayDate] = React.useState('');
+  const [priceHistory, setPriceHistory] = React.useState<any>([]);
+  const [showHistory, setShowHistory] = React.useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleSubmit = (event: React.SyntheticEvent) => {
+  const handleCalcSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    // post request to backend
+    // post request to backend for pricing calculator
     const body = {
       functionName: functionName,
       type: type,
@@ -70,7 +81,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       billedDurationAvg: billedDurationAvg,
       invocationsTotal: invocationsTotal
     }
-    fetch('http://localhost:3000/price', {
+    fetch('http://localhost:3000/price/calc', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -81,24 +92,55 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         setShowPricing(true);
         })
         .catch((err) => {
-          console.log('Error fetching metrics:', err);
+          console.log('Error fetching pricing calc:', err);
         });
   }
 
+  const handleHistorySubmit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    // turn off showing the price history if it was previously calculated
+    setShowHistory(false);
+    // turn on loading animation
+    setPriceLoading?.(true);
+    // post request to backend for pricing history
+    setDisplayDate(dayjs(date).format('MMMM YYYY'));
+    fetch('http://localhost:3000/price/history', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        functionName: functionName,
+        date: dayjs(date).format('YYYY/MM/')
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('the price history price is ', data);
+        setPriceHistory(data);
+        setPriceLoading?.(false);
+        setShowHistory(true);
+        
+      })
+      .catch((err) => {
+          console.log('Error fetching pricing history:', err);
+      });
+  }
+
+  // convert returned number to currency
   const financial = (num: any) => {
     return new Intl.NumberFormat().format(num);
   }
 
-
   return (
-    <div className='p-5 flex flex-col text-[#000000] dark:text-[#D3D4D4]'>
+    <div className='p-5 flex flex-col text-gray-900 dark:text-[#D3D4D4]'>
+
+      {/* PRICING CALCULATOR */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5 }}>
         <Tabs 
           TabIndicatorProps={{style: {background: '#7f9f80'}}}
           value={value}
           onChange={handleChange}>
-          <StyledTab label="Calculator" {...a11yProps(0)} />
-          <StyledTab label="History" {...a11yProps(1)} />
+          <StyledTab label="CALCULATOR" {...a11yProps(0)} />
+          <StyledTab label="HISTORY" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -142,7 +184,6 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         value={memorySize}
         min={128}
         max={10240}
-        // color="secondary"
         onChange={(e, value) => setMemorySize(value as number)}
       />
 
@@ -201,8 +242,8 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
             }
           }}
         size="small"
-        onClick={handleSubmit}
-          >Calculate Price
+        onClick={handleCalcSubmit}
+          >CALCULATE PRICE
       </Button>
 
       {showPricing && (
@@ -212,15 +253,55 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
     </TabPanel>
 
 
-
+    {/* PRICING HISTORY */}
     <TabPanel value={value} index={1}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price history for:</p>
       <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      <br></br>
+      <Typography gutterBottom>Billed month:</Typography>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Stack spacing={3}>
+        <DatePicker
+          views={['year', 'month']}
+          label="Year and Month"
+          value={date}
+          onChange={(newValue) => {
+            setDate(newValue);
+          }}
+          renderInput={(params) => <TextField {...params} helperText={null} />}
+        />
+      </Stack>
+    </LocalizationProvider>
+    <div className="flex w-11/12">
+      <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
+        variant="outlined"
+        disableElevation
+        sx={{
+          width: '30%',
+          m: 2.7, 
+          backgroundColor: "#9cb59d",
+          borderColor: "#9cb59d",
+          color: "#FFFFFF",
+          '&:hover': {
+            borderColor: '#9cb59d',
+            backgroundColor: '#F5F5F5',
+            color: '#9cb59d'
+            }
+          }}
+        size="small"
+        onClick={handleHistorySubmit}
+          >SUBMIT
+      </Button>
+      </div>
+      {/* do not show this whole thing when show history is false */}
+       
+      {showHistory && <div>
+        <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-xl'>Your total costs for {displayDate} were:</p>
+        <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl'>${financial(priceHistory)}</p>
+      </div>
+      }
       
-      beeep boooooop peee pooooo
-      
-    </TabPanel>
-
+      </TabPanel>
   </div>
   )
 }

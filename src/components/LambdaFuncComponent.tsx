@@ -14,9 +14,9 @@ interface Props {
   list: Array<object>;
 }
 
-const LambdaFuncList: React.FC<Props> = ({ list }) => {
+const LambdaFuncComponent: React.FC<Props> = ({ list }) => {
   // when a function is clicked, set the function in context
-  const { setFunctionName, setFunctionARN, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
+  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
   const { setCreateGraphIsShown } = useGraphContext();
   const [openOptions, setOpenOptions] = React.useState(false);
   const handleOpenOptions = () => {
@@ -24,7 +24,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
     // setCurrFunc(funcName);
     // (!openOptions) ? document.querySelector('#option-select')?.classList.add('bg-[#608261]', 'dark:bg-[#608261]') : document.querySelector('#option-select')?.classList.remove('dark:bg-[#608261]', 'bg-[#B2CAB3]');
     }
-    
+
   const handleMetricsClick = (funcName: string) => {
     setFunctionName?.(funcName);
     setIsMetricsEnabled?.(true);
@@ -42,9 +42,8 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
     setIsPermissionsEnabled?.(false);
   }
   
-  const handlePermissionsClick = (funcName: string, funcARN: string) => {
+  const handlePermissionsClick = (funcName: string) => {
     setFunctionName?.(funcName);
-    setFunctionARN?.(funcARN);
     setIsPricingEnabled?.(false);
     setIsMetricsEnabled?.(false);
     setIsHomeEnabled?.(false);
@@ -59,16 +58,14 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
           <div className="hover:shadow-inner">
 
           <List id='option-select'>
-
             {[item].map((text, index) => (
-              <ListItem key={text.functionName} disablePadding>
+              <ListItem id={text.functionName} key={text.functionName} disablePadding>
                 <ListItemButton onClick={handleOpenOptions}>
                   <ListItemText
                     primary={text.functionName}
                     secondary={text.functionARN}
                     sx={{
-                      fontWeight: 'bold',
-                      whiteSpace: 'normal'
+                      fontWeight: 'bold'
                     }}
                   />
                   {openOptions ? <ExpandLess /> : <ExpandMore />}
@@ -140,83 +137,18 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
               }}
               size="small"
               onClick={() => {
-                handlePermissionsClick(item.functionName, item.functionARN);
+                handlePermissionsClick(item.functionName);
               }}
             >
               Permissions
             </Button>
             </div>
           }
-
-            {/* <p className="text-bold">{item.functionName}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-200 break-words">{item.functionARN}</p>
-            <div className="flex flex-row justify-around mt-2">
-            <br></br>
-            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="outlined"
-              disableElevation
-              sx={{
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                '&:hover': {
-                  borderColor: '#9cb59d',
-                  backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
-              }}
-              size="small"
-              onClick={() => {
-                handleMetricsClick(item.functionName);
-              }}
-            >
-              Metrics
-            </Button>
-            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="outlined"
-              disableElevation
-              sx={{
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                '&:hover': {
-                  borderColor: '#9cb59d',
-                  backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
-              }}
-              size="small"
-              onClick={() => {
-                handlePricingClick(item.functionName);
-              }}
-            >
-              Pricing
-            </Button>
-            </div>
-            <div className="flex flex-row justify-around mt-2">
-            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="outlined"
-              disableElevation
-              sx={{
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                '&:hover': {
-                  borderColor: '#9cb59d',
-                  backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
-              }}
-              size="small"
-            >
-              Permissions
-            </Button>
-            </div> */}
           </div>
         );
       })}
     </div>
-  );
-};
+  )
+}
 
-export default LambdaFuncList;
+export default LambdaFuncComponent;
