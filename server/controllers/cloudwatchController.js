@@ -66,7 +66,7 @@ cloudwatchController.getRawLogs = async (req, res, next) => {
 
   const input = {
     logGroupName: "/aws/lambda/" + req.body.functionName,
-    logStreamName: req.body.streamName,
+    logStreamName: req.body.streamName || res.locals.logStreams[0].streamName
     // limit: 10
   };
 
