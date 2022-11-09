@@ -28,17 +28,9 @@ export default function UserComponent() {
               <AccessibilityIcon sx = {{
                 pr:0.5
               }}/>
-              Username
+              Welcome
             </Button>
           </div>
-          <Menu 
-          sx={{
-            width: '100%'
-          }} {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>admin</MenuItem>
-            <MenuItem onClick={popupState.close}>user1</MenuItem>
-            <MenuItem onClick={popupState.close}>user2</MenuItem>
-          </Menu>
 
   </React.Fragment>
     )}

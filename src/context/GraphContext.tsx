@@ -14,6 +14,7 @@ interface GraphContextProps {
   startTime: any,
   endTime: any,
   datapointType: string | null,
+  defaultMetrics: any,
 
   setGraphName?: (name: string) => void,
   setGraphType?: (type: string) => void,
@@ -27,6 +28,7 @@ interface GraphContextProps {
   setCreateGraphIsShown?: (value: boolean) => void,
   setCustomGraphs?: (value: any) => any | void,
   setDatapointType?: (value: any) => void,
+  setDefaultMetrics?: (value: any) => void,
 
   children?: React.ReactNode
 }
@@ -45,6 +47,7 @@ const defaultState = {
   endTime: '',
   customGraphs: [],
   datapointType: null,
+  defaultMetrics: [],
 }
 
 // use createContext to create a context object
@@ -66,6 +69,7 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [customGraphs, setCustomGraphs] = React.useState([]);
   const [metricName, setMetricName] = React.useState('');
   const [datapointType, setDatapointType] = React.useState(null);
+  const [defaultMetrics, setDefaultMetrics] = React.useState<any>([]);
 
   return (
     <GraphContext.Provider
@@ -94,6 +98,8 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
         setMetricName,
         datapointType,
         setDatapointType,
+        defaultMetrics,
+        setDefaultMetrics,
       }}
     >
       {children}

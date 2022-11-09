@@ -90,8 +90,7 @@ export default function SidebarContainer() {
         anchor="left"
       >
         
-        <div className='pt-5 flex justify-around '>
-          <UserComponent />
+        <div className='pt-5 flex pl-3'>
           <RegionComponent currentRegion={currentRegion} setCurrentRegion={setCurrentRegion} />
         </div>
 
