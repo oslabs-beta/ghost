@@ -4,6 +4,14 @@
 // const app = new express();
 // app.use('/', router);
 
+// const request = require("supertest")
+// request("https://icanhazdadjoke.com")
+// .get('/slack')
+// .end(function(err, res) {
+// 	if (err) throw err;
+// 	console.log(res.body.attachments);
+// });
+
 describe('Test Handlers', () => {
   test('responds to /function', () => {
     const req = { };
