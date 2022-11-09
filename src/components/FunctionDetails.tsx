@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useFunctionContext } from '../context/FunctionContext';
-import { useGraphContext } from '../context/GraphContext';
+import { useMainPageContext } from '../context/MainPageContext';
 import GraphComponent from './GraphComponent';
+import Loader from './GraphLoader';
+
 
 /* 
 List of Metrics (each obj is 1 minute):
@@ -18,41 +20,23 @@ const FunctionDetails = () => {
   const [defaultMetrics, setDefaultMetrics] = React.useState<any>([]);
   const [coldStartMetrics, setColdStartMetrics] = React.useState<any>([]);
   const { functionName } = useFunctionContext();
+  const { loading, setLoading } = useMainPageContext();
   
-  // noticeable delay in rendering the fetched data - implement loading skeleton?
   React.useEffect(() => {
-    fetch('http://localhost:3000/logStreams', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
+    fetch('http://localhost:3000/metric/recent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ functionName: functionName })
-      })
-      .then((res) => res.json())
-      .then((data) => { 
-        // default metrics are being pulled from the first log stream
-        const streamName = (data[0].streamName);
-        // using promise all to fetch from both endpoints at the same time
-        Promise.all([
-          fetch('http://localhost:3000/basicMetrics', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ functionName: functionName, streamName: streamName })}),
-          fetch('http://localhost:3000/coldMetricsPlus', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ functionName: functionName })})
-        ])
-          .then(([basicMetrics, coldMetrics]) => Promise.all([basicMetrics.json(), coldMetrics.json()]))
-          .then(([basicMetrics, coldMetrics]) => {
-            setDefaultMetrics(basicMetrics);
-            setColdStartMetrics(coldMetrics);
-          })
-          .catch((err) => console.log('Error fetching metrics: ', err))
-      })
-      .catch((err) => {
-        console.log('Error fetching lambda functions:', err);
-      }
-      );
+        })
+        .then(response => response.json())
+        .then(data => {
+          setDefaultMetrics(data);
+        })
   }, [functionName]);
+
+  // TODO: move cold start metrics to custom graph component
 
   return (
     <div className='p-5'>

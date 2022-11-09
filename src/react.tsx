@@ -11,6 +11,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import MainPageContextProvider from './context/MainPageContext';
 
 
 const light: any = {
@@ -57,15 +58,17 @@ const App = () => {
   return (
     <div className="flex flex-row">
       <ThemeProvider theme={isDarkMui ? createTheme(dark) : createTheme(light)}>
-        <FunctionContextProvider>
-          <GraphContextProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TopBarContainer changeMuiTheme={changeMuiTheme} />
-              <SidebarContainer />
-              <MainContainer />
-            </LocalizationProvider>
-          </GraphContextProvider>
-        </FunctionContextProvider>
+        <MainPageContextProvider>
+          <FunctionContextProvider>
+            <GraphContextProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TopBarContainer changeMuiTheme={changeMuiTheme} />
+                <SidebarContainer />
+                <MainContainer />
+              </LocalizationProvider>
+            </GraphContextProvider>
+          </FunctionContextProvider>
+        </MainPageContextProvider>
       </ThemeProvider>
     </div>
   )

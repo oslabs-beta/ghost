@@ -24,7 +24,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
     // setCurrFunc(funcName);
     // (!openOptions) ? document.querySelector('#option-select')?.classList.add('bg-[#608261]', 'dark:bg-[#608261]') : document.querySelector('#option-select')?.classList.remove('dark:bg-[#608261]', 'bg-[#B2CAB3]');
     }
-
+    
   const handleMetricsClick = (funcName: string) => {
     setFunctionName?.(funcName);
     setIsMetricsEnabled?.(true);
@@ -59,6 +59,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
           <div className="hover:shadow-inner">
 
           <List id='option-select'>
+
             {[item].map((text, index) => (
               <ListItem key={text.functionName} disablePadding>
                 <ListItemButton onClick={handleOpenOptions}>
@@ -215,7 +216,7 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => {
         );
       })}
     </div>
-  )
-}
+  );
+};
 
 export default LambdaFuncList;
