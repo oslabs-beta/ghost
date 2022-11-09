@@ -51,7 +51,7 @@ function a11yProps(index: number) {
 }
 
 const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
-  const { functionName } = useFunctionContext();
+  const { functionName, showPricing, setShowPricing } = useFunctionContext();
   const { priceLoading, setPriceLoading } = useMainPageContext();
   const [type, setType] = React.useState(defaultFunctionConfig.type);
   const [memorySize, setMemorySize] = React.useState(defaultFunctionConfig.memorySize);
@@ -59,7 +59,6 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const [billedDurationAvg, setBilledDurationAvg] = React.useState(1);
   const [invocationsTotal, setInvocationsTotal] = React.useState(1);
   const [pricing, setPricing] = React.useState(0);
-  const [showPricing, setShowPricing] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [date, setDate] = React.useState<Date | null>(new Date());
   const [displayDate, setDisplayDate] = React.useState('');
@@ -89,7 +88,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       .then((res) => res.json())
       .then((data) => {
         setPricing(data);
-        setShowPricing(true);
+        setShowPricing?.(true);
         })
         .catch((err) => {
           console.log('Error fetching pricing calc:', err);
@@ -143,7 +142,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       </Box>
       <TabPanel value={value} index={0}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price calculator for:</p>
-      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5 font-bold'>{functionName}</p>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-md mt-10'>
         Configure your function below to estimate how much it will cost you per month.
         <br></br>
@@ -152,7 +151,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
 
       <br></br>
     
-    <Box sx={{ width: '70%', m: 3 }}>
+    <Box sx={{ width: '70%', my: 3 }}>
     <FormControl>
       <Typography gutterBottom>Type:</Typography>
       <RadioGroup
@@ -177,7 +176,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       </RadioGroup>
     </FormControl>
 
-    <Box sx={{ m: 3 }} />
+    <Box sx={{ my: 3 }} />
       <Typography gutterBottom>Memory Size (MB):</Typography>
       <Slider 
         sx={{color:"#9cb59d"}}
@@ -189,7 +188,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         onChange={(e, value) => setMemorySize(value as number)}
       />
 
-    <Box sx={{ m: 3 }} />
+    <Box sx={{ msScrollLimitYMax: 3 }} />
       <Typography gutterBottom>Storage Size (MB):</Typography>
       <Slider 
         sx={{color:"#9cb59d"}}
@@ -201,7 +200,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         onChange={(e, value) => setStorage(value as number)}
       />
 
-    <Box sx={{ m: 3 }} />
+    <Box sx={{ my: 3 }} />
       <Typography gutterBottom>Billed Duration:</Typography>
       <Slider 
         sx={{color:"#9cb59d"}}
@@ -213,7 +212,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         onChange={(e, value) => setBilledDurationAvg(value as number)}
       />
 
-    <Box sx={{ m: 3 }} />
+    <Box sx={{ my: 3 }} />
       <Typography gutterBottom>Total Invocations:</Typography>
       <TextField 
         type="number"
@@ -227,13 +226,12 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       />
     </Box> 
 
-    <div className="flex w-11/12">
+    <div className="flex w-11/12 my-3">
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
         variant="outlined"
         disableElevation
         sx={{
-          width: '20%',
-          m: 2.7, 
+          width: '20%', 
           backgroundColor: "#9cb59d",
           borderColor: "#9cb59d",
           color: "#FFFFFF",
@@ -247,10 +245,11 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         onClick={handleCalcSubmit}
           >CALCULATE PRICE
       </Button>
-
+      <p className='ml-4'>
       {showPricing && (
-        <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl'>${financial(pricing)}</p>
+        <p className='text-gray-700 dark:text-[#D3D4D4] text-4xl font-bold'> ${financial(pricing)} </p>
       )}
+      </p>
     </div>
     </TabPanel>
 
@@ -258,16 +257,15 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
     {/* PRICING HISTORY */}
     <TabPanel value={value} index={1}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price history for:</p>
-      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5 font-bold'>{functionName}</p>
       <br></br>
 
       <Box sx={{ width: '30%'}}>
-      <Typography sx={{mb:2.5}} gutterBottom>Billed month:</Typography>
+      <Typography sx={{mb:3}} gutterBottom>Billed month:</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={3}>
         <DatePicker
           views={['year', 'month']}
-          label="Year and Month"
           value={date}
           onChange={(newValue) => {
             setDate(newValue);
@@ -299,11 +297,12 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       </Button>
       </div>
       </Box>
+      <br></br>
 
       {priceLoading ? <PriceLoader /> : showHistory && (
       <div>
         <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-xl'>Your total costs for {displayDate} were:</p>
-        <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl'>${financial(priceHistory)}</p>
+        <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl font-bold'>${financial(priceHistory)}</p>
       </div>
       )}
       </TabPanel>
@@ -312,10 +311,3 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
 }
 
 export default PricingDetails
-
-//req.body will have these props:
-  //type: "x86_64" or "Arm"
-  //memorySize: 128 //must be b/w 128 and 10240 (10gb)
-  //storage: 512 (number) //must be between 512 to 10240
-  //billedDurationAvg: Number //must be b/w 1 to 900000
-  //invocationsTotal: Number //must be b/w 1 to 1e+21

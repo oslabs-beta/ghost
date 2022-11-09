@@ -9,15 +9,9 @@ import { useFunctionContext } from '../context/FunctionContext';
 // initialize chartjs
 ChartJS.register(...registerables);
 
-// declare props
-interface GraphComponentProps {
-  defaultMetrics: any;
-  coldStartMetrics: any;
-}
-
-const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProps) => {
+const GraphComponent = () => {
   // pull out custom graphs and function name from context
-  const { customGraphs } = useGraphContext();
+  const { customGraphs, defaultMetrics } = useGraphContext();
   const { functionName } = useFunctionContext();
 
   // pull out timestamps, durations, memory from basicMetrics
@@ -90,8 +84,8 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
   }
 
   return(
-    <div className="grid grid-cols-2 gap-4 p-4">
-      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+    <div className="grid grid-cols-2 gap-4 mt-4">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
       <Bar
         data = { durationBarState }
         options = {{
@@ -151,7 +145,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
         }}/>
       </p>
 
-      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
       <Line
           data={ memoryState }
           options={{
@@ -212,7 +206,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
           }}/>
         </p>
 
-      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+      <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
       <Line
           data={ invocationState }
           options={{
@@ -272,68 +266,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
           },
           }}/>
         </p>
-
-        {/* <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
-          <Line
-              data={ coldStartState }
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                title: {
-                  display: true,
-                  font: {
-                    weight: 'bold',
-                    size: 25,
-                  },
-                  text: 'Cold Starts',
-                  color: '#bfbfbf',
-                  align: 'start',
-                  padding: {
-                    top: 15,
-                  }
-                },
-                subtitle: {
-                  display: true,
-                  text: coldStartDate,
-                  color: '#bfbfbf',
-                  align: 'start',
-                  padding: {
-                    bottom: 25
-                  },
-                  font: {
-                    size: 15,
-                    style: 'italic',
-                    weight: 'normal'
-                  }
-                },
-                legend:{
-                  display: false,
-                  position: 'bottom'
-                }
-              },
-              scales: {
-                y: {
-                  ticks: { color: '#bfbfbf' },
-                  title: {
-                    display: true,
-                    text: 'Count',
-                    color: '#bfbfbf'
-                  }
-                },
-                x: {
-                  ticks: { color: '#bfbfbf' },
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: 'Time (UTC)',
-                    color: '#bfbfbf'
-                  }
-                }
-              },
-              }}/>
-        </p> */}
-
+        
       {customGraphs ? customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
       // if datapoints array is empty, do not render or else it will break react
         if (graph.metricName === 'ColdStarts') {
@@ -379,7 +312,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
             }
 
             return (
-              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
                 <Bar
                   data={ coldStartState }
                   options={{
@@ -514,7 +447,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
           // if conditionals for each graph type
           if (graph.graphType === 'Bar') {
             return (
-              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
               <Bar
                 data = { state }
                 // width={"50%"}
@@ -579,7 +512,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
 
           if (graph.graphType === 'Line') {
             return (
-              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
               <Line
                   data={ state }
                   options={{
@@ -646,7 +579,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
 
           if (graph.graphType === 'Pie') {
             return (
-              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white"> 
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white"> 
               <Pie
               data = { state } 
               options = {{
@@ -695,7 +628,7 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
 
           if (graph.graphType === 'MultiLine') {
             return (
-              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md p-2 dark:bg-[#404040] dark:text-white">
               <Line
                 data = { multiState }
                 options = {{

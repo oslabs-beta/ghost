@@ -66,12 +66,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
     // set error text and success text to false to clear any previous helper texts
     setErrorText(false);
     setSuccessText(false);
-    /* to add permissions, post request to /addPermission with the following body:
-      functionName, 
-      statementId, - unique identifier for the permission, no spaces, input field
-      action, - should be dropdown, based on lambda docs
-      principal - input field, they would know what this is or copy paste from permission list,
-      principalOrgId - input field, optional, they would know what this is */
+
     const body = {
       functionName: functionName,
       statementId: statementId,
@@ -80,6 +75,7 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
       principal: principal,
       principalOrgId: principalOrgId
     }
+    
     fetch('http://localhost:3000/permission/add', {
       method: 'POST',
       headers: {
@@ -108,10 +104,8 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
   }
 
   const removePermission = (statementId: string, index: number) => {
-    // confirmation prompt before removing permission
+    // user needs to confirm to remove permission
     let answer = confirm('Are you sure you want to remove this permission?\n' + statementId)
-    // if yes, post request to /removePermission
-    // parameters are the current function and the passed in statementId
     if (answer) {
       fetch('http://localhost:3000/permission/remove', {
       method: 'POST',
@@ -147,7 +141,9 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
       {/* PERMISSIONS LIST */}
       <TabPanel value={value} index={0}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing permissions for:</p>
-      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
+      <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5 font-bold'>{functionName}</p>
+      <br></br>
+
       { permissionList && permissionList.length > 0 ? (
         <div className='grid grid-cols-2 gap-4'>
             {permissionList.map((permission: any, index: number) => (
@@ -202,21 +198,20 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
       {/* ADD PERMISSIONS */}
       <TabPanel value={value} index={1}>
         <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Add new permission for:</p>
-        <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
-        <br></br>
-            <Box sx={{ m: 1, mb: 2, minWidth: 120 }}>
+        <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5 font-bold'>{functionName}</p>
+        <br />
+            <Box sx={{ width: '35%' }}>
               <TextField
                 id="outlined-basic"
                 label="Statement ID"
                 required={true}
                 variant="outlined"
                 value={statementId}
-                sx={{ width: 300 }}
+                sx={{ mb: 3,  width: '100%' }}
                 onChange={(e) => setStatementId(e.target.value)}
-              />
-            </Box>
+              /> <br />
 
-              <FormControl sx={{ m: 1, mb: 2, minWidth: 120 }}>
+              <FormControl sx={{ width: '100%' }}>
                 <Select
                   native
                   value={action}
@@ -250,37 +245,36 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
                   </Select>
               </FormControl>
 
-              <Box sx={{ m: 1, mb: 3, minWidth: 120 }}>
+              <Box sx={{ mb: 3, width: '100%' }} />
               <TextField
                 id="outlined-basic"
                 label="Principal"
                 variant="outlined"
                 required={true}
                 value={principal}
-                sx={{ width: 300 }}
+                sx={{ width: '100%' }}
                 onChange={(e) => setPrincipal(e.target.value)}
               />
-            </Box>
 
-            <Box sx={{ m: 1, mb: 3, minWidth: 120 }}>
+            <Box sx={{ mb: 3, width: '100%' }} />
               <TextField
                 id="outlined-basic"
                 label="Principal Organization ID"
                 variant="outlined"
                 value={principalOrgId}
-                sx={{ width: 300 }}
+                sx={{ width: '100%' }}
                 onChange={(e) => setPrincipalOrgId(e.target.value)}
               />
               <FormHelperText id="principal-org-id-helper">
                 Optional: If principal is part of an AWS Organization, enter the organization ID.
               </FormHelperText>
-            </Box>
-
+            
+            <br></br>
             <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
             variant="outlined"
             disableElevation
             sx={{
-              mt: 1,
+              mb: 3, 
               backgroundColor: "#9cb59d",
               borderColor: "#9cb59d",
               color: "#FFFFFF",
@@ -291,8 +285,9 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
               }
             }}
             size="small"
-            onClick={addPermission}>ADD PERMISSION</Button>
+            onClick={addPermission}> ADD PERMISSION </Button>
             <br />
+
             {errorText ? (
               <span className="text-red-600">
                 There was an error adding the permission. Please try again.
@@ -303,6 +298,8 @@ export default function PermissionsDetails({ permissionList, setPermissionList }
                 Permission added successfully.
               </span>
             ) : null}
+
+        </Box>
       </TabPanel>
     </div>
   

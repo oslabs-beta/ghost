@@ -1,5 +1,4 @@
 import * as React from 'react'
-// import * as Logo from '../images/ghost.PNG'
 import Button from '@mui/material/Button';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import AddchartIcon from '@mui/icons-material/Addchart';
@@ -8,17 +7,14 @@ import { useGraphContext } from '../context/GraphContext';
 import { useFunctionContext } from '../context/FunctionContext';
 import { AppBar, Toolbar, CssBaseline, Typography, makeStyles, } from "@mui/material";
 
-
 interface TopBarProps {
   changeMuiTheme: () => void;
 }
-
 
 const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
   const { isHomeEnabled } = useFunctionContext()
   const [isDark, setIsDark] = useDarkMode()
   const toggleDarkMode = (checked: boolean) => {
-    // setMode(checked ? "dark" : "light");
     setIsDark(checked)
     changeMuiTheme()
   };
@@ -84,7 +80,7 @@ const TopBarContainer = ({ changeMuiTheme }: TopBarProps) => {
         <DarkModeSwitch
           style={{ 
             marginBottom: '1rem',
-            marginTop: '1rem' }} // can take this out or change
+            marginTop: '1rem' }} 
           checked={isDark}
           onChange={toggleDarkMode}
           size={25}

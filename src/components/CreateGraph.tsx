@@ -12,28 +12,6 @@ import { useMainPageContext } from '../context/MainPageContext';
 import CreateGraphLoader from './CreateGraphLoader';
 import * as dayjs from 'dayjs';
 
-/*
-  1. should read the selected function from context
-  2. dropdown for metrics: Errors, ConcurrentExecutions, Invocations, Duration, Throttles
-  - Invocations - sum
-  - Durations - average, min, max
-  - Concurrent Executions - max
-  3. select graph: line, bar, double line
-  4. color choices: provide limited options? or allow colorpicker? - this can be last
-  5. date/time picker to pick dates and times - end time must be +5 min from start time
-  6. dropdown Y axes: Average, Sum, Minimum, Maximum - can we make this dynamic based on the metric selected? maybe post-MVP?
-  7. on submit, save custom graphs to database? - post-MVP
-
-  save to an object that will be sent to the backend: function name, metric, start time, end time
-  save the above + the graph type in an object to the state
-  all custom graphs should be an object, and the state should be an array of objects
-    if object.graphType === line, render line graph
-    if object.graphType === bar, render bar graph
-    if object.graphType === double line, render double line graph
-
-
-*/
-
 const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
@@ -88,7 +66,7 @@ const CreateGraph = () => {
     setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
   }}
 
-    // if metric is coldstarts, this function will fire on submit
+    // if selected metric is coldstarts, this function will fire on submit
     async function handleSubmitColdStarts() {
     setErrorTooMuchData(false);
     setErrorNoData(false);
@@ -127,13 +105,14 @@ const CreateGraph = () => {
 
   return (
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
-      <h1 className="text-[#313131] dark:text-[#ebebeb]">Create Graph for { functionName }</h1>
+      <h1 className="text-[#313131] dark:text-[#ebebeb]">Create Graph for <b>{ functionName }</b></h1>
       <br></br>
-      <TextField className="w-auto" id="outlined-basic" placeholder="Invocations per minute" label="Graph Name" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
+      <InputLabel id="graph-name">Graph Name</InputLabel>
+      <TextField className="w-auto" id="outlined-basic" placeholder="Invocations per minute" variant="outlined" onChange={(e) => setGraphName?.(e.target.value)} />
       <br></br>
 
       <InputLabel id="metrics">Metrics</InputLabel>
-      <Select labelId="metrics" id="metrics-select" className="w-auto" label='Metrics'>     
+      <Select labelId="metrics" id="metrics-select" className="w-auto">     
         {metricNames.map((metricName) => (
           <MenuItem key={metricName} value={metricName} onClick={() => setMetricName?.(metricName)}>{metricName}</MenuItem>
         ))}
@@ -143,7 +122,7 @@ const CreateGraph = () => {
       { metricName === 'ColdStarts' ? null : 
       <>
       <InputLabel id="graph-type">Graph Type</InputLabel>
-      <Select id="graph-type" className="w-auto" label='Graph Type'>
+      <Select id="graph-type" className="w-auto">
         {graphTypeNames.map((graphType) => (
           <MenuItem value={graphType} onClick={() => setGraphType?.(graphType)}>{graphType}</MenuItem>
         ))}
@@ -154,7 +133,7 @@ const CreateGraph = () => {
       { metricName !== 'ColdStarts' && graphType == 'Line' || graphType == 'Bar' || graphType == 'Pie' ?
       <>
         <InputLabel id="datapoints-type">Datapoints Type</InputLabel>
-        <Select id="datapoints-type" className="w-auto" label='Graph Type'>
+        <Select id="datapoints-type" className="w-auto">
           {datapointTypeNames.map((datapointType) => (
             <MenuItem value={datapointType} onClick={() => setDatapointType?.(datapointType)}>{datapointType}</MenuItem>
           ))}
@@ -193,7 +172,7 @@ const CreateGraph = () => {
               const newDate = new Date(newValue).toLocaleString();
               setStartTime?.(newDate);
               // set the default end time to 23h59m after the start time
-              const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').format('MM/DD/YY, HH:mm:ss A');
+              const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute')
               setEndTime?.(newDatePlus24);
             }}
             renderInput={(params) => <TextField {...params} />}
@@ -208,7 +187,7 @@ const CreateGraph = () => {
             value={endTime}
             onChange={(newValue) => {
               // only allow the date and time to be set, if the time within 24 hours time difference
-                let newDate = new Date(newValue).toLocaleString();
+                const newDate = new Date(newValue).toLocaleString();
                 dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour')) ? alert('Please select a time within 24 hours of the start time') : setEndTime?.(newDate);
             }}
             renderInput={(params) => <TextField {...params} />}

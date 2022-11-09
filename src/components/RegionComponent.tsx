@@ -50,9 +50,6 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
   }
 
   const handleRegionClick = (region: any) => {
-    // post request to /changeRegion with value
-    // set region to value
-    console.log('region clicked:', region)
     fetch('http://localhost:3000/main/changeRegion', {
       method: 'POST',
       headers: {
@@ -64,7 +61,6 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
         .then(data => {
           if (data === 'region changed') {
             setCurrentRegion(region);
-            console.log('region successfully changed to', region);
           }
           else alert(data);
         })
@@ -78,7 +74,7 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
         <React.Fragment>
-          <div className="flex justify-between w-5.5/12">
+          <div>
             <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="contained" {...bindTrigger(popupState)}
               sx = {{     
@@ -86,6 +82,7 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
                 backgroundColor: "#9cb59d",
                 borderColor: "#9cb59d",
                 color: "#FFFFFF",
+                
                 '&:hover': {
                   borderColor: '#9cb59d',
                   backgroundColor: '#F5F5F5',

@@ -16,7 +16,7 @@ interface Props {
 
 const LambdaFuncComponent: React.FC<Props> = ({ func }) => {
   // when a function is clicked, set the function in context
-  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled } = useFunctionContext();
+  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled, showPricing, setShowPricing} = useFunctionContext();
   const { setCreateGraphIsShown } = useGraphContext();
   const [openOptions, setOpenOptions] = React.useState(false);
   const handleOpenOptions = () => {
@@ -38,6 +38,7 @@ const LambdaFuncComponent: React.FC<Props> = ({ func }) => {
     setIsHomeEnabled?.(false);
     setCreateGraphIsShown?.(false);
     setIsPermissionsEnabled?.(false);
+    setShowPricing?.(false);
   }
   
   const handlePermissionsClick = (funcName: string) => {
@@ -61,13 +62,14 @@ const LambdaFuncComponent: React.FC<Props> = ({ func }) => {
                 fontWeight: 'bold'
               }}
             />
+          {openOptions ? <ExpandLess fontSize='small' /> : <ExpandMore fontSize="small" />}
+
           </ListItemButton>
         </ListItem>
     </List>
       
     {openOptions && 
       <div className="flex flex-col mt-0 items-center">
-      <br></br>
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
         variant="outlined"
         disableElevation
