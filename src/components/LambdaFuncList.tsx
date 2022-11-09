@@ -9,9 +9,9 @@ interface Props {
 const LambdaFuncList: React.FC<Props> = ({ list }) => {
   return (
     <div className='bg-[#ebebeb] dark:bg-[#313131]'>
-      {list.map((func: any) => {
+      {list.map((func: any, index: number) => {
         return (
-          <LambdaFuncComponent func={func} />
+          <LambdaFuncComponent func={func} key={index}/>
         )
       })}
     </div>

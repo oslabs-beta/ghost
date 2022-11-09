@@ -8,8 +8,7 @@ const override: React.CSSProperties = {
   borderColor: "white",
 };
 
-
-const Loader = () => {
+const PriceLoader = () => {
   const { priceLoading } = useMainPageContext();
   let [color, setColor] = React.useState("#ffffff");
 
@@ -29,4 +28,4 @@ const Loader = () => {
     ) : null
 };
 
-export default Loader;
+export default PriceLoader;

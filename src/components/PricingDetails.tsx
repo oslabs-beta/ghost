@@ -262,7 +262,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       <br></br>
 
       <Box sx={{ width: '30%'}}>
-      <Typography sx={{mb:1.5}} gutterBottom>Billed month:</Typography>
+      <Typography sx={{mb:2.5}} gutterBottom>Billed month:</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={3}>
         <DatePicker
@@ -284,7 +284,6 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         disableElevation
         sx={{
           width: '30%',
-          m: 2.7, 
           backgroundColor: "#9cb59d",
           borderColor: "#9cb59d",
           color: "#FFFFFF",
@@ -300,8 +299,6 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       </Button>
       </div>
       </Box>
-
-      <br></br>
 
       {priceLoading ? <PriceLoader /> : showHistory && (
       <div>

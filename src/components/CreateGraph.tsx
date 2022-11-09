@@ -8,6 +8,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { HouseRounded } from '@mui/icons-material';
+import { useMainPageContext } from '../context/MainPageContext';
+import CreateGraphLoader from './CreateGraphLoader';
 import * as dayjs from 'dayjs';
 
 /*
@@ -36,6 +38,7 @@ const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
   const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime, datapointType, setDatapointType } = useGraphContext();
+  const { createLoading, setCreateLoading } = useMainPageContext();
   const [coldStartDate, setColdStartDate] = React.useState('');
   const [errorNoData, setErrorNoData] = React.useState(false);
   const [errorTooMuchData, setErrorTooMuchData] = React.useState(false);
@@ -49,73 +52,77 @@ const CreateGraph = () => {
   async function handleSubmit() {
     setErrorTooMuchData(false);
     setErrorNoData(false);
+    setCreateLoading?.(true);
     // call custom metric API
-      const res = await fetch('http://localhost:3000/metric/custom', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          functionName: functionName,
-          metricName: metricName,
-          startTime: startTime,
-          endTime: endTime
-        })
-      })
-      const data = await res.json();
-
-      // error handling to display to the user
-      if (data.tooManyDatapoints) {
-        setErrorTooMuchData(true);
-      }
-      else if (data.Datapoints.length === 0) {
-        setErrorNoData(true);
-      }
-      else {
-      // save the graph setup to the state, in addition to all the previous graphs
-      const newCustomGraph = {
+    const res = await fetch('http://localhost:3000/metric/custom', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         functionName: functionName,
-        graphName: graphName,
-        graphType: graphType,
         metricName: metricName,
-        date: coldStartDate,
-        metricData: data,
-        datapointType: datapointType
-      }
-      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
-    }}
+        startTime: startTime,
+        endTime: endTime
+      })
+    })
+    const data = await res.json();
+    setCreateLoading?.(false);
+
+    // error handling to display to the user
+    if (data.tooManyDatapoints) {
+      setErrorTooMuchData(true);
+    }
+    else if (data.Datapoints.length === 0) {
+      setErrorNoData(true);
+    }
+    else {
+    // save the graph setup to the state, in addition to all the previous graphs
+    const newCustomGraph = {
+      functionName: functionName,
+      graphName: graphName,
+      graphType: graphType,
+      metricName: metricName,
+      date: coldStartDate,
+      metricData: data,
+      datapointType: datapointType
+    }
+    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
+  }}
 
     // if metric is coldstarts, this function will fire on submit
     async function handleSubmitColdStarts() {
-      setErrorTooMuchData(false);
-      setErrorNoData(false);
-      const res = await fetch('http://localhost:3000/metric/cold', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          functionName: functionName,
-          date: coldStartDate,
-      })})
-      const data = await res.json();
-
-      // error handling to display to the user
-      if (data.tooManyDatapoints) {
-        setErrorTooMuchData(true);
-      }
-      else if (data.length === 0) {
-        setErrorNoData(true);
-      }
-      else {
-      // save the graph setup to the state, in addition to all the previous graphs
-      const newCustomGraph = {
+    setErrorTooMuchData(false);
+    setErrorNoData(false);
+    setCreateLoading?.(true);
+    const res = await fetch('http://localhost:3000/metric/cold', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         functionName: functionName,
-        graphName: graphName,
-        graphType: graphType,
-        metricName: metricName,
         date: coldStartDate,
-        metricData: data,
-        datapointType: datapointType
-      }
-      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
-    }}
+    })})
+    const data = await res.json();
+    setCreateLoading?.(false);
+
+    // error handling to display to the user
+    if (data.tooManyDatapoints) {
+      setErrorTooMuchData(true);
+    }
+    else if (data.length === 0) {
+      setErrorNoData(true);
+    }
+    else {
+    // save the graph setup to the state, in addition to all the previous graphs
+    const newCustomGraph = {
+      functionName: functionName,
+      graphName: graphName,
+      graphType: graphType,
+      metricName: metricName,
+      date: coldStartDate,
+      metricData: data,
+      datapointType: datapointType
+    }
+    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
+  }}
 
 
   return (
@@ -160,9 +167,10 @@ const CreateGraph = () => {
 
       { metricName === 'ColdStarts' ?
       <>
+      <InputLabel id="cold-start-date">Select Date</InputLabel>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          label="Select Date"
+          // label="Select Date"
           value={coldStartDate}
           onChange={(newValue) => {
             const newDate = dayjs(newValue).format('YYYY/MM/DD');
@@ -176,9 +184,9 @@ const CreateGraph = () => {
       </>
       :
       <>
+      <InputLabel id="start-date-and-time">Start Date & Time</InputLabel>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
-            label="Start Date & Time"
             minutesStep={5}
             value={startTime}
             onChange={(newValue) => {
@@ -193,9 +201,9 @@ const CreateGraph = () => {
         </LocalizationProvider>
         <br></br>
 
+        <InputLabel id="end-date-and-time">End Date & Time</InputLabel>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
-            label="End Date & Time"
             minutesStep={5}
             value={endTime}
             onChange={(newValue) => {
@@ -211,26 +219,27 @@ const CreateGraph = () => {
       }
 
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="outlined"
-              disableElevation
-              sx={{
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                '&:hover': {
-                  borderColor: '#9cb59d',
-                  backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
-              }}
-              size="small"
-              onClick={metricName === 'ColdStarts' ? handleSubmitColdStarts : handleSubmit}
-            >
-              SUBMIT
-            </Button>
-            <br></br>
-            { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
-            { errorTooMuchData ? <p className="text-lg text-red-600 dark:text-red-400">Error: Too many datapoints available for this time range. Please select a smaller time range.</p> : null }
+        variant="outlined"
+        disableElevation
+        sx={{
+          backgroundColor: "#9cb59d",
+          borderColor: "#9cb59d",
+          color: "#FFFFFF",
+            '&:hover': {
+              borderColor: '#9cb59d',
+              backgroundColor: '#F5F5F5',
+              color: '#9cb59d'
+            }
+        }}
+        size="small"
+        onClick={metricName === 'ColdStarts' ? handleSubmitColdStarts : handleSubmit}
+        >
+          SUBMIT
+        </Button>
+        <br></br>
+        { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
+        { errorTooMuchData ? <p className="text-lg text-red-600 dark:text-red-400">Error: Too many datapoints available for this time range. Please select a smaller time range.</p> : null }
+        { createLoading ? <div className="flex justify-center"><CreateGraphLoader /></div> : null}
     </div>
   )
 }

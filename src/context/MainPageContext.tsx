@@ -4,8 +4,10 @@ import * as React from 'react';
 interface MainPageContextProps {
   loading: boolean,
   priceLoading: boolean,
+  createLoading: boolean,
   setLoading?: (loading: boolean) => void,
   setPriceLoading?: (priceLoading: boolean) => void,
+  setCreateLoading?: (createLoading: boolean) => void,
   children?: React.ReactNode
 }
 
@@ -13,6 +15,7 @@ interface MainPageContextProps {
 const defaultState = {
   loading: false,
   priceLoading: false,
+  createLoading: false,
 }
 
 // use createContext to create a context object
@@ -24,14 +27,17 @@ export const MainPageContext = React.createContext<MainPageContextProps>(default
 const MainPageContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = React.useState(false);
   const [priceLoading, setPriceLoading] = React.useState(false);
+  const [createLoading, setCreateLoading] = React.useState(false);
 
   return (
     <MainPageContext.Provider
       value={{
         loading,
         priceLoading,
+        createLoading,
         setLoading,
         setPriceLoading,
+        setCreateLoading,
       }}
     >
       {children}
