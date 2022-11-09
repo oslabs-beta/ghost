@@ -59,7 +59,6 @@
     "nodemon": "^2.0.20",
     "react-chartjs-2": "^4.3.1",
     "react-spinners": "^0.13.6",
-    "react-toggle-dark-mode": "^1.1.0",
-    "simplebar": "^5.3.9"
+    "react-toggle-dark-mode": "^1.1.0"
   }
 }
