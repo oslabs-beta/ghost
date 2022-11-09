@@ -28,7 +28,7 @@ router.post('/history',
   dataController.parseBasic,
   dataController.parsePrice,
   lambdaController.functionConfig,
-  priceController.getHistory,
+  priceController.getEstimate,
   (req, res) => {
     res.status(200).json(res.locals.cost)
   }
