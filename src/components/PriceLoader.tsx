@@ -8,14 +8,13 @@ const override: React.CSSProperties = {
   borderColor: "white",
 };
 
-
-const Loader = () => {
-  const { priceLoading, setPriceLoading } = useMainPageContext();
+const PriceLoader = () => {
+  const { priceLoading } = useMainPageContext();
   let [color, setColor] = React.useState("#ffffff");
 
     return priceLoading ? (
         <div className='overlay-content'>
-            <div>
+            <div className="p-10">
                 <BeatLoader
                   color={color}
                   loading={priceLoading}
@@ -29,4 +28,4 @@ const Loader = () => {
     ) : null
 };
 
-export default Loader;
+export default PriceLoader;

@@ -45,7 +45,7 @@ lambdaController.functionConfig = (req, res, next) => {
         storage: data.EphemeralStorage.Size,
         runtime: data.Runtime
       };
-      next();
+      return next();
     })
     .catch(err => {
       console.log('error in functionConfig: ', err)
@@ -84,7 +84,7 @@ lambdaController.getPolicies = (req, res, next) => {
         return policyData
       })
       res.locals.policies = policies
-      next();
+      return next();
     })
     .catch(err => {
       console.log('error in getPolicies: ', err)
@@ -137,6 +137,5 @@ lambdaController.removePermission = (req, res, next) => {
       return next(err)
     })
 }
-
 
 module.exports = lambdaController;

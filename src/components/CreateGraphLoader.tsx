@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { PropagateLoader } from "react-spinners";
-import { MainPageContext } from '../context/MainPageContext';
+import { BeatLoader } from "react-spinners";
+import { useMainPageContext } from '../context/MainPageContext';
 
 const override: React.CSSProperties = {
   display: "block",
@@ -8,19 +8,18 @@ const override: React.CSSProperties = {
   borderColor: "white",
 };
 
-
-const GraphLoader = () => {
-  const { loading } = React.useContext(MainPageContext);
+const PriceLoader = () => {
+  const { createLoading } = useMainPageContext();
   let [color, setColor] = React.useState("#ffffff");
 
-    return loading ? (
+    return createLoading ? (
         <div className='overlay-content'>
-            <div className='flex items-center justify-center align-middle h-[70vh]'>
-                <PropagateLoader
+            <div className="p-10">
+                <BeatLoader
                   color={color}
-                  loading={loading}
+                  loading={createLoading}
                   cssOverride={override}
-                  size={25}
+                  size={15}
                   aria-label="Loading Spinner"
                   data-testid="loader"
                     />
@@ -29,4 +28,4 @@ const GraphLoader = () => {
     ) : null
 };
 
-export default GraphLoader;
+export default PriceLoader;

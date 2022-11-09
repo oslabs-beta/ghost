@@ -14,9 +14,9 @@ regionController.changeRegion = (req, res, next) => {
       res.locals.response = 'invalid region'
     }
     return next();
-  } catch (error) {
-    console.log("error in changeRegion", error)
-    next(error)
+  } catch (err) {
+    console.log("error in changeRegion", err)
+    return next(err)
   }
 }
 

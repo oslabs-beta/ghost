@@ -2,11 +2,6 @@ const { convertTime } = require("../assets/timeFunctions");
 
 const dataController = {}
 
-// what message looks like:
-// "message": "REPORT RequestId: 5f57b973-45ed-4a5b-bd6a-1f97e3c1381c\tDuration: 
-// 16.56 ms\tBilled Duration: 17 ms\tMemory Size: 128 MB\tMax Memory Used: 57 MB\tInit Duration:
-//  134.34 ms\t\n",
-
 dataController.parseBasic = (req, res, next) => {
   try {
     //res.locals.rawLogs is an array of objects
@@ -27,12 +22,12 @@ dataController.parseBasic = (req, res, next) => {
         basicObj[key] = value;
       }
       const timestamp = convertTime(logObj.timestamp);
-      // console.log(logObj.timestamp)
       basicObj.timestamp = timestamp;
       return basicObj;
     })
 
-    // now basicData is an array of objects representing a single log
+    //now basicData is an array of objects representing a single log
+    //filter out all undefined values from the extraneous logs
     basicData = basicData.filter(ele => ele)
 
     //iterate through rawLogs again, looking for any error messages, and adding them to 
@@ -48,10 +43,11 @@ dataController.parseBasic = (req, res, next) => {
     }
 
     res.locals.basicData = basicData;
-    next();
+    return next();
   }
   catch(err) {
-    console.error(err);
+    console.log("error in parseBasic", err);
+    return next(err)
   }
   
 }

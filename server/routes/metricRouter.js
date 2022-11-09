@@ -6,8 +6,8 @@ const metricsController = require('../controllers/metricsController');
 const router = express.Router();
 
 router.post('/recent',
-  cloudwatchController.getLogStreamFirst,
-  cloudwatchController.getRawLogsMiddle,
+  cloudwatchController.getLogStreams,
+  cloudwatchController.getRawLogs,
   dataController.parseBasic,
   (req, res) => {
     res.status(200).json(res.locals.basicData)
