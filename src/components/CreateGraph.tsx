@@ -6,7 +6,10 @@ import { Menu, MenuItem, FormControl, FormHelperText, InputLabel } from '@mui/ma
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { HouseRounded } from '@mui/icons-material';
+import { useMainPageContext } from '../context/MainPageContext';
+import CreateGraphLoader from './CreateGraphLoader';
 import * as dayjs from 'dayjs';
 
 /*
@@ -35,17 +38,22 @@ const CreateGraph = () => {
   // pull relevant state out of context
   const { functionName } = useFunctionContext();
   const { setCustomGraphs, graphType, setGraphType, metricName, setMetricName, graphName, setGraphName, startTime, setStartTime, endTime, setEndTime, datapointType, setDatapointType } = useGraphContext();
+  const { createLoading, setCreateLoading } = useMainPageContext();
+  const [coldStartDate, setColdStartDate] = React.useState('');
   const [errorNoData, setErrorNoData] = React.useState(false);
   const [errorTooMuchData, setErrorTooMuchData] = React.useState(false);
 
   // store list of metrics and graphtypes in an array
   const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
-  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount'];
+  const metricNames = ['Errors', 'ConcurrentExecutions', 'Invocations', 'Duration', 'Throttles', 'UrlRequestCount', 'ColdStarts'];
   const datapointTypeNames = ['Average', 'Sum', 'Minimum', 'Maximum'];
 
   // on submit, send the data to the backend
   async function handleSubmit() {
-    // call the fetch function
+    setErrorTooMuchData(false);
+    setErrorNoData(false);
+    setCreateLoading?.(true);
+    // call custom metric API
     const res = await fetch('http://localhost:3000/metric/custom', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
@@ -57,12 +65,12 @@ const CreateGraph = () => {
       })
     })
     const data = await res.json();
-    
-    // if there are too many datapoints, alert the user
+    setCreateLoading?.(false);
+
+    // error handling to display to the user
     if (data.tooManyDatapoints) {
       setErrorTooMuchData(true);
     }
-    // if there are no datapoints in array, alert the user
     else if (data.Datapoints.length === 0) {
       setErrorNoData(true);
     }
@@ -73,13 +81,49 @@ const CreateGraph = () => {
       graphName: graphName,
       graphType: graphType,
       metricName: metricName,
-      startTime: startTime,
-      endTime: endTime,
+      date: coldStartDate,
       metricData: data,
       datapointType: datapointType
     }
     setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
   }}
+
+    // if metric is coldstarts, this function will fire on submit
+    async function handleSubmitColdStarts() {
+    setErrorTooMuchData(false);
+    setErrorNoData(false);
+    setCreateLoading?.(true);
+    const res = await fetch('http://localhost:3000/metric/cold', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        functionName: functionName,
+        date: coldStartDate,
+    })})
+    const data = await res.json();
+    setCreateLoading?.(false);
+
+    // error handling to display to the user
+    if (data.tooManyDatapoints) {
+      setErrorTooMuchData(true);
+    }
+    else if (data.length === 0) {
+      setErrorNoData(true);
+    }
+    else {
+    // save the graph setup to the state, in addition to all the previous graphs
+    const newCustomGraph = {
+      functionName: functionName,
+      graphName: graphName,
+      graphType: graphType,
+      metricName: metricName,
+      date: coldStartDate,
+      metricData: data,
+      datapointType: datapointType
+    }
+    setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
+  }}
+
 
   return (
     <div className="flex flex-col bg-[#B2CAB3] dark:bg-[#313131] p-10">
@@ -96,6 +140,8 @@ const CreateGraph = () => {
       </Select>
       <br></br>
 
+      { metricName === 'ColdStarts' ? null : 
+      <>
       <InputLabel id="graph-type">Graph Type</InputLabel>
       <Select id="graph-type" className="w-auto" label='Graph Type'>
         {graphTypeNames.map((graphType) => (
@@ -103,8 +149,9 @@ const CreateGraph = () => {
         ))}
       </Select>
       <br></br>
+      </>}
 
-      { graphType === 'Bar' || graphType === 'Pie' || graphType === 'Line' ? 
+      { metricName !== 'ColdStarts' && graphType == 'Line' || graphType == 'Bar' || graphType == 'Pie' ?
       <>
         <InputLabel id="datapoints-type">Datapoints Type</InputLabel>
         <Select id="datapoints-type" className="w-auto" label='Graph Type'>
@@ -118,59 +165,81 @@ const CreateGraph = () => {
       null
       }
 
+      { metricName === 'ColdStarts' ?
+      <>
+      <InputLabel id="cold-start-date">Select Date</InputLabel>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-          label="Start Date & Time"
-          minutesStep={5}
-          value={startTime}
+        <DatePicker
+          // label="Select Date"
+          value={coldStartDate}
           onChange={(newValue) => {
-            const newDate = new Date(newValue).toLocaleString();
-            setStartTime?.(newDate);
-            // set the default end time to 23h59m after the start time
-            const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').format('MM/DD/YY, HH:mm:ss A');
-            setEndTime?.(newDatePlus24);
+            const newDate = dayjs(newValue).format('YYYY/MM/DD');
+            console.log(newDate)
+            setColdStartDate(newDate);
           }}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
       <br></br>
+      </>
+      :
+      <>
+      <InputLabel id="start-date-and-time">Start Date & Time</InputLabel>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            minutesStep={5}
+            value={startTime}
+            onChange={(newValue) => {
+              const newDate = new Date(newValue).toLocaleString();
+              setStartTime?.(newDate);
+              // set the default end time to 23h59m after the start time
+              const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute').format('MM/DD/YY, HH:mm:ss A');
+              setEndTime?.(newDatePlus24);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        <br></br>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-          label="End Date & Time"
-          minutesStep={5}
-          value={endTime}
-          onChange={(newValue) => {
-            // only allow the date and time to be set, if the time within 12 hours time difference
-              let newDate = new Date(newValue).toLocaleString();
-              dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour')) ? alert('Please select a time within 24 hours of the start time') : setEndTime?.(newDate);
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
-      <br></br>
+        <InputLabel id="end-date-and-time">End Date & Time</InputLabel>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            minutesStep={5}
+            value={endTime}
+            onChange={(newValue) => {
+              // only allow the date and time to be set, if the time within 24 hours time difference
+                let newDate = new Date(newValue).toLocaleString();
+                dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour')) ? alert('Please select a time within 24 hours of the start time') : setEndTime?.(newDate);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        <br></br>
+      </>
+      }
 
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="outlined"
-              disableElevation
-              sx={{
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                '&:hover': {
-                  borderColor: '#9cb59d',
-                  backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
-              }}
-              size="small"
-              onClick={handleSubmit}
-            >
-              SUBMIT
-            </Button>
-            <br></br>
-            { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
-            { errorTooMuchData ? <p className="text-lg text-red-600 dark:text-red-400">Error: Too many datapoints available for this time range. Please select a smaller time range.</p> : null }
+        variant="outlined"
+        disableElevation
+        sx={{
+          backgroundColor: "#9cb59d",
+          borderColor: "#9cb59d",
+          color: "#FFFFFF",
+            '&:hover': {
+              borderColor: '#9cb59d',
+              backgroundColor: '#F5F5F5',
+              color: '#9cb59d'
+            }
+        }}
+        size="small"
+        onClick={metricName === 'ColdStarts' ? handleSubmitColdStarts : handleSubmit}
+        >
+          SUBMIT
+        </Button>
+        <br></br>
+        { errorNoData ? <p className="text-lg text-red-600 dark:text-red-400">Error: No datapoints available for this time range.</p> : null }
+        { errorTooMuchData ? <p className="text-lg text-red-600 dark:text-red-400">Error: Too many datapoints available for this time range. Please select a smaller time range.</p> : null }
+        { createLoading ? <div className="flex justify-center"><CreateGraphLoader /></div> : null}
     </div>
   )
 }

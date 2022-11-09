@@ -114,11 +114,9 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('the price history price is ', data);
         setPriceHistory(data);
         setPriceLoading?.(false);
         setShowHistory(true);
-        
       })
       .catch((err) => {
           console.log('Error fetching pricing history:', err);
@@ -146,7 +144,11 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       <TabPanel value={value} index={0}>
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price calculator for:</p>
       <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
-      <p className='text-gray-700 dark:text-[#D3D4D4] text-md mt-10'>Configure your function below to estimate how much it will cost you per month. The default values are your function's current configuration.</p>
+      <p className='text-gray-700 dark:text-[#D3D4D4] text-md mt-10'>
+        Configure your function below to estimate how much it will cost you per month.
+        <br></br>
+        The default values are your function's current configuration.
+      </p>
 
       <br></br>
     
@@ -258,7 +260,9 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       <p className='text-gray-700 dark:text-[#D3D4D4] text-lg'>Viewing price history for:</p>
       <p className='text-gray-900 dark:text-[#D3D4D4] text-4xl mb-2.5'>{functionName}</p>
       <br></br>
-      <Typography gutterBottom>Billed month:</Typography>
+
+      <Box sx={{ width: '30%'}}>
+      <Typography sx={{mb:2.5}} gutterBottom>Billed month:</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={3}>
         <DatePicker
@@ -272,13 +276,14 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
         />
       </Stack>
     </LocalizationProvider>
+    <br></br>
+
     <div className="flex w-11/12">
       <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
         variant="outlined"
         disableElevation
         sx={{
           width: '30%',
-          m: 2.7, 
           backgroundColor: "#9cb59d",
           borderColor: "#9cb59d",
           color: "#FFFFFF",
@@ -286,21 +291,21 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
             borderColor: '#9cb59d',
             backgroundColor: '#F5F5F5',
             color: '#9cb59d'
-            }
-          }}
+          }
+        }}
         size="small"
         onClick={handleHistorySubmit}
-          >SUBMIT
+        >SUBMIT
       </Button>
       </div>
-      {/* do not show this whole thing when show history is false */}
-       
-      {showHistory && <div>
+      </Box>
+
+      {priceLoading ? <PriceLoader /> : showHistory && (
+      <div>
         <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-xl'>Your total costs for {displayDate} were:</p>
         <p className='text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-4xl'>${financial(priceHistory)}</p>
       </div>
-      }
-      
+      )}
       </TabPanel>
   </div>
   )

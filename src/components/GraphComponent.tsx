@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Chart as ChartJS, registerables } from 'chart.js'
 import { Bar, Scatter, Pie, Line } from 'react-chartjs-2'
 import { fontSize } from '@mui/system';
-import { BoltRounded } from '@mui/icons-material';
+import { BoltRounded, GraphicEqSharp } from '@mui/icons-material';
 import { useGraphContext } from '../context/GraphContext';
 import { useFunctionContext } from '../context/FunctionContext';
 
@@ -37,20 +37,6 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
   }
   const invocations = Object.values(invocationObj);
   const singleTime = Object.keys(invocationObj);
-
-  // manually counting cold starts
-  // const coldStartObj: any = {};
-  // let coldStartDate = '';
-  // for (let i = 0; i < coldStartMetrics.length; i++) {
-  //   if (coldStartObj[coldStartMetrics[i]]) {
-  //       coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] += 1;
-  //     } else {
-  //       coldStartObj[coldStartMetrics[i].timestamp.slice(-11)] = 1;
-  //     }
-  //   coldStartDate = coldStartMetrics[i].timestamp.slice(0, 10);
-  // }
-  // const coldStarts = Object.values(coldStartObj);
-  // const coldStartTimes = Object.keys(coldStartObj);
 
   // state for the default graphs
   const durationBarState = {
@@ -102,23 +88,6 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
       }
     ]
   }
-
-  // const coldStartState = {
-  //   labels: coldStartTimes,
-  //   datasets: [
-  //     {
-  //       label: 'Counts',
-  //       data: coldStarts,
-  //       backgroundColor: [
-  //         '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
-  //         ],
-  //       borderColor: '#9cb59d',
-  //       fill: false,
-  //       showLine: true,
-  //       borderWidth: 1
-  //     }
-  //   ]
-  // }
 
   return(
     <div className="grid grid-cols-2 gap-4 p-4">
@@ -367,7 +336,113 @@ const GraphComponent = ({ defaultMetrics, coldStartMetrics }: GraphComponentProp
 
       {customGraphs ? customGraphs.filter((graph: any) => graph.functionName === functionName).map((graph: any, index: number) => {
       // if datapoints array is empty, do not render or else it will break react
-        if (graph.metricData.Datapoints.length === 0) {
+        if (graph.metricName === 'ColdStarts') {
+          if (graph.metricData === undefined || graph.metricData.length === 0) {
+            return null;
+          }
+          else {
+            // if metric is cold starts, manually count the cold starts
+            // sort the data by timestamp
+            graph.metricData.sort((a: any, b: any) => {
+              return a.timestamp.localeCompare(b.timestamp);
+            });
+            const coldStartObj: any = {};
+            let coldStartDate = '';
+            for (let i = 0; i < graph.metricData.length; i++) {
+              if (coldStartObj[graph.metricData[i]]) {
+                  coldStartObj[graph.metricData[i].timestamp.slice(-11)] += 1;
+                } else {
+                  coldStartObj[graph.metricData[i].timestamp.slice(-11)] = 1;
+                }
+              coldStartDate = graph.metricData[i].timestamp.slice(0, 10);
+            }
+            const coldStarts = Object.values(coldStartObj);
+            const coldStartTimes = Object.keys(coldStartObj);
+            const coldStartTotal = coldStarts.reduce((a: any, b: any) => a + b, 0);
+            const pluralizeColdStarts = coldStartTotal === 1 ? 'cold start' : 'cold starts';
+
+            const coldStartState = {
+              labels: coldStartTimes,
+              datasets: [
+                {
+                  label: 'Counts',
+                  data: coldStarts,
+                  backgroundColor: [
+                    '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+                    ],
+                  borderColor: '#9cb59d',
+                  fill: false,
+                  showLine: true,
+                  borderWidth: 1
+                }
+              ]
+            }
+
+            return (
+              <div className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
+                <Bar
+                  data={ coldStartState }
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                    title: {
+                      display: true,
+                      font: {
+                        weight: 'bold',
+                        size: 25,
+                      },
+                      text: graph.graphName,
+                      color: '#bfbfbf',
+                      align: 'start',
+                      padding: {
+                        top: 15,
+                      }
+                    },
+                    subtitle: {
+                      display: true,
+                      text: `${coldStartTotal} ${pluralizeColdStarts} on ${coldStartDate}`,
+                      color: '#bfbfbf',
+                      align: 'start',
+                      padding: {
+                        bottom: 25
+                      },
+                      font: {
+                        size: 15,
+                        style: 'italic',
+                        weight: 'normal'
+                      }
+                    },
+                    legend:{
+                      display: false,
+                      position: 'bottom'
+                    }
+                  },
+                  scales: {
+                    y: {
+                      ticks: { color: '#bfbfbf' },
+                      title: {
+                        display: true,
+                        text: 'Count',
+                        color: '#bfbfbf'
+                      }
+                    },
+                    x: {
+                      ticks: { color: '#bfbfbf' },
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Time (UTC)',
+                        color: '#bfbfbf'
+                      }
+                    }
+                  },
+                  }}/>
+                </div>
+            );
+          }
+        }
+        else if (graph.metricData.Datapoints.length === 0) {
           return null;
         }
         else {
