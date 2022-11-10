@@ -1,7 +1,14 @@
 {
   "name": "ghost",
   "version": "1.0.0",
-  "description": "",
+  "description": "An open-source AWS Lambda metrics visualizer.",
+  "contributors": [
+    {"name": "Krisette Odegard"}, 
+    {"name": "Akash Patel"}, 
+    {"name": "Tim Kang"},
+    {"name": "Tracy Chang"},
+    {"name": "Lisa Tian"}
+  ],
   "main": "index.js",
   "scripts": {
     "build": "webpack --config ./webpack.config.js",
@@ -12,15 +19,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lisatiann/OSP-AWS-Lambda-Metrics.git"
+    "url": "git+https://github.com/oslabs-beta/ghost.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lisatiann/OSP-AWS-Lambda-Metrics/issues"
+    "url": "https://github.com/oslabs-beta/ghost/issues"
   },
-  "homepage": "https://github.com/lisatiann/OSP-AWS-Lambda-Metrics#readme",
+  "homepage": "https://github.com/oslabs-beta/ghost#readme",
   "devDependencies": {
     "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.21",
