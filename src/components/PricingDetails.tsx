@@ -51,7 +51,7 @@ function a11yProps(index: number) {
 }
 
 const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
-  const { functionName, showPricing, setShowPricing } = useFunctionContext();
+  const { functionName, showPricing, setShowPricing, showHistory, setShowHistory } = useFunctionContext();
   const { priceLoading, setPriceLoading } = useMainPageContext();
   const [type, setType] = React.useState(defaultFunctionConfig.type);
   const [memorySize, setMemorySize] = React.useState(defaultFunctionConfig.memorySize);
@@ -63,7 +63,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const [date, setDate] = React.useState<Date | null>(new Date());
   const [displayDate, setDisplayDate] = React.useState('');
   const [priceHistory, setPriceHistory] = React.useState<any>([]);
-  const [showHistory, setShowHistory] = React.useState(false);
+  // const [showHistory, setShowHistory] = React.useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -71,6 +71,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
 
   const handleCalcSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
+    setShowPricing?.(false);
     // post request to backend for pricing calculator
     const body = {
       functionName: functionName,
@@ -98,7 +99,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
   const handleHistorySubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
     // turn off showing the price history if it was previously calculated
-    setShowHistory(false);
+    setShowHistory?.(false);
     // turn on loading animation
     setPriceLoading?.(true);
     // post request to backend for pricing history
@@ -115,7 +116,7 @@ const PricingDetails = ({ defaultFunctionConfig }: PricingDetailsProps) => {
       .then((data) => {
         setPriceHistory(data);
         setPriceLoading?.(false);
-        setShowHistory(true);
+        setShowHistory?.(true);
       })
       .catch((err) => {
           console.log('Error fetching pricing history:', err);

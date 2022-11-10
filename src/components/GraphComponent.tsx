@@ -39,7 +39,7 @@ const GraphComponent = () => {
       {
         label: 'Duration',
         backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#9cb59d', '#FFCACA', '#D2DAFF'
           ],
         borderWidth: 0,
         borderColor: 'black',
@@ -56,7 +56,7 @@ const GraphComponent = () => {
         label: 'Memory',
         data: memory,
         backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#9cb59d', '#FFCACA', '#D2DAFF'
           ],
         borderColor: '#9cb59d',
         fill: false,
@@ -73,7 +73,7 @@ const GraphComponent = () => {
         label: 'Invocations',
         data: invocations,
         backgroundColor: [
-          '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+          '#B2CAB3', '#B8E8FC', '#EDC09E', '#9cb59d', '#FFCACA', '#D2DAFF'
           ],
         borderColor: '#9cb59d',
         fill: false,
@@ -402,7 +402,7 @@ const GraphComponent = () => {
               {
                 label: units,
                 backgroundColor: [
-                  '#B2CAB3', '#B8E8FC', '#EDC09E', '#FDFDBD', '#9cb59d', '#FFCACA', '#D2DAFF'
+                  '#B2CAB3', '#B8E8FC', '#EDC09E', '#FFCACA', '#D2DAFF'
                   ],
                 borderWidth: 1,
                 borderColor: '#B2CAB3',
@@ -438,8 +438,8 @@ const GraphComponent = () => {
               {
                 label: 'Sum',
                 data: sums,
-                borderColor: '#FDFDBD',
-                backgroundColor: '#FDFDBD',
+                borderColor: '#D2DAFF',
+                backgroundColor: '#D2DAFF',
               }
             ]
           }

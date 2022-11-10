@@ -16,7 +16,7 @@ interface Props {
 
 const LambdaFuncComponent: React.FC<Props> = ({ func }) => {
   // when a function is clicked, set the function in context
-  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled, showPricing, setShowPricing} = useFunctionContext();
+  const { setFunctionName, isMetricsEnabled, setIsMetricsEnabled, isPricingEnabled, setIsPricingEnabled, isHomeEnabled, setIsHomeEnabled, isPermissionsEnabled, setIsPermissionsEnabled, showPricing, setShowPricing, showHistory, setShowHistory } = useFunctionContext();
   const { setCreateGraphIsShown } = useGraphContext();
   const [openOptions, setOpenOptions] = React.useState(false);
   const handleOpenOptions = () => {
@@ -39,6 +39,7 @@ const LambdaFuncComponent: React.FC<Props> = ({ func }) => {
     setCreateGraphIsShown?.(false);
     setIsPermissionsEnabled?.(false);
     setShowPricing?.(false);
+    setShowHistory?.(false);
   }
   
   const handlePermissionsClick = (funcName: string) => {

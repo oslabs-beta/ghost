@@ -74,11 +74,12 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
         <React.Fragment>
-          <div>
+          <div className="flex items-center justify-center">
             <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
               variant="contained" {...bindTrigger(popupState)}
               sx = {{     
                 fontSize: 10,
+                px: 8,
                 backgroundColor: "#9cb59d",
                 borderColor: "#9cb59d",
                 color: "#FFFFFF",
@@ -104,7 +105,7 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
               maxHeight: ITEM_HEIGHT * 5.5,
             }
           }}
-          className="w-5.5/12" {...bindMenu(popupState)}>
+          {...bindMenu(popupState)}>
           {awsRegions.map((region) => (
             <MenuItem onClick={(event) => {
               handleRegionClick(region);
