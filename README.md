@@ -33,11 +33,16 @@ Default output format [json]:
 Download ghost from the GitHub repository under 'Releases.' Currently, there are releases for [Mac OS](https://www.google.com/) and [Windows](https://www.google.com/).
 
 <i><b>On MacOS:</b></i>
-Open the .dmg file to place ghost into your Applications folder.
-Click on ghost in Applications to launch the app.
+                <li>Unzip the downloaded file</li>
+                <li>Double click to open the 'ghost-darwin-x64' file</li>
+                <li>Right click on the ghost app (do not double click)</li>
+                <li>Click 'Open' on the popup to launch the app</li>
 
 <i><b>On Windows:</b></i>
-Do something
+                <li>Unzip the downloaded file</li>
+                <li>Double click on the ghost app</li>
+                <li>Click 'More Info', then a 'Run Anyways' button should appear</li>
+                <li>Click 'Run Anyways' to launch the app</li>
 
 Now that ghost is ready to go, let's get started!
 
