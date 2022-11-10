@@ -9,7 +9,7 @@
     "start": "npm run build && electron ./dist/electron.js",
     "startMon": "npm run build && electronmon ./dist/electron.js",
     "server": "nodemon server/server.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "repository": {
     "type": "git",
