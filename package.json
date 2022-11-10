@@ -3,11 +3,21 @@
   "version": "1.0.0",
   "description": "An open-source AWS Lambda metrics visualizer.",
   "contributors": [
-    {"name": "Krisette Odegard"}, 
-    {"name": "Akash Patel"}, 
-    {"name": "Tim Kang"},
-    {"name": "Tracy Chang"},
-    {"name": "Lisa Tian"}
+    {
+      "name": "Krisette Odegard"
+    },
+    {
+      "name": "Akash Patel"
+    },
+    {
+      "name": "Tim Kang"
+    },
+    {
+      "name": "Tracy Chang"
+    },
+    {
+      "name": "Lisa Tian"
+    }
   ],
   "main": "index.js",
   "scripts": {
@@ -15,7 +25,8 @@
     "electron": "electron ./dist/electron.js",
     "start": "npm run build && electron ./dist/electron.js",
     "startMon": "npm run build && electronmon ./dist/electron.js",
-    "server": "nodemon server/server.js"
+    "server": "nodemon server/server.js",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --fix ./src"
   },
   "repository": {
     "type": "git",
@@ -32,13 +43,22 @@
     "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
     "@wdio/cli": "^7.25.4",
     "autoprefixer": "^10.4.12",
     "css-loader": "^6.7.1",
     "electron": "^21.1.1",
+    "eslint": "^8.27.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.18",
     "postcss-loader": "^7.0.1",
+    "prettier": "2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "style-loader": "^3.3.1",
