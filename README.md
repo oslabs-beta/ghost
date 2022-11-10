@@ -4,7 +4,7 @@ Visit the Ghost website at [ghost-metrics.io](https://oslabs-beta.github.io/ghos
 Check out Ghost, an open-source AWS Lambdra metrics visualizer, [here](https://github.com/oslabs-beta/ghost).
 
 ## Built with...
-* React (Router)
+* React (Hooks/Router)
 * TypeScript
 * Vite
 * TailwindCSS
