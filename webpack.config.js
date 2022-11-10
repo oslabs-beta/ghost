@@ -38,7 +38,12 @@ module.exports = [
         test: /css$/,
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'postcss-loader'],
-    },]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        use: [{ loader: 'file-loader' }]
+      }]
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js',],
@@ -52,5 +57,5 @@ module.exports = [
         template: './src/index.html'
       })
     ]
-  }
+  },
 ];

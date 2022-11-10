@@ -1,40 +1,114 @@
-const { CloudWatchLogsClient, DescribeLogStreamsCommand  } = require("@aws-sdk/client-cloudwatch-logs");
-// const { CloudWatchClient } = require("@aws-sdk/client-cloudwatch");
+const { CloudWatchLogsClient, DescribeLogStreamsCommand, GetLogEventsCommand } = require("@aws-sdk/client-cloudwatch-logs");
+const regionController = require('./regionController')
 
 const cloudwatchController = {};
 
-
-
-cloudwatchController.getLogs = (req, res, next) => {
-  const client = new CloudWatchLogsClient({ region: "us-west-1" });
+cloudwatchController.getLogStreams = (req, res, next) => {
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
 
   const input = {
-    logGroupName: "/aws/lambda/HelloMysteryGang"
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    descending: true,
   };
 
-  const command = new DescribeLogStreamsCommand(input)
+  req.body.date ? input.logStreamNamePrefix = req.body.date : null;
 
-  //now we can use the api with the syntax client.send(command)
+  const command = new DescribeLogStreamsCommand(input);
+
   client.send(command)
     .then(data => {
-      res.locals.logs = data;
+      const logStreams = data.logStreams.map(streamObj => {
+        const streamData = {};
+        streamData.arn = streamObj.arn;
+        streamData.streamName = streamObj.logStreamName;
+        return streamData;
+      })
+      res.locals.logStreams = [...logStreams];
       return next();
     })
     .catch(err => {
-      console.log('the err is ', err)
-      return next({
-        status: 500,
-        log: 'Express error handler caught middleware error in getLogs',
-        message: {err: 'An error occurred'}
-      })
+      console.log('error in getLogStreams: ', err)
+      return next('error in cw.getLogStreams')
     })
-
 }
 
-cloudwatchController.dummy = (req, res, next) => {
-  res.locals.dummy = 'the req went through dummy'
+cloudwatchController.getAllLogStreams = async (req, res, next) => {
+  const client = new CloudWatchLogsClient(regionController.currentRegion); //req.body.region (object with key/value pair)
+
+  const input = {
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    descending: true,
+  };
+  req.body.date ? input.logStreamNamePrefix = req.body.date : null;
+
+  res.locals.logStreams = [];
+
+  let data = null;
+
+  do {
+    data ? input.nextToken = data.nextToken : null
+    const command = new DescribeLogStreamsCommand(input);
+    data = await client.send(command);
+    const logStreams = data.logStreams.map(streamObj => {
+      const streamData = {};
+      streamData.arn = streamObj.arn;
+      streamData.streamName = streamObj.logStreamName;
+      return streamData;
+    })
+    res.locals.logStreams = res.locals.logStreams.concat(logStreams);
+  } while(data.nextToken) 
+
   return next();
 }
+
+cloudwatchController.getRawLogs = async (req, res, next) => {
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
+
+  const input = {
+    logGroupName: "/aws/lambda/" + req.body.functionName,
+    logStreamName: req.body.streamName || res.locals.logStreams[0].streamName
+    // limit: 10
+  };
+
+  res.locals.rawLogs = [];
+
+  let data = null;
+
+  do {
+    data ? input.nextToken = data.nextBackwardToken : null
+    const command = new GetLogEventsCommand(input);
+    data = await client.send(command);
+    res.locals.rawLogs = res.locals.rawLogs.concat(data.events)
+  } while (data.events.length)
+  
+  return next();
+}
+
+cloudwatchController.iterateStreamsForLogs = async (req, res, next) => {
+  res.locals.rawLogs = [];
+
+  const client = new CloudWatchLogsClient(regionController.currentRegion);
+
+  for (let stream of res.locals.logStreams) {
+    const input = {
+      logGroupName: "/aws/lambda/" + req.body.functionName,
+      logStreamName: stream.streamName,
+    };
+  
+    let data = null;
+  
+    do {
+      data ? input.nextToken = data.nextBackwardToken : null
+      const command = new GetLogEventsCommand(input);
+      data = await client.send(command);
+      res.locals.rawLogs = res.locals.rawLogs.concat(data.events)
+    } while (data.events.length)
+
+  }
+  
+  return next();
+}
+
 
 
 module.exports = cloudwatchController;

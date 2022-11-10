@@ -1,51 +1,25 @@
-const express = require('express')
+const express = require('express');
 const app = express();
-// const path = require('path');
-
-//import routers here if we have them
-const cloudwatchController = require('./controllers/cloudwatchController');
 
 app.use(express.json());
 
-// app.get('/metrics/get', 
-//   cloudwatchController.dummy, 
-//   (req, res) => {
-//     res.status(200).json(res.locals.dummy)
-// })
+//import routes
+const mainRouter = require('./routes/mainRouter')
+const metricRouter = require('./routes/metricRouter')
+const priceRouter = require('./routes/priceRouter')
+const permissionRouter = require('./routes/permissionRouter')
+const logRouter = require('./routes/logRouter')
 
-// app.post('/metrics/post', 
-//   cloudwatchController.dummy, 
-//   (req, res, next) => {
-//     res.locals.body = { ...req.body }
-//     next();
-//   },
-//   (req, res) => {
-//     const returnObj = {
-//       dummy: res.locals.dummy,
-//       body: res.locals.body
-//     }
-//   res.status(200).json(returnObj)
-// })
+//define routes
+app.use('/main', mainRouter)
 
-app.get('/test', 
-  (req, res) => {
-    res.status(200).send('test works')
-  }
-)
+app.use('/metric', metricRouter)
 
-app.get('/metrics', 
-  cloudwatchController.getLogs,
-  (req, res) => {
-    res.status(200).json(res.locals.logs)
-  }
-)
+app.use('/price', priceRouter)
 
-app.post('/metrics', 
-  cloudwatchController.getLogs,
-  (req, res) => {
-    res.status(200).json('whatvr res.locals we save data in')
-  }
-)
+app.use('/permission', permissionRouter)
+
+app.use('/log', logRouter)
 
 //undefined route handler
 app.use('/', (req, res) => {
@@ -54,17 +28,18 @@ app.use('/', (req, res) => {
 
 //global error handler
 app.use((err, req, res, next) => {
-  let defaultErr = {
-    status: 500,
-    log: 'Express error handler caught unknown middleware error',
-    message: {err: 'An error occurred'}
+  const errObj = {
+    log: 'global error handler invoked',
+    status: 400,
+    message: err,
+  };
+  if (err.name === 'InvalidParameterCombinationException') {
+    errObj.tooManyDatapoints = true;
   }
-  const errObj = Object.assign({}, defaultErr, err);
-  console.log(errObj);
-  return res.status(errObj.status).json(errObj.message);
+  return res.status(errObj.status).json(errObj);
 })
 
 //listen on port
 app.listen(3000, () => {
-  console.log('listening on 3000')
+  console.log('listening on 3000 on server R')
 })
