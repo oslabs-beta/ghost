@@ -80,6 +80,8 @@ To add permissions, click on the 'ADD NEW PERMISSIONS' tab on top. Enter a State
 * Chart.js
 * MaterialUI
 * Tailwind CSS
+* Jest
+* Supertest
 
 <br />
 
@@ -94,7 +96,6 @@ Interested in contributing to ghost or the Open Source community? The following 
 * Additional testing
 * Alerts
 * Search for your function
-* Season 5 Silicon Valley
 
 <br />
 
