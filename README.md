@@ -1,5 +1,5 @@
 # Ghost
-Visit the Ghost website at _____.
+Visit the Ghost website at [ghost-metrics.io](https://oslabs-beta.github.io/ghost).
 
 Check out Ghost, an open-source AWS Lambdra metrics visualizer, [here](https://github.com/oslabs-beta/ghost).
 
@@ -9,7 +9,6 @@ Check out Ghost, an open-source AWS Lambdra metrics visualizer, [here](https://g
 * Vite
 * TailwindCSS
 * TailwindUI
-* MaterialUI
 
 ## The team
 * Krisette Odegard - [LinkedIn](https://www.linkedin.com/in/krisette) | [GitHub](https://github.com/krisette)
