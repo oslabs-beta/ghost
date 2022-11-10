@@ -1,4 +1,4 @@
-# OSP-AWS-Lambda-Metrics
+# ghost
 
 <h2>Getting Started</h2>
 First, please log into Amazon Web Services (AWS). Ghost works best when the AWS Command Line Interface (CLI) is installed on your computer.
