@@ -1,3 +1,4 @@
+import { BooleanModel } from 'aws-sdk/clients/gamelift';
 import * as React from 'react';
 
 // declare data types for states and hooks being passed to context in an interface
@@ -6,6 +7,7 @@ interface FunctionContextProps {
   streamName: string | undefined,
   functionARN: string | undefined,
   showPricing: boolean,
+  showHistory: boolean,
   isMetricsEnabled: boolean,
   isPricingEnabled: boolean,
   isHomeEnabled: boolean,
@@ -14,6 +16,7 @@ interface FunctionContextProps {
   setStreamName?: (name: string) => void,
   setFunctionARN?: (name: string) => void,
   setShowPricing?: (bool: boolean) => void,
+  setShowHistory?: (bool: boolean) => void,
   setIsMetricsEnabled?: (isMetricsEnabled: boolean) => void,
   setIsPricingEnabled?: (isPricingEnabled: boolean) => void,
   setIsHomeEnabled?: (isHomeEnabled: boolean) => void,
@@ -28,6 +31,7 @@ const defaultState = {
   streamName: '',
   functionARN: '',
   showPricing: false,
+  showHistory: false,
   isMetricsEnabled: false,
   isPricingEnabled: false,
   isHomeEnabled: true,
@@ -44,6 +48,7 @@ const FunctionContextProvider = ({ children }: { children: React.ReactNode }) =>
   const [functionName, setFunctionName] = React.useState('');
   const [streamName, setStreamName] = React.useState('');
   const [showPricing, setShowPricing] = React.useState(false);
+  const [showHistory, setShowHistory] = React.useState(false);
   const [isMetricsEnabled, setIsMetricsEnabled] = React.useState(false);
   const [isPricingEnabled, setIsPricingEnabled] = React.useState(false);
   const [isHomeEnabled, setIsHomeEnabled] = React.useState(true);
@@ -58,10 +63,12 @@ const FunctionContextProvider = ({ children }: { children: React.ReactNode }) =>
         streamName,
         functionARN,
         showPricing,
+        showHistory,
         setFunctionName,
         setStreamName,
         setFunctionARN,
         setShowPricing,
+        setShowHistory,
         isMetricsEnabled,
         isPricingEnabled,
         isHomeEnabled,

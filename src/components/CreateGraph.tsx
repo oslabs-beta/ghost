@@ -171,9 +171,6 @@ const CreateGraph = () => {
             onChange={(newValue) => {
               const newDate = new Date(newValue).toLocaleString();
               setStartTime?.(newDate);
-              // set the default end time to 23h59m after the start time
-              const newDatePlus24 = dayjs(newDate).add(23, 'hour').add(59, 'minute')
-              setEndTime?.(newDatePlus24);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
