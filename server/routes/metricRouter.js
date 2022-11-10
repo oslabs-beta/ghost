@@ -5,6 +5,11 @@ const metricsController = require('../controllers/metricsController');
 
 const router = express.Router();
 
+router.use('/test',
+(req, res) => {
+  res.status(200).json('test works')
+})
+
 router.post('/recent',
   cloudwatchController.getLogStreams,
   cloudwatchController.getRawLogs,

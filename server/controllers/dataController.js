@@ -44,30 +44,32 @@ dataController.parseBasic = (req, res, next) => {
 
     res.locals.basicData = basicData;
     return next();
-  }
-  catch(err) {
+  } catch(err) {
     console.log("error in parseBasic", err);
     return next(err)
   }
-  
 }
 
 dataController.parsePrice = (req, res, next) => {
   //res.locals.basicData is an array of basic Data objects
   let totalBilledDuration = 0;
   let invocations = 0;
-
-  for (let logEvent of res.locals.basicData) {
-    invocations++
-    totalBilledDuration += parseInt(logEvent.billedDuration, 10);
+  try {
+    for (let logEvent of res.locals.basicData) {
+      invocations++
+      totalBilledDuration += parseInt(logEvent.billedDuration, 10);
+    }
+  
+    res.locals.priceMetrics = {
+      durationTotal: totalBilledDuration,
+      invocationsTotal: invocations
+    };
+  
+    return next();
+  } catch (err) {
+    console.log('error in parsePrice: ', err)
+    return next(err)
   }
-
-  res.locals.priceMetrics = {
-    durationTotal: totalBilledDuration,
-    invocationsTotal: invocations
-  };
-
-  return next();
 }
 
 dataController.parseColdStarts = (req, res, next) => {
@@ -76,19 +78,24 @@ dataController.parseColdStarts = (req, res, next) => {
 
   const coldMetrics = [];
 
-  for (let logEvent of res.locals.basicData) {
-    if (logEvent.hasOwnProperty("initDuration")) {
-      const coldStart = {
-        initDuration: logEvent.initDuration,
-        timestamp: logEvent.timestamp
+  try {
+    for (let logEvent of res.locals.basicData) {
+      if (logEvent.hasOwnProperty("initDuration")) {
+        const coldStart = {
+          initDuration: logEvent.initDuration,
+          timestamp: logEvent.timestamp
+        }
+        coldMetrics.push(coldStart)
       }
-      coldMetrics.push(coldStart)
     }
+  
+    res.locals.coldMetrics = coldMetrics;
+  
+    return next();
+  } catch (err) {
+    console.log('error in parseColdStarts: ', err)
+    return next(err)
   }
-
-  res.locals.coldMetrics = coldMetrics;
-
-  return next();
 }
 
 

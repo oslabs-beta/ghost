@@ -1,13 +1,14 @@
 const pricingController = {};
 
 pricingController.getEstimate = (req, res, next) => {
+  try {
   //req.body will have these props:
   //type: "x86_64" or "Arm"
   //memorySize: 128 //must be b/w 128 and 10240 (10gb)
   //storage: 512 (number) //must be between 512 to 10240
   //billedDurationAvg: Number //must be b/w 1 to 900000
   //invocationsTotal: Number //must be b/w 1 to 1e+21
-  console.log(req.body)
+  //console.log(req.body)
   const typeKey = req.body.type || res.locals.functionConfig.type;
   const memKey = req.body.memorySize || res.locals.functionConfig.memorySize;
   const invocations = req.body.invocationsTotal || res.locals.priceMetrics.invocationsTotal;
@@ -98,6 +99,11 @@ pricingController.getEstimate = (req, res, next) => {
   //respond with cost
   res.locals.cost = round(cost);
   return next();
+
+  } catch (err) {
+    console.log('error in getEstimate: ', err)
+    return next(err)
+  }
 }
 
 module.exports = pricingController;
