@@ -29,6 +29,19 @@ Default output format [json]:
 ```
 <br />
 
+## Run the Server
+To run the server, clone the GitHub repository to your computer. Navigate to the local directory and install the required Node modules.
+```
+git clone https://github.com/oslabs-beta/ghost.git
+cd ghost
+npm install
+```
+Once completed, run the server.
+```
+npm run server
+```
+<br />
+
 ## Download and Launch
 Download ghost from the GitHub repository under 'Releases.' Currently, there are releases for [Mac OS](https://www.google.com/) and [Windows](https://www.google.com/).
 
