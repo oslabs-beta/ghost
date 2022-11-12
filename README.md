@@ -43,7 +43,7 @@ npm run server
 <br />
 
 ## Download and Launch
-Download ghost from the GitHub repository under 'Releases.' Currently, there are releases for [Mac OS](https://www.google.com/) and [Windows](https://www.google.com/).
+Download ghost from the GitHub repository under 'Releases.' Currently, there are releases for [Mac OS](https://github.com/oslabs-beta/ghost/releases/download/v1.0.0/ghost-macos.zip) and [Windows](https://github.com/oslabs-beta/ghost/releases/download/v1.0.0/ghost-windows.zip).
 
 <i><b>On MacOS:</b></i>
                 <li>Unzip the downloaded file</li>
