@@ -3,11 +3,21 @@
   "version": "1.0.0",
   "description": "An open-source AWS Lambda metrics visualizer.",
   "contributors": [
-    {"name": "Krisette Odegard"}, 
-    {"name": "Akash Patel"}, 
-    {"name": "Tim Kang"},
-    {"name": "Tracy Chang"},
-    {"name": "Lisa Tian"}
+    {
+      "name": "Krisette Odegard"
+    },
+    {
+      "name": "Akash Patel"
+    },
+    {
+      "name": "Tim Kang"
+    },
+    {
+      "name": "Tracy Chang"
+    },
+    {
+      "name": "Lisa Tian"
+    }
   ],
   "main": "index.js",
   "scripts": {
