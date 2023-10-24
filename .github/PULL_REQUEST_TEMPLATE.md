@@ -4,7 +4,7 @@
 
 Please include a summary of the changes and issues that are fixed. Also list any relevant details and dependencies required for this change.
 
-Fixes # (issue) (if applicable)
+Fixes # (issue) (Note: Always tie PRs to user stories, NOT features)
 
 ## Type of change
 
