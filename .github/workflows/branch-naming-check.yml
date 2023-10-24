@@ -1,0 +1,36 @@
+name: "Branch Naming Convention Check"
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          if [[ "${{ github.actor }}" != "dependabot[bot]" && "${{ github.actor }}" != "dependabot-preview[bot]" ]]; then
+            BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | grep -E "^(feature|bug|chore)/[a-zA-Z0-9_-]+$")
+            if [[ ! $BRANCH_NAME ]]; then
+              echo "Invalid branch name!"
+              exit 1
+            fi
+          else
+            echo "Dependabot PR, skipping branch name check."
+          fi
+          
+      - name: Leave a comment if branch name is invalid
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMENT_BODY="🚨 Invalid branch name! Branch names in this repo must adhere to the pattern: '(feature|bug|chore)/<name>'. Please correct it and open a new PR. 🚨"
+          PR_API_URL="${{ github.event.pull_request.comments_url }}"
+          
+          curl \
+            -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "$PR_API_URL" \
+            -d "{\"body\": \"$COMMENT_BODY\"}"
