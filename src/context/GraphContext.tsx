@@ -2,35 +2,35 @@ import * as React from 'react';
 
 // declare data types for states and hooks being passed to context in an interface
 interface GraphContextProps {
-  createGraphIsShown: boolean,
-  customGraphs: any,
-  graphName: string,
-  graphType: string,
-  metricName: string,
-  dataset1: string,
-  dataset2: string,
-  errors: string,
-  concurrent: string,
-  startTime: any,
-  endTime: any,
-  datapointType: string | null,
-  defaultMetrics: any,
+  createGraphIsShown: boolean;
+  customGraphs: any;
+  graphName: string;
+  graphType: string;
+  metricName: string;
+  dataset1: string;
+  dataset2: string;
+  errors: string;
+  concurrent: string;
+  startTime: any;
+  endTime: any;
+  datapointType: string | null;
+  defaultMetrics: any;
 
-  setGraphName?: (name: string) => void,
-  setGraphType?: (type: string) => void,
-  setMetricName?: (metric: string) => void,
-  setDataset1?: (data: string) => void,
-  setDataset2?: (data: string) => void,
-  setErrors?: (data: string) => void,
-  setConcurrent?: (data: string) => void,
-  setStartTime?: (data: any) => void,
-  setEndTime?: (date: any) => void,
-  setCreateGraphIsShown?: (value: boolean) => void,
-  setCustomGraphs?: (value: any) => any | void,
-  setDatapointType?: (value: any) => void,
-  setDefaultMetrics?: (value: any) => void,
+  setGraphName?: (name: string) => void;
+  setGraphType?: (type: string) => void;
+  setMetricName?: (metric: string) => void;
+  setDataset1?: (data: string) => void;
+  setDataset2?: (data: string) => void;
+  setErrors?: (data: string) => void;
+  setConcurrent?: (data: string) => void;
+  setStartTime?: (data: any) => void;
+  setEndTime?: (date: any) => void;
+  setCreateGraphIsShown?: (value: boolean) => void;
+  setCustomGraphs?: (value: any) => any | void;
+  setDatapointType?: (value: any) => void;
+  setDefaultMetrics?: (value: any) => void;
 
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
 // declare default values for states being passed to context
@@ -48,15 +48,16 @@ const defaultState = {
   customGraphs: [],
   datapointType: null,
   defaultMetrics: [],
-}
+};
 
 // use createContext to create a context object
-export const GraphContext = React.createContext<GraphContextProps>(defaultState);
+export const GraphContext =
+  React.createContext<GraphContextProps>(defaultState);
 
 // create a provider component to wrap around components that need access to context
 // pass in children as props to provider component
 // children = all the components that need access to context
-const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
+function GraphContextProvider({ children }: { children: React.ReactNode }) {
   const [graphName, setGraphName] = React.useState('');
   const [graphType, setGraphType] = React.useState('');
   const [dataset1, setDataset1] = React.useState('');
@@ -104,9 +105,9 @@ const GraphContextProvider = ({ children }: { children: React.ReactNode }) => {
     >
       {children}
     </GraphContext.Provider>
-  )
+  );
 }
 
-export const useGraphContext = () =>  React.useContext(GraphContext);
+export const useGraphContext = () => React.useContext(GraphContext);
 
 export default GraphContextProvider;

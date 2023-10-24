@@ -11,10 +11,10 @@
 // }
 
 // const BarChart = ({ chartState, graphName }) => {
-//   return 
+//   return
 //         (
 //         <p className="basis-1/2 bg-white text-[#bfbfbf] rounded-lg shadow-md m-2 p-4 dark:bg-[#404040] dark:text-white">
-//         <Bar 
+//         <Bar
 //         data = { chartState }
 //         options = {{
 //           plugins: {
@@ -58,7 +58,7 @@
 //         }}/>
 //         </p>
 //         )
-        
+
 // }
 
 // export default BarChart;
