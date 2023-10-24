@@ -48,7 +48,7 @@
     "@wdio/cli": "^7.25.4",
     "autoprefixer": "^10.4.12",
     "css-loader": "^6.7.1",
-    "electron": "^21.1.1",
+    "electron": "^27.0.2",
     "eslint": "^8.27.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.26.0",
