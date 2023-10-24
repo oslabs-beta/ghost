@@ -69,9 +69,9 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "^3.192.0",
-    "@aws-sdk/client-cloudwatch-logs": "^3.192.0",
-    "@aws-sdk/client-lambda": "^3.192.0",
+    "@aws-sdk/client-cloudwatch": "^3.433.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.433.0",
+    "@aws-sdk/client-lambda": "^3.433.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.9",
