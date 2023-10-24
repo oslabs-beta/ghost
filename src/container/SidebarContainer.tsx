@@ -1,63 +1,63 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Drawer from '@mui/material/Drawer'
-import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import RegionComponent from '../components/RegionComponent'
-import LambdaFuncList from '../components/LambdaFuncList'
-import { useFunctionContext } from '../context/FunctionContext'
-import { useGraphContext } from '../context/GraphContext'
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import RegionComponent from '../components/RegionComponent';
+import LambdaFuncList from '../components/LambdaFuncList';
+import { useFunctionContext } from '../context/FunctionContext';
+import { useGraphContext } from '../context/GraphContext';
 
-const drawerWidth = 255
+const drawerWidth = 255;
 
-export default function SidebarContainer () {
+export default function SidebarContainer() {
   // opens the menu drawers on click & changes the color
-  const [openMenu, setOpenMenu] = React.useState(false)
-  const [currentRegion, setCurrentRegion] = React.useState('us-west-1')
+  const [openMenu, setOpenMenu] = React.useState(false);
+  const [currentRegion, setCurrentRegion] = React.useState('us-west-1');
   const handleOpenMenu = () => {
-    setOpenMenu(!openMenu)
+    setOpenMenu(!openMenu);
     !openMenu
       ? document
-        .querySelector('#list-select')
-        ?.classList.add('bg-[#B2CAB3]', 'dark:bg-[#7f9f80]')
+          .querySelector('#list-select')
+          ?.classList.add('bg-[#B2CAB3]', 'dark:bg-[#7f9f80]')
       : document
-        .querySelector('#list-select')
-        ?.classList.remove('dark:bg-[#7f9f80]', 'bg-[#B2CAB3]')
-  }
+          .querySelector('#list-select')
+          ?.classList.remove('dark:bg-[#7f9f80]', 'bg-[#B2CAB3]');
+  };
 
   // home sends you to the home page
   const {
     setIsHomeEnabled,
     setIsPricingEnabled,
     setIsMetricsEnabled,
-    setIsPermissionsEnabled
-  } = useFunctionContext()
-  const { setCreateGraphIsShown } = useGraphContext()
+    setIsPermissionsEnabled,
+  } = useFunctionContext();
+  const { setCreateGraphIsShown } = useGraphContext();
   const handleHomeClick = () => {
-    setIsHomeEnabled?.(true)
-    setIsMetricsEnabled?.(false)
-    setIsPricingEnabled?.(false)
-    setCreateGraphIsShown?.(false)
-    setIsPermissionsEnabled?.(false)
-  }
+    setIsHomeEnabled?.(true);
+    setIsMetricsEnabled?.(false);
+    setIsPricingEnabled?.(false);
+    setCreateGraphIsShown?.(false);
+    setIsPermissionsEnabled?.(false);
+  };
 
   // fetch list of lambda functions
-  const [lambdaFuncList, setLambdaFuncList] = React.useState([])
+  const [lambdaFuncList, setLambdaFuncList] = React.useState([]);
   React.useEffect(() => {
     fetch('http://localhost:3000/main/functions')
       .then(async (res) => await res.json())
       .then((data) => {
-        setLambdaFuncList(data)
+        setLambdaFuncList(data);
       })
       .catch((err) => {
-        console.log('Error fetching lambda functions:', err)
-      })
-  }, [currentRegion])
+        console.log('Error fetching lambda functions:', err);
+      });
+  }, [currentRegion]);
 
   /* default region will be US-West-1 for now
      until there is a way to retrieve user's region based on their AWS CLI config
@@ -66,19 +66,19 @@ export default function SidebarContainer () {
     fetch('http://localhost:3000/main/changeRegion', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ region: currentRegion })
+      body: JSON.stringify({ region: currentRegion }),
     })
       .then(async (response) => await response.json())
       .then((data) => {
-        if (data === 'region changed') setCurrentRegion(currentRegion)
-        else alert('data')
+        if (data === 'region changed') setCurrentRegion(currentRegion);
+        else alert('data');
       })
       .catch((err) => {
-        console.log('Error changing region:', err)
-      })
-  }, [currentRegion])
+        console.log('Error changing region:', err);
+      });
+  }, [currentRegion]);
 
   return (
     <div className="bg-[#F5F5F5] text-black dark:bg-[#242424] dark:text-white">
@@ -91,8 +91,8 @@ export default function SidebarContainer () {
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
-              backgroundColor: 'transparent'
-            }
+              backgroundColor: 'transparent',
+            },
           }}
           variant="permanent"
           anchor="left"
@@ -121,7 +121,7 @@ export default function SidebarContainer () {
                   <ListItemText
                     primary={text}
                     sx={{
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}
                   />
                   {openMenu ? <ExpandLess /> : <ExpandMore />}
@@ -136,5 +136,5 @@ export default function SidebarContainer () {
         </Drawer>
       </Box>
     </div>
-  )
+  );
 }

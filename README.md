@@ -54,12 +54,14 @@ npm run server
 Download ghost from the GitHub repository under 'Releases.' Currently, there are releases for [Mac OS](https://github.com/oslabs-beta/ghost/releases/download/v1.0.0/ghost-macos.zip) and [Windows](https://github.com/oslabs-beta/ghost/releases/download/v1.0.0/ghost-windows.zip).
 
 <i><b>On MacOS:</b></i>
+
 <li>Unzip the downloaded file</li>
 <li>Double click to open the 'ghost-darwin-x64' file</li>
 <li>Right click on the ghost app (do not double click)</li>
 <li>Click 'Open' on the popup to launch the app</li>
 
 <i><b>On Windows:</b></i>
+
 <li>Unzip the downloaded file</li>
 <li>Double click on the ghost app</li>
 <li>Click 'More Info', then a 'Run Anyways' button should appear</li>

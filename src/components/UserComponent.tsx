@@ -1,9 +1,9 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import AccessibilityIcon from '@mui/icons-material/Accessibility'
-import PopupState, { bindTrigger } from 'material-ui-popup-state'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import PopupState, { bindTrigger } from 'material-ui-popup-state';
 
-export default function UserComponent () {
+export default function UserComponent() {
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
@@ -20,13 +20,13 @@ export default function UserComponent () {
               '&:hover': {
                 borderColor: '#9cb59d',
                 backgroundColor: '#F5F5F5',
-                color: '#9cb59d'
-              }
+                color: '#9cb59d',
+              },
             }}
           >
             <AccessibilityIcon
               sx={{
-                pr: 0.5
+                pr: 0.5,
               }}
             />
             Welcome
@@ -34,5 +34,5 @@ export default function UserComponent () {
         </div>
       )}
     </PopupState>
-  )
+  );
 }

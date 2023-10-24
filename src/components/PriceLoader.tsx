@@ -1,19 +1,18 @@
-import * as React from 'react'
-import { BeatLoader } from 'react-spinners'
-import { useMainPageContext } from '../context/MainPageContext'
+import * as React from 'react';
+import { BeatLoader } from 'react-spinners';
+import { useMainPageContext } from '../context/MainPageContext';
 
 const override: React.CSSProperties = {
   display: 'block',
   margin: '0 auto',
-  borderColor: 'white'
-}
+  borderColor: 'white',
+};
 
-function PriceLoader () {
-  const { priceLoading } = useMainPageContext()
-  const [color, setColor] = React.useState('#ffffff')
+function PriceLoader() {
+  const { priceLoading } = useMainPageContext();
+  const [color, setColor] = React.useState('#ffffff');
 
-  return priceLoading
-    ? (
+  return priceLoading ? (
     <div className="overlay-content">
       <div className="p-10">
         <BeatLoader
@@ -26,8 +25,7 @@ function PriceLoader () {
         />
       </div>
     </div>
-      )
-    : null
+  ) : null;
 }
 
-export default PriceLoader
+export default PriceLoader;

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 import {
   Box,
   Slider,
@@ -12,33 +12,33 @@ import {
   TextField,
   Tabs,
   Tab,
-  Stack
-} from '@mui/material'
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import * as dayjs from 'dayjs'
-import { useMainPageContext } from '../context/MainPageContext'
-import PriceLoader from './PriceLoader'
-import { useFunctionContext } from '../context/FunctionContext'
+  Stack,
+} from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import * as dayjs from 'dayjs';
+import { useMainPageContext } from '../context/MainPageContext';
+import PriceLoader from './PriceLoader';
+import { useFunctionContext } from '../context/FunctionContext';
 
 interface PricingDetailsProps {
-  defaultFunctionConfig: any
+  defaultFunctionConfig: any;
 }
 
 interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
 const StyledTab = styled(Tab)({
   '&.Mui-selected': {
-    color: '#7f9f80'
-  }
-})
+    color: '#7f9f80',
+  },
+});
 
-function TabPanel (props: TabPanelProps) {
-  const { children, value, index, ...other } = props
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -54,46 +54,46 @@ function TabPanel (props: TabPanelProps) {
         </Box>
       )}
     </div>
-  )
+  );
 }
 
-function a11yProps (index: number) {
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
-  }
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
 }
 
-function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
+function PricingDetails({ defaultFunctionConfig }: PricingDetailsProps) {
   const {
     functionName,
     showPricing,
     setShowPricing,
     showHistory,
-    setShowHistory
-  } = useFunctionContext()
-  const { priceLoading, setPriceLoading } = useMainPageContext()
-  const [type, setType] = React.useState(defaultFunctionConfig.type)
+    setShowHistory,
+  } = useFunctionContext();
+  const { priceLoading, setPriceLoading } = useMainPageContext();
+  const [type, setType] = React.useState(defaultFunctionConfig.type);
   const [memorySize, setMemorySize] = React.useState(
     defaultFunctionConfig.memorySize
-  )
-  const [storage, setStorage] = React.useState(defaultFunctionConfig.storage)
-  const [billedDurationAvg, setBilledDurationAvg] = React.useState(1)
-  const [invocationsTotal, setInvocationsTotal] = React.useState(1)
-  const [pricing, setPricing] = React.useState(0)
-  const [value, setValue] = React.useState(0)
-  const [date, setDate] = React.useState<Date | null>(new Date())
-  const [displayDate, setDisplayDate] = React.useState('')
-  const [priceHistory, setPriceHistory] = React.useState<any>([])
+  );
+  const [storage, setStorage] = React.useState(defaultFunctionConfig.storage);
+  const [billedDurationAvg, setBilledDurationAvg] = React.useState(1);
+  const [invocationsTotal, setInvocationsTotal] = React.useState(1);
+  const [pricing, setPricing] = React.useState(0);
+  const [value, setValue] = React.useState(0);
+  const [date, setDate] = React.useState<Date | null>(new Date());
+  const [displayDate, setDisplayDate] = React.useState('');
+  const [priceHistory, setPriceHistory] = React.useState<any>([]);
   // const [showHistory, setShowHistory] = React.useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
+    setValue(newValue);
+  };
 
   const handleCalcSubmit = (event: React.SyntheticEvent) => {
-    event.preventDefault()
-    setShowPricing?.(false)
+    event.preventDefault();
+    setShowPricing?.(false);
     // post request to backend for pricing calculator
     const body = {
       functionName,
@@ -101,52 +101,52 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
       memorySize,
       storage,
       billedDurationAvg,
-      invocationsTotal
-    }
+      invocationsTotal,
+    };
     fetch('http://localhost:3000/price/calc', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
       .then(async (res) => await res.json())
       .then((data) => {
-        setPricing(data)
-        setShowPricing?.(true)
+        setPricing(data);
+        setShowPricing?.(true);
       })
       .catch((err) => {
-        console.log('Error fetching pricing calc:', err)
-      })
-  }
+        console.log('Error fetching pricing calc:', err);
+      });
+  };
 
   const handleHistorySubmit = (event: React.SyntheticEvent) => {
-    event.preventDefault()
+    event.preventDefault();
     // turn off showing the price history if it was previously calculated
-    setShowHistory?.(false)
+    setShowHistory?.(false);
     // turn on loading animation
-    setPriceLoading?.(true)
+    setPriceLoading?.(true);
     // post request to backend for pricing history
-    setDisplayDate(dayjs(date).format('MMMM YYYY'))
+    setDisplayDate(dayjs(date).format('MMMM YYYY'));
     fetch('http://localhost:3000/price/history', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         functionName,
-        date: dayjs(date).format('YYYY/MM/')
-      })
+        date: dayjs(date).format('YYYY/MM/'),
+      }),
     })
       .then(async (res) => await res.json())
       .then((data) => {
-        setPriceHistory(data)
-        setPriceLoading?.(false)
-        setShowHistory?.(true)
+        setPriceHistory(data);
+        setPriceLoading?.(false);
+        setShowHistory?.(true);
       })
       .catch((err) => {
-        console.log('Error fetching pricing history:', err)
-      })
-  }
+        console.log('Error fetching pricing history:', err);
+      });
+  };
 
   // convert returned number to currency
-  const financial = (num: any) => new Intl.NumberFormat().format(num)
+  const financial = (num: any) => new Intl.NumberFormat().format(num);
 
   return (
     <div className="p-5 flex flex-col text-gray-900 dark:text-[#D3D4D4]">
@@ -186,7 +186,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
               name="radio-buttons-group"
               value={type}
               onChange={(e) => {
-                setType(e.target.value)
+                setType(e.target.value);
               }}
             >
               <FormControlLabel
@@ -195,8 +195,8 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
                   <Radio
                     sx={{
                       '&, &.Mui-checked': {
-                        color: '#7f9f80'
-                      }
+                        color: '#7f9f80',
+                      },
                     }}
                   />
                 }
@@ -208,8 +208,8 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
                   <Radio
                     sx={{
                       '&, &.Mui-checked': {
-                        color: '#7f9f80'
-                      }
+                        color: '#7f9f80',
+                      },
                     }}
                   />
                 }
@@ -228,7 +228,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
             min={128}
             max={10240}
             onChange={(e, value) => {
-              setMemorySize(value as number)
+              setMemorySize(value as number);
             }}
           />
 
@@ -242,7 +242,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
             min={512}
             max={10240}
             onChange={(e, value) => {
-              setStorage(value as number)
+              setStorage(value as number);
             }}
           />
 
@@ -256,7 +256,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
             min={1}
             max={90000}
             onChange={(e, value) => {
-              setBilledDurationAvg(value as number)
+              setBilledDurationAvg(value as number);
             }}
           />
 
@@ -270,7 +270,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
             placeholder="100000000000"
             variant="outlined"
             onChange={(e) => {
-              setInvocationsTotal(Number(e.target.value))
+              setInvocationsTotal(Number(e.target.value));
             }}
           />
         </Box>
@@ -288,8 +288,8 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
               '&:hover': {
                 borderColor: '#9cb59d',
                 backgroundColor: '#F5F5F5',
-                color: '#9cb59d'
-              }
+                color: '#9cb59d',
+              },
             }}
             size="small"
             onClick={handleCalcSubmit}
@@ -327,7 +327,7 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
                 views={['year', 'month']}
                 value={date}
                 onChange={(newValue) => {
-                  setDate(newValue)
+                  setDate(newValue);
                 }}
                 renderInput={(params) => (
                   <TextField {...params} helperText={null} />
@@ -350,8 +350,8 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
                 '&:hover': {
                   borderColor: '#9cb59d',
                   backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-                }
+                  color: '#9cb59d',
+                },
               }}
               size="small"
               onClick={handleHistorySubmit}
@@ -362,12 +362,10 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
         </Box>
         <br />
 
-        {priceLoading
-          ? (
+        {priceLoading ? (
           <PriceLoader />
-            )
-          : (
-              showHistory && (
+        ) : (
+          showHistory && (
             <div>
               <p className="text-gray-700 dark:text-[#D3D4D4] mt-3.5 text-xl">
                 Your total costs for
@@ -377,11 +375,11 @@ function PricingDetails ({ defaultFunctionConfig }: PricingDetailsProps) {
                 ${financial(priceHistory)}
               </p>
             </div>
-              )
-            )}
+          )
+        )}
       </TabPanel>
     </div>
-  )
+  );
 }
 
-export default PricingDetails
+export default PricingDetails;

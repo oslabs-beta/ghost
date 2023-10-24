@@ -1,18 +1,18 @@
-import * as React from 'react'
-import { Select, Button, TextField, MenuItem, InputLabel } from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import * as dayjs from 'dayjs'
-import { useMainPageContext } from '../context/MainPageContext'
-import CreateGraphLoader from './CreateGraphLoader'
-import { useGraphContext } from '../context/GraphContext'
-import { useFunctionContext } from '../context/FunctionContext'
+import * as React from 'react';
+import { Select, Button, TextField, MenuItem, InputLabel } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import * as dayjs from 'dayjs';
+import { useMainPageContext } from '../context/MainPageContext';
+import CreateGraphLoader from './CreateGraphLoader';
+import { useGraphContext } from '../context/GraphContext';
+import { useFunctionContext } from '../context/FunctionContext';
 
-function CreateGraph () {
+const CreateGraph = (): JSX.Element => {
   // pull relevant state out of context
-  const { functionName } = useFunctionContext()
+  const { functionName } = useFunctionContext();
   const {
     setCustomGraphs,
     graphType,
@@ -26,15 +26,15 @@ function CreateGraph () {
     endTime,
     setEndTime,
     datapointType,
-    setDatapointType
-  } = useGraphContext()
-  const { createLoading, setCreateLoading } = useMainPageContext()
-  const [coldStartDate, setColdStartDate] = React.useState('')
-  const [errorNoData, setErrorNoData] = React.useState(false)
-  const [errorTooMuchData, setErrorTooMuchData] = React.useState(false)
+    setDatapointType,
+  } = useGraphContext();
+  const { createLoading, setCreateLoading } = useMainPageContext();
+  const [coldStartDate, setColdStartDate] = React.useState('');
+  const [errorNoData, setErrorNoData] = React.useState(false);
+  const [errorTooMuchData, setErrorTooMuchData] = React.useState(false);
 
   // store list of metrics and graphtypes in an array
-  const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine']
+  const graphTypeNames = ['Line', 'Bar', 'Pie', 'MultiLine'];
   const metricNames = [
     'Errors',
     'ConcurrentExecutions',
@@ -42,15 +42,15 @@ function CreateGraph () {
     'Duration',
     'Throttles',
     'UrlRequestCount',
-    'ColdStarts'
-  ]
-  const datapointTypeNames = ['Average', 'Sum', 'Minimum', 'Maximum']
+    'ColdStarts',
+  ];
+  const datapointTypeNames = ['Average', 'Sum', 'Minimum', 'Maximum'];
 
   // on submit, send the data to the backend
-  async function handleSubmit () {
-    setErrorTooMuchData(false)
-    setErrorNoData(false)
-    setCreateLoading?.(true)
+  async function handleSubmit(): Promise<void> {
+    setErrorTooMuchData(false);
+    setErrorNoData(false);
+    setCreateLoading?.(true);
     // call custom metric API
     const res = await fetch('http://localhost:3000/metric/custom', {
       method: 'POST',
@@ -59,17 +59,17 @@ function CreateGraph () {
         functionName,
         metricName,
         startTime,
-        endTime
-      })
-    })
-    const data = await res.json()
-    setCreateLoading?.(false)
+        endTime,
+      }),
+    });
+    const data = await res.json();
+    setCreateLoading?.(false);
 
     // error handling to display to the user
     if (data.tooManyDatapoints) {
-      setErrorTooMuchData(true)
+      setErrorTooMuchData(true);
     } else if (data.Datapoints.length === 0) {
-      setErrorNoData(true)
+      setErrorNoData(true);
     } else {
       // save the graph setup to the state, in addition to all the previous graphs
       const newCustomGraph = {
@@ -79,33 +79,33 @@ function CreateGraph () {
         metricName,
         date: coldStartDate,
         metricData: data,
-        datapointType
-      }
-      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
+        datapointType,
+      };
+      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph]);
     }
   }
 
   // if selected metric is coldstarts, this function will fire on submit
-  async function handleSubmitColdStarts () {
-    setErrorTooMuchData(false)
-    setErrorNoData(false)
-    setCreateLoading?.(true)
+  async function handleSubmitColdStarts(): Promise<void> {
+    setErrorTooMuchData(false);
+    setErrorNoData(false);
+    setCreateLoading?.(true);
     const res = await fetch('http://localhost:3000/metric/cold', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         functionName,
-        date: coldStartDate
-      })
-    })
-    const data = await res.json()
-    setCreateLoading?.(false)
+        date: coldStartDate,
+      }),
+    });
+    const data = await res.json();
+    setCreateLoading?.(false);
 
     // error handling to display to the user
     if (data.tooManyDatapoints) {
-      setErrorTooMuchData(true)
+      setErrorTooMuchData(true);
     } else if (data.length === 0) {
-      setErrorNoData(true)
+      setErrorNoData(true);
     } else {
       // save the graph setup to the state, in addition to all the previous graphs
       const newCustomGraph = {
@@ -115,9 +115,9 @@ function CreateGraph () {
         metricName,
         date: coldStartDate,
         metricData: data,
-        datapointType
-      }
-      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph])
+        datapointType,
+      };
+      setCustomGraphs?.((prev: any) => [...prev, newCustomGraph]);
     }
   }
 
@@ -152,14 +152,13 @@ function CreateGraph () {
       </Select>
       <br />
 
-      {metricName === 'ColdStarts'
-        ? null
-        : (
+      {metricName === 'ColdStarts' ? null : (
         <>
           <InputLabel id="graph-type">Graph Type</InputLabel>
           <Select id="graph-type" className="w-auto">
             {graphTypeNames.map((graphType) => (
               <MenuItem
+                key={graphType}
                 value={graphType}
                 onClick={() => setGraphType?.(graphType)}
               >
@@ -169,17 +168,17 @@ function CreateGraph () {
           </Select>
           <br />
         </>
-          )}
+      )}
 
-      {(metricName !== 'ColdStarts' && graphType == 'Line') ||
-      graphType == 'Bar' ||
-      graphType == 'Pie'
-        ? (
+      {(metricName !== 'ColdStarts' && graphType === 'Line') ||
+      graphType === 'Bar' ||
+      graphType === 'Pie' ? (
         <>
           <InputLabel id="datapoints-type">Datapoints Type</InputLabel>
           <Select id="datapoints-type" className="w-auto">
             {datapointTypeNames.map((datapointType) => (
               <MenuItem
+                key={datapointType}
                 value={datapointType}
                 onClick={() => setDatapointType?.(datapointType)}
               >
@@ -189,8 +188,7 @@ function CreateGraph () {
           </Select>
           <br />
         </>
-          )
-        : null}
+      ) : null}
 
       {metricName === 'ColdStarts' ? (
         <>
@@ -200,9 +198,9 @@ function CreateGraph () {
               // label="Select Date"
               value={coldStartDate}
               onChange={(newValue) => {
-                const newDate = dayjs(newValue).format('YYYY/MM/DD')
-                console.log(newDate)
-                setColdStartDate(newDate)
+                const newDate = dayjs(newValue).format('YYYY/MM/DD');
+                console.log(newDate);
+                setColdStartDate(newDate);
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -217,8 +215,8 @@ function CreateGraph () {
               minutesStep={5}
               value={startTime}
               onChange={(newValue) => {
-                const newDate = new Date(newValue).toLocaleString()
-                setStartTime?.(newDate)
+                const newDate = new Date(newValue).toLocaleString();
+                setStartTime?.(newDate);
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -232,12 +230,12 @@ function CreateGraph () {
               value={endTime}
               onChange={(newValue) => {
                 // only allow the date and time to be set, if the time within 24 hours time difference
-                const newDate = new Date(newValue).toLocaleString()
+                const newDate = new Date(newValue).toLocaleString();
                 dayjs(newDate).isAfter(dayjs(startTime).add(24, 'hour'))
                   ? alert(
-                    'Please select a time within 24 hours of the start time'
-                  )
-                  : setEndTime?.(newDate)
+                      'Please select a time within 24 hours of the start time'
+                    )
+                  : setEndTime?.(newDate);
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -257,41 +255,39 @@ function CreateGraph () {
           '&:hover': {
             borderColor: '#9cb59d',
             backgroundColor: '#F5F5F5',
-            color: '#9cb59d'
-          }
+            color: '#9cb59d',
+          },
         }}
         size="small"
-        onClick={
-          metricName === 'ColdStarts' ? handleSubmitColdStarts : handleSubmit
-        }
+        onClick={() => {
+          if (metricName === 'ColdStarts') {
+            handleSubmitColdStarts().catch(console.error);
+          } else {
+            handleSubmit().catch(console.error);
+          }
+        }}
       >
         SUBMIT
       </Button>
       <br />
-      {errorNoData
-        ? (
+      {errorNoData ? (
         <p className="text-lg text-red-600 dark:text-red-400">
           Error: No datapoints available for this time range.
         </p>
-          )
-        : null}
-      {errorTooMuchData
-        ? (
+      ) : null}
+      {errorTooMuchData ? (
         <p className="text-lg text-red-600 dark:text-red-400">
           Error: Too many datapoints available for this time range. Please
           select a smaller time range.
         </p>
-          )
-        : null}
-      {createLoading
-        ? (
+      ) : null}
+      {createLoading ? (
         <div className="flex justify-center">
           <CreateGraphLoader />
         </div>
-          )
-        : null}
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default CreateGraph
+export default CreateGraph;

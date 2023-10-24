@@ -1,27 +1,27 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import { DarkModeSwitch } from 'react-toggle-dark-mode'
-import AddchartIcon from '@mui/icons-material/Addchart'
-import { useDarkMode } from '../context/DarkModeHooks'
-import { useGraphContext } from '../context/GraphContext'
-import { useFunctionContext } from '../context/FunctionContext'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import AddchartIcon from '@mui/icons-material/Addchart';
+import { useDarkMode } from '../context/DarkModeHooks';
+import { useGraphContext } from '../context/GraphContext';
+import { useFunctionContext } from '../context/FunctionContext';
 
 interface TopBarProps {
-  changeMuiTheme: () => void
+  changeMuiTheme: () => void;
 }
 
-function TopBarContainer ({ changeMuiTheme }: TopBarProps) {
-  const { isHomeEnabled } = useFunctionContext()
-  const [isDark, setIsDark] = useDarkMode()
+function TopBarContainer({ changeMuiTheme }: TopBarProps) {
+  const { isHomeEnabled } = useFunctionContext();
+  const [isDark, setIsDark] = useDarkMode();
   const toggleDarkMode = (checked: boolean) => {
-    setIsDark(checked)
-    changeMuiTheme()
-  }
+    setIsDark(checked);
+    changeMuiTheme();
+  };
 
-  const { createGraphIsShown, setCreateGraphIsShown } = useGraphContext()
+  const { createGraphIsShown, setCreateGraphIsShown } = useGraphContext();
   const handleCreateGraph = () => {
-    setCreateGraphIsShown?.(!createGraphIsShown)
-  }
+    setCreateGraphIsShown?.(!createGraphIsShown);
+  };
 
   const createGraphButton = () => (
     <div className="mr-1">
@@ -37,20 +37,20 @@ function TopBarContainer ({ changeMuiTheme }: TopBarProps) {
           '&:hover': {
             borderColor: '#e09d69',
             backgroundColor: '#e09d69',
-            color: '#FFFFFF'
-          }
+            color: '#FFFFFF',
+          },
         }}
         onClick={handleCreateGraph}
       >
         <AddchartIcon
           sx={{
-            mr: 1
+            mr: 1,
           }}
         />
         Create Graph
       </Button>
     </div>
-  )
+  );
 
   const ghostIcon = () => (
     <div className="mr-1">
@@ -59,7 +59,7 @@ function TopBarContainer ({ changeMuiTheme }: TopBarProps) {
         className="object-cover mr-0.5 h-12 transition ease-in-out delay-150 hover:animate-[wiggle_1.5s_ease-in-out_infinite]"
       />
     </div>
-  )
+  );
 
   return (
     <div className="flex flex-row justify-end absolute top-5 right-2 w-11/12">
@@ -73,13 +73,13 @@ function TopBarContainer ({ changeMuiTheme }: TopBarProps) {
             maxHeight: '30px',
             minHeight: '30px',
             backgroundColor: '#BFBFBF',
-            mt: 0.45
+            mt: 0.45,
           }}
         >
           <DarkModeSwitch
             style={{
               marginBottom: '1rem',
-              marginTop: '1rem'
+              marginTop: '1rem',
             }}
             checked={isDark}
             onChange={toggleDarkMode}
@@ -90,7 +90,7 @@ function TopBarContainer ({ changeMuiTheme }: TopBarProps) {
 
       {!isHomeEnabled ? ghostIcon() : null}
     </div>
-  )
+  );
 }
 
-export default TopBarContainer
+export default TopBarContainer;

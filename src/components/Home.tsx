@@ -1,6 +1,6 @@
-import * as React from 'react'
+import * as React from 'react';
 
-function Home () {
+function Home() {
   return (
     <div className="bg-[#d6d4d4] dark:bg-[#191919] dark:text-gray-100 p-5 m-2 flex flex-col items-center align-middle">
       <div className="text-gray-900 dark:text-gray-100 text-2xl mt-20 mb-20">
@@ -13,7 +13,7 @@ function Home () {
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

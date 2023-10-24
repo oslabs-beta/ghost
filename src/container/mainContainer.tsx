@@ -1,75 +1,71 @@
-import * as React from 'react'
-import FunctionDetails from '../components/FunctionDetails'
-import { useFunctionContext } from '../context/FunctionContext'
-import Home from '../components/Home'
-import { useGraphContext } from '../context/GraphContext'
-import CreateGraph from '../components/CreateGraph'
-import PricingDetails from '../components/PricingDetails'
-import PermissionsDetails from '../components/PermissionsDetails'
+import * as React from 'react';
+import FunctionDetails from '../components/FunctionDetails';
+import { useFunctionContext } from '../context/FunctionContext';
+import Home from '../components/Home';
+import { useGraphContext } from '../context/GraphContext';
+import CreateGraph from '../components/CreateGraph';
+import PricingDetails from '../components/PricingDetails';
+import PermissionsDetails from '../components/PermissionsDetails';
 
-function MainContainer () {
+function MainContainer() {
   const {
     isMetricsEnabled,
     isPricingEnabled,
     isHomeEnabled,
-    isPermissionsEnabled
-  } = useFunctionContext()
-  const { createGraphIsShown } = useGraphContext()
-  const { functionName } = useFunctionContext()
+    isPermissionsEnabled,
+  } = useFunctionContext();
+  const { createGraphIsShown } = useGraphContext();
+  const { functionName } = useFunctionContext();
 
-  const [defaultFunctionConfig, setDefaultFunctionConfig] = React.useState({})
-  const [permissionList, setPermissionList] = React.useState([])
+  const [defaultFunctionConfig, setDefaultFunctionConfig] = React.useState({});
+  const [permissionList, setPermissionList] = React.useState([]);
 
   React.useEffect(() => {
     Promise.all([
       fetch('http://localhost:3000/price/defaultConfig', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ functionName })
+        body: JSON.stringify({ functionName }),
       }),
       fetch('http://localhost:3000/permission/list', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ functionName })
-      })
+        body: JSON.stringify({ functionName }),
+      }),
     ])
       .then(
         async ([defaultConfigResponse, permissionListResponse]) =>
           await Promise.all([
             defaultConfigResponse.json(),
-            permissionListResponse.json()
+            permissionListResponse.json(),
           ])
       )
       .then(([defaultConfig, permissionList]) => {
-        setDefaultFunctionConfig(defaultConfig)
-        setPermissionList(permissionList)
-      })
-  }, [functionName])
+        setDefaultFunctionConfig(defaultConfig);
+        setPermissionList(permissionList);
+      });
+  }, [functionName]);
 
   return (
     <div className="bg-[#d6d4d4] dark:bg-[#191919] min-h-screen w-screen px-4/5">
       {createGraphIsShown ? <CreateGraph /> : null}
       {isMetricsEnabled ? <FunctionDetails /> : null}
-      {isPricingEnabled
-        ? (
+      {isPricingEnabled ? (
         <PricingDetails defaultFunctionConfig={defaultFunctionConfig} />
-          )
-        : null}
-      {isPermissionsEnabled
-        ? (
+      ) : null}
+      {isPermissionsEnabled ? (
         <PermissionsDetails
           permissionList={permissionList}
           setPermissionList={setPermissionList}
         />
-          )
-        : null}
+      ) : null}
       {isHomeEnabled ? <Home /> : null}
     </div>
-  )
+  );
 }
 
-export default MainContainer
+export default MainContainer;
