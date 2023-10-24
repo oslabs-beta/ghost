@@ -1,9 +1,9 @@
-import * as React from 'react';
-import LambdaFuncComponent from './LambdaFuncComponent';
+import * as React from 'react'
+import LambdaFuncComponent from './LambdaFuncComponent'
 
 // pass down list of lambda functions
 interface Props {
-  list: Array<object>;
+  list: object[]
 }
 
 const LambdaFuncList: React.FC<Props> = ({ list }) => (
@@ -12,6 +12,6 @@ const LambdaFuncList: React.FC<Props> = ({ list }) => (
       <LambdaFuncComponent func={func} key={index} />
     ))}
   </div>
-);
+)
 
-export default LambdaFuncList;
+export default LambdaFuncList

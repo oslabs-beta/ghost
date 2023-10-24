@@ -1,43 +1,37 @@
-import * as React from 'react';
+import * as React from 'react'
 import {
   Box,
-  Slider,
   Typography,
   styled,
   Button,
-  Radio,
   FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
   TextField,
   FormHelperText,
   Select,
   Tabs,
-  Tab,
-  Stack,
-} from '@mui/material';
-import { useFunctionContext } from '../context/FunctionContext';
+  Tab
+} from '@mui/material'
+import { useFunctionContext } from '../context/FunctionContext'
 
 interface PermissionsDetailsProps {
-  permissionList: any;
-  setPermissionList: (arg0: any) => void;
+  permissionList: any
+  setPermissionList: (arg0: any) => void
 }
 
 interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+  children?: React.ReactNode
+  index: number
+  value: number
 }
 
 const StyledTab = styled(Tab)({
   '&.Mui-selected': {
-    color: '#7f9f80',
-  },
-});
+    color: '#7f9f80'
+  }
+})
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props: TabPanelProps) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -53,39 +47,38 @@ function TabPanel(props: TabPanelProps) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
-function a11yProps(index: number) {
+function a11yProps (index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
+    'aria-controls': `simple-tabpanel-${index}`
+  }
 }
 
-export default function PermissionsDetails({
+export default function PermissionsDetails ({
   permissionList,
-  setPermissionList,
+  setPermissionList
 }: PermissionsDetailsProps) {
   // pull current function from context
-  const { functionName, functionARN } = useFunctionContext();
-  const [value, setValue] = React.useState(0);
-  const [statementId, setStatementId] = React.useState('');
-  const [action, setAction] = React.useState('');
-  const [resource, setResource] = React.useState('');
-  const [principal, setPrincipal] = React.useState('');
-  const [principalOrgId, setPrincipalOrgId] = React.useState('');
-  const [errorText, setErrorText] = React.useState(false);
-  const [successText, setSuccessText] = React.useState(false);
+  const { functionName, functionARN } = useFunctionContext()
+  const [value, setValue] = React.useState(0)
+  const [statementId, setStatementId] = React.useState('')
+  const [action, setAction] = React.useState('')
+  const [principal, setPrincipal] = React.useState('')
+  const [principalOrgId, setPrincipalOrgId] = React.useState('')
+  const [errorText, setErrorText] = React.useState(false)
+  const [successText, setSuccessText] = React.useState(false)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   const addPermission = () => {
     // set error text and success text to false to clear any previous helper texts
-    setErrorText(false);
-    setSuccessText(false);
+    setErrorText(false)
+    setSuccessText(false)
 
     const body = {
       functionName,
@@ -93,60 +86,60 @@ export default function PermissionsDetails({
       action,
       resource: functionARN,
       principal,
-      principalOrgId,
-    };
+      principalOrgId
+    }
 
     fetch('http://localhost:3000/permission/add', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     })
-      .then((res) => res.json())
+      .then(async (res) => await res.json())
       .then((data) => {
         if (data.status === 400) {
           // if error, display error message
-          setErrorText(true);
+          setErrorText(true)
         } else {
           // if successful, add the request body to the permissionList state
-          setPermissionList([...permissionList, body]);
+          setPermissionList([...permissionList, body])
           // display success message
-          setSuccessText(true);
+          setSuccessText(true)
         }
       })
-      .catch((err) => {
+      .catch(() => {
         // if error, display error message
-        setErrorText(true);
-      });
-  };
+        setErrorText(true)
+      })
+  }
 
   const removePermission = (statementId: string, index: number) => {
     // user needs to confirm to remove permission
     const answer = confirm(
       `Are you sure you want to remove this permission?\n${statementId}`
-    );
+    )
     if (answer) {
       fetch('http://localhost:3000/permission/remove', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           functionName,
-          statementId,
-        }),
+          statementId
+        })
       })
-        .then((res) => res.json())
+        .then(async (res) => await res.json())
         .then((data) => {
-          console.log(data);
-        });
+          console.log(data)
+        })
       // set a new array to state with the permission removed
       setPermissionList(
         permissionList.filter((permission: any, i: number) => i !== index)
-      );
+      )
     }
-  };
+  }
 
   return (
     <div className="p-5 flex flex-col text-gray-900 dark:text-[#D3D4D4]">
@@ -206,12 +199,12 @@ export default function PermissionsDetails({
                     '&:hover': {
                       borderColor: '#9cb59d',
                       backgroundColor: '#F5F5F5',
-                      color: '#9cb59d',
-                    },
+                      color: '#9cb59d'
+                    }
                   }}
                   size="small"
                   onClick={() => {
-                    removePermission(permission.statementId, index);
+                    removePermission(permission.statementId, index)
                   }}
                 >
                   Delete Permission
@@ -243,7 +236,9 @@ export default function PermissionsDetails({
             variant="outlined"
             value={statementId}
             sx={{ mb: 3, width: '100%' }}
-            onChange={(e) => setStatementId(e.target.value)}
+            onChange={(e) => {
+              setStatementId(e.target.value)
+            }}
           />{' '}
           <br />
           <FormControl sx={{ width: '100%' }}>
@@ -251,10 +246,12 @@ export default function PermissionsDetails({
               native
               value={action}
               required
-              onChange={(e) => setAction(e.target.value)}
+              onChange={(e) => {
+                setAction(e.target.value)
+              }}
               inputProps={{
                 name: 'action',
-                id: 'action',
+                id: 'action'
               }}
             >
               <option aria-label="Action" value="">
@@ -309,7 +306,9 @@ export default function PermissionsDetails({
             required
             value={principal}
             sx={{ width: '100%' }}
-            onChange={(e) => setPrincipal(e.target.value)}
+            onChange={(e) => {
+              setPrincipal(e.target.value)
+            }}
           />
           <Box sx={{ mb: 3, width: '100%' }} />
           <TextField
@@ -318,7 +317,9 @@ export default function PermissionsDetails({
             variant="outlined"
             value={principalOrgId}
             sx={{ width: '100%' }}
-            onChange={(e) => setPrincipalOrgId(e.target.value)}
+            onChange={(e) => {
+              setPrincipalOrgId(e.target.value)
+            }}
           />
           <FormHelperText id="principal-org-id-helper">
             Optional: If principal is part of an AWS Organization, enter the
@@ -337,8 +338,8 @@ export default function PermissionsDetails({
               '&:hover': {
                 borderColor: '#9cb59d',
                 backgroundColor: '#F5F5F5',
-                color: '#9cb59d',
-              },
+                color: '#9cb59d'
+              }
             }}
             size="small"
             onClick={addPermission}
@@ -347,18 +348,22 @@ export default function PermissionsDetails({
             ADD PERMISSION
           </Button>
           <br />
-          {errorText ? (
+          {errorText
+            ? (
             <span className="text-red-600">
               There was an error adding the permission. Please try again.
             </span>
-          ) : null}
-          {successText ? (
+              )
+            : null}
+          {successText
+            ? (
             <span className="text-emerald-700 dark:text-[#7f9f80]">
               Permission added successfully.
             </span>
-          ) : null}
+              )
+            : null}
         </Box>
       </TabPanel>
     </div>
-  );
+  )
 }

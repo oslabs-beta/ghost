@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { PropagateLoader } from 'react-spinners';
-import { MainPageContext } from '../context/MainPageContext';
+import * as React from 'react'
+import { PropagateLoader } from 'react-spinners'
+import { MainPageContext } from '../context/MainPageContext'
 
 const override: React.CSSProperties = {
   display: 'block',
   margin: '0 auto',
-  borderColor: 'white',
-};
+  borderColor: 'white'
+}
 
-function GraphLoader() {
-  const { loading } = React.useContext(MainPageContext);
-  const [color, setColor] = React.useState('#ffffff');
+function GraphLoader () {
+  const { loading } = React.useContext(MainPageContext)
+  const [color, setColor] = React.useState('#ffffff')
 
-  return loading ? (
+  return loading
+    ? (
     <div className="overlay-content">
       <div className="flex items-center justify-center align-middle h-[70vh]">
         <PropagateLoader
@@ -25,7 +26,8 @@ function GraphLoader() {
         />
       </div>
     </div>
-  ) : null;
+      )
+    : null
 }
 
-export default GraphLoader;
+export default GraphLoader

@@ -11,6 +11,6 @@
     "noImplicitThis": true,
     "strictNullChecks": true
   },
-  "include": ["src/**/*.ts", "./custom.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "./custom.d.ts"],
   "exclude": ["/node_modules"]
 }
