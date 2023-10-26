@@ -5,30 +5,29 @@ const metricsController = require('../controllers/metricsController');
 
 const router = express.Router();
 
-router.post('/recent',
+router.post(
+  '/recent',
   cloudwatchController.getLogStreams,
   cloudwatchController.getRawLogs,
   dataController.parseBasic,
   (req, res) => {
-    res.status(200).json(res.locals.basicData)
+    res.status(200).json(res.locals.basicData);
   }
-)
+);
 
-router.post('/custom',
-  metricsController.getMetrics,
-  (req, res) => {
-    res.status(200).json(res.locals.metricStats)
-  }
-)
+router.post('/custom', metricsController.getMetrics, (req, res) => {
+  res.status(200).json(res.locals.metricStats);
+});
 
-router.post('/cold',
+router.post(
+  '/cold',
   cloudwatchController.getAllLogStreams,
   cloudwatchController.iterateStreamsForLogs,
   dataController.parseBasic,
   dataController.parseColdStarts,
   (req, res) => {
-    res.status(200).json(res.locals.coldMetrics)
+    res.status(200).json(res.locals.coldMetrics);
   }
-)
+);
 
 module.exports = router;

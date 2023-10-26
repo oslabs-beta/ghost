@@ -29,7 +29,6 @@
   />
 </p>
 
-
 // MULTI LINE GRAPH STATE
   const multiState = {
     labels: timestamps,
@@ -54,7 +53,6 @@
       }
     ]
   }
-
 
 // DOUBLE LINE GRAPH
 <p className="bg-white text-[#bfbfbf] h-80 rounded-lg shadow-md m-2 p-2 dark:bg-[#404040] dark:text-white">
@@ -102,6 +100,5 @@
           },
         }}/>
       </p>
-
 
 */

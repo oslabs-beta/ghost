@@ -10,7 +10,10 @@ interface RegionProps {
   setCurrentRegion: (region: string) => void;
 }
 
-export default function RegionComponent({ currentRegion, setCurrentRegion }: RegionProps) {
+export default function RegionComponent({
+  currentRegion,
+  setCurrentRegion,
+}: RegionProps) {
   // list of AWS regions
   const awsRegions = [
     'us-west-1',
@@ -38,86 +41,94 @@ export default function RegionComponent({ currentRegion, setCurrentRegion }: Reg
     'sa-east-1',
     'us-gov-east-1',
     'us-gov-west-1',
-  ]
+  ];
 
-  const ITEM_HEIGHT = 48
+  const ITEM_HEIGHT = 48;
 
   // to capitalize the country code in the region
   const displayCapitalizedRegion = (region: string) => {
     const firstTwoLetters = region.slice(0, 2).toUpperCase();
     const restOfRegion = region.slice(2);
     return firstTwoLetters + restOfRegion;
-  }
+  };
 
   const handleRegionClick = (region: any) => {
     fetch('http://localhost:3000/main/changeRegion', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ region: region })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data === 'region changed') {
-            setCurrentRegion(region);
-          }
-          else alert(data);
-        })
-        .catch(err => {
-          console.log('Error changing region:', err);
-        }
-      );
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ region }),
+    })
+      .then(async (response) => await response.json())
+      .then((data) => {
+        if (data === 'region changed') {
+          setCurrentRegion(region);
+        } else alert(data);
+      })
+      .catch((err) => {
+        console.log('Error changing region:', err);
+      });
   };
 
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
-        <React.Fragment>
+        <>
           <div className="flex items-center justify-center">
-            <Button className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
-              variant="contained" {...bindTrigger(popupState)}
-              sx = {{     
+            <Button
+              className="dark:bg-[#7f9f80] dark:hover:bg-[#BFBFBF] dark:hover:text-[#242424]"
+              variant="contained"
+              {...bindTrigger(popupState)}
+              sx={{
                 fontSize: 10,
                 px: 8,
-                backgroundColor: "#9cb59d",
-                borderColor: "#9cb59d",
-                color: "#FFFFFF",
-                
+                backgroundColor: '#9cb59d',
+                borderColor: '#9cb59d',
+                color: '#FFFFFF',
+
                 '&:hover': {
                   borderColor: '#9cb59d',
                   backgroundColor: '#F5F5F5',
-                  color: '#9cb59d'
-              }}}
+                  color: '#9cb59d',
+                },
+              }}
             >
-              <PublicIcon sx = {{
-                pr: 0.5
-              }}/>
+              <PublicIcon
+                sx={{
+                  pr: 0.5,
+                }}
+              />
               {currentRegion}
             </Button>
           </div>
-          <Menu 
-          sx={{
-            width: 'auto'
-          }}
-          PaperProps={{
-            style: {
-              maxHeight: ITEM_HEIGHT * 5.5,
-            }
-          }}
-          {...bindMenu(popupState)}>
-          {awsRegions.map((region) => (
-            <MenuItem onClick={(event) => {
-              handleRegionClick(region);
-              popupState.close();
-            }} value={region}>
-              <span className="capitalize">{displayCapitalizedRegion(region)}</span>
-            </MenuItem>
-          ))}
+          <Menu
+            sx={{
+              width: 'auto',
+            }}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 5.5,
+              },
+            }}
+            {...bindMenu(popupState)}
+          >
+            {awsRegions.map((region) => (
+              <MenuItem
+                onClick={(event) => {
+                  handleRegionClick(region);
+                  popupState.close();
+                }}
+                value={region}
+              >
+                <span className="capitalize">
+                  {displayCapitalizedRegion(region)}
+                </span>
+              </MenuItem>
+            ))}
           </Menu>
-
-  </React.Fragment>
-    )}
-</PopupState>
+        </>
+      )}
+    </PopupState>
   );
 }

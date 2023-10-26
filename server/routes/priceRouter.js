@@ -4,25 +4,20 @@ const priceController = require('../controllers/priceController');
 const cloudwatchController = require('../controllers/cloudwatchController');
 const dataController = require('../controllers/dataController');
 
-//controllers import here
+// controllers import here
 
 const router = express.Router();
 
-router.post('/defaultConfig',
-  lambdaController.functionConfig,
-  (req, res) => {
-    res.status(200).json(res.locals.functionConfig)
-  }
-)
+router.post('/defaultConfig', lambdaController.functionConfig, (req, res) => {
+  res.status(200).json(res.locals.functionConfig);
+});
 
-router.post('/calc',
-  priceController.getEstimate,
-  (req, res) => {
-    res.status(200).json(res.locals.cost)
-  }
-)
+router.post('/calc', priceController.getEstimate, (req, res) => {
+  res.status(200).json(res.locals.cost);
+});
 
-router.post('/history',
+router.post(
+  '/history',
   cloudwatchController.getAllLogStreams,
   cloudwatchController.iterateStreamsForLogs,
   dataController.parseBasic,
@@ -30,8 +25,8 @@ router.post('/history',
   lambdaController.functionConfig,
   priceController.getEstimate,
   (req, res) => {
-    res.status(200).json(res.locals.cost)
+    res.status(200).json(res.locals.cost);
   }
-)
+);
 
 module.exports = router;

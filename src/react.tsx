@@ -8,40 +8,37 @@ import GraphContextProvider from './context/GraphContext';
 import TopBarContainer from './container/TopBarContainer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MainPageContextProvider from './context/MainPageContext';
 
-
 const light: any = {
   palette: {
-    mode: "light",
+    mode: 'light',
     text: {
       primary: '#000000',
     },
     primary: {
-      main: "#F5F5F5",
+      main: '#F5F5F5',
     },
     secondary: {
-      main: "#e6e6e6",
+      main: '#e6e6e6',
     },
-    button: '#9cb59d'
+    button: '#9cb59d',
   },
 };
 
 const dark: any = {
   palette: {
-    mode: "dark",
+    mode: 'dark',
     text: {
       primary: '#F5F5F5',
-      
     },
     primary: {
-      main: "#242424",
+      main: '#242424',
     },
     secondary: {
-      main: "#636262",
+      main: '#636262',
     },
     button: '#7f9f80',
   },
@@ -50,7 +47,7 @@ const dark: any = {
 const App = () => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const [isDarkMui, setIsDarkMui] = React.useState(prefersDarkMode);  // this should hopefully work
+  const [isDarkMui, setIsDarkMui] = React.useState(prefersDarkMode); // this should hopefully work
   const changeMuiTheme = () => {
     setIsDarkMui(!isDarkMui);
   };
@@ -71,9 +68,7 @@ const App = () => {
         </MainPageContextProvider>
       </ThemeProvider>
     </div>
-  )
+  );
 };
-
-
 
 ReactDOM.render(<App />, document.getElementById('app'));
